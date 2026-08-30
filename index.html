@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carrossel Studio | Chega de postar para ninguém</title>
+<meta name="description" content="Carrossel de Instagram a partir de R$ 59,90, com foto de verdade e uma historia que prende ate o ultimo slide. Escolha o molde do seu nicho e receba em 24 horas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&family=Lora:wght@400;600;700&family=Nunito+Sans:wght@300;400;600;700&family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&family=Fraunces:wght@300;400;600;700&family=Outfit:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Libre+Baskerville:wght@400;700&family=Work+Sans:wght@300;400;600&family=Bricolage+Grotesque:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0908; --bg2:#100f0e; --card:#141312; --card2:#1a1817;
+  --line:rgba(255,255,255,.085); --line2:rgba(255,255,255,.17);
+  --tx:#f3ede3; --tx2:#a69d92; --tx3:#6d665e;
+  --acc:#e0b562; --acc-ink:#17110a;
+  --f:'Inter',system-ui,-apple-system,Segoe UI,sans-serif;
+  --fm:'IBM Plex Mono',ui-monospace,monospace;
+  --fd:'Newsreader',Georgia,'Times New Roman',serif;
+  --nav:66px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg); color:var(--tx); font-family:var(--f); line-height:1.58;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden}
+/* textura de filme, a mesma linguagem dos slides */
+body::after{content:''; position:fixed; inset:0; z-index:3; pointer-events:none; opacity:.34;
+  mix-blend-mode:overlay; background-size:260px 260px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E")}
+.wrap{position:relative; z-index:2; max-width:1200px; margin:0 auto; padding:0 24px}
+::selection{background:var(--acc); color:var(--acc-ink)}
+
+/* ---------- tipografia ---------- */
+.mono{font-family:var(--fm); font-size:11.5px; letter-spacing:.19em; text-transform:uppercase; font-weight:600}
+.disp{font-family:var(--fd); font-weight:500; letter-spacing:-.022em; line-height:.98}
+/* Newsreader é variável: o tamanho óptico ajusta o desenho conforme a escala,
+   e um pouco mais de peso compensa o afinamento da serifada em fundo escuro. */
+.disp,.logo,.hero h1,.shead h2,.cfgTop h2,.fecho h2,.mmeta h3,.tres .n,
+.entrega .ic,.preco .val b,.preco .dir h4,.total .p{font-optical-sizing:auto}
+.eyebrow{display:inline-flex; align-items:center; gap:10px; color:var(--acc)}
+.eyebrow i{display:block; width:26px; height:1px; background:currentColor; opacity:.7}
+
+/* ---------- topo ---------- */
+header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
+  backdrop-filter:blur(16px); background:rgba(10,9,8,.7); border-bottom:1px solid var(--line);
+  transition:background .3s}
+.nav{display:flex; align-items:center; justify-content:space-between; height:var(--nav)}
+.logo{display:flex; align-items:baseline; gap:9px; font-family:var(--fd); font-weight:500; font-size:24px; letter-spacing:-.015em}
+.logo s{text-decoration:none; width:7px; height:7px; border-radius:50%; background:var(--acc);
+  display:inline-block; transform:translateY(-4px)}
+.links{display:flex; align-items:center; gap:26px; margin-left:auto; margin-right:26px}
+.links a{color:var(--tx2); text-decoration:none; font-size:14.5px; font-weight:500;
+  letter-spacing:-.01em; position:relative; transition:color .2s}
+.links a::after{content:''; position:absolute; left:0; right:0; bottom:-5px; height:1px;
+  background:var(--acc); transform:scaleX(0); transform-origin:left; transition:transform .25s}
+.links a:hover{color:var(--tx)}
+.links a:hover::after{transform:scaleX(1)}
+.links a.aqui{color:var(--acc)}
+.links a.aqui::after{transform:scaleX(1)}
+.navr{display:flex; align-items:center; gap:18px}
+.navr .mono{color:var(--tx3)}
+.btn{appearance:none; border:0; cursor:pointer; font-family:var(--f); font-weight:600;
+  border-radius:100px; padding:14px 26px; font-size:15.5px; letter-spacing:-.01em;
+  background:var(--acc); color:var(--acc-ink);
+  transition:transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s, background .2s}
+.btn:hover{transform:translateY(-2px); box-shadow:0 12px 30px rgba(224,181,98,.22)}
+.btn:active{transform:translateY(0)}
+.btn:disabled{background:#2b2825; color:#6d665e; cursor:not-allowed; transform:none; box-shadow:none}
+.btn.ghost{background:transparent; color:var(--tx); border:1px solid var(--line2)}
+.btn.ghost:hover{border-color:var(--acc); color:var(--acc); box-shadow:none}
+.btn.sm{padding:10px 18px; font-size:14px}
+
+/* ---------- hero ---------- */
+/* overflow escondido por causa do brilho de 900px do ::before, que sozinho
+   empurrava a largura do documento para 645px e cortava tudo no celular */
+.hero{padding:calc(var(--nav) + 78px) 0 0; position:relative; overflow:hidden}
+.hero::before{content:''; position:absolute; top:-10%; left:50%; transform:translateX(-50%);
+  width:900px; height:620px; pointer-events:none; z-index:0;
+  background:radial-gradient(closest-side, rgba(224,181,98,.13), transparent 72%)}
+.hero .wrap{position:relative; z-index:2}
+.hero h1{font-family:var(--fd); font-weight:500; font-size:clamp(44px,7.6vw,96px);
+  line-height:.98; letter-spacing:-.03em; max-width:15ch}
+.hero h1 em{font-style:italic; color:var(--acc)}
+.hero .lead{color:var(--tx2); font-size:clamp(17px,1.9vw,20.5px); max-width:50ch; margin-top:28px}
+.heroCta{display:flex; gap:12px; flex-wrap:wrap; margin-top:34px; align-items:center}
+.heroCta .nota{font-size:14px; color:var(--tx3)}
+
+/* faixa de slides em movimento */
+.esteira{margin-top:64px; position:relative; overflow:hidden; padding:2px 0}
+.esteira::before,.esteira::after{content:''; position:absolute; top:0; bottom:0; width:16%; z-index:4; pointer-events:none}
+.esteira::before{left:0; background:linear-gradient(90deg,var(--bg),transparent)}
+.esteira::after{right:0; background:linear-gradient(270deg,var(--bg),transparent)}
+.trilho{display:flex; gap:14px; width:max-content; animation:corre 64s linear infinite}
+.trilho.volta{animation-duration:78s; animation-direction:reverse; margin-top:14px}
+.esteira:hover .trilho{animation-play-state:paused}
+@keyframes corre{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){ .trilho{animation:none} }
+.esteira .palco{width:212px; flex:0 0 212px; border-radius:12px; border:1px solid var(--line)}
+
+/* ticker de garantias */
+.tira{border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin-top:64px; overflow:hidden}
+.tira .row{display:flex; gap:56px; width:max-content; padding:15px 0; animation:corre 40s linear infinite}
+.tira span{display:flex; align-items:center; gap:12px; color:var(--tx2); font-size:14.5px; white-space:nowrap}
+.tira b{color:var(--acc); font-family:var(--fm); font-size:12px; letter-spacing:.16em}
+
+/* ---------- seções ---------- */
+section{padding:96px 0; scroll-margin-top:var(--nav)}
+.shead{max-width:60ch; margin-bottom:44px}
+.shead h2{font-family:var(--fd); font-weight:500; font-size:clamp(31px,4.4vw,52px);
+  line-height:1.06; letter-spacing:-.025em; margin:16px 0 14px}
+.shead h2 em{font-style:italic; color:var(--acc)}
+.shead p{color:var(--tx2); font-size:17.5px; max-width:54ch; line-height:1.62}
+
+/* problema */
+.tres{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:0; border-top:1px solid var(--line)}
+.tres > div{padding:30px 26px 30px 0; border-right:1px solid var(--line)}
+.tres > div:last-child{border-right:0}
+.tres .n{font-family:var(--fd); font-size:46px; color:var(--acc); line-height:1; opacity:.85}
+.tres .w{font-family:var(--fd); font-weight:500; font-size:40px; color:var(--acc);
+  line-height:1; letter-spacing:-.025em}
+.tres h4{font-size:18.5px; font-weight:600; letter-spacing:-.015em; margin:15px 0 9px}
+.tres p{color:var(--tx2); font-size:15.5px; line-height:1.65}
+
+/* ---------- moldes ---------- */
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:22px}
+.mcard{cursor:pointer; opacity:0; transform:translateY(20px);
+  transition:opacity .5s ease, transform .5s cubic-bezier(.2,.8,.2,1)}
+.mcard.in{opacity:1; transform:none}
+.mcard .palco{border-radius:14px; border:1px solid var(--line);
+  transition:border-color .25s, transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s}
+.mcard:hover .palco{transform:translateY(-8px) scale(1.012); border-color:var(--line2);
+  box-shadow:0 26px 60px rgba(0,0,0,.6)}
+.mcard.sel .palco{border-color:var(--acc); box-shadow:0 0 0 1px var(--acc),0 26px 60px rgba(0,0,0,.6)}
+.mmeta{padding:15px 2px 0; display:flex; align-items:flex-start; justify-content:space-between; gap:12px}
+.mmeta .nicho{color:var(--tx3); margin-bottom:7px}
+.mmeta h3{font-family:var(--fd); font-size:23.5px; font-weight:500; letter-spacing:-.02em; line-height:1.12}
+.mmeta p{font-size:14px; color:var(--tx2); margin-top:7px; line-height:1.55; max-width:32ch}
+.mgo{flex:0 0 auto; width:34px; height:34px; border-radius:50%; border:1px solid var(--line2);
+  display:grid; place-items:center; color:var(--tx2); transition:.25s; margin-top:4px}
+.mcard:hover .mgo{background:var(--acc); border-color:var(--acc); color:var(--acc-ink); transform:rotate(-45deg)}
+.pontos{display:flex; gap:4px; margin-top:11px}
+.pontos i{height:2px; flex:1; background:var(--line2); border-radius:2px; transition:background .25s}
+.pontos i.on{background:var(--acc)}
+
+/* palco: layout fixo de 420 x 525 escalado para caber */
+.palco{position:relative; aspect-ratio:4/5; overflow:hidden; background:#0d0c0b}
+.palco > .sl{position:absolute; top:0; left:0; transform-origin:top left}
+
+/* ---------- configurador ---------- */
+#config{display:none; padding-top:0}
+#config.on{display:block}
+.cfgTop{display:flex; align-items:flex-end; justify-content:space-between; gap:18px;
+  flex-wrap:wrap; padding-bottom:26px; border-bottom:1px solid var(--line); margin-bottom:38px}
+.cfgTop h2{font-family:var(--fd); font-weight:500; font-size:clamp(29px,3.8vw,44px); line-height:1.04; letter-spacing:-.025em}
+.cfgTop h2 em{font-style:italic; color:var(--acc)}
+.cols{display:grid; grid-template-columns:1fr 420px; gap:56px; align-items:start}
+/* sem isto a coluna de grid nunca encolhe abaixo do min-content dos filhos,
+   e a fita de miniaturas (7 itens que não encolhem) estica a coluna inteira */
+.cols > *{min-width:0}
+.campo{padding:22px 0; border-bottom:1px solid var(--line)}
+.campo:first-child{padding-top:0}
+.campo > label{display:flex; align-items:baseline; gap:10px; font-size:16.5px; font-weight:600; letter-spacing:-.01em}
+.campo > label u{text-decoration:none; color:var(--tx3); font-weight:400; font-size:13px}
+.campo .hint{font-size:14px; color:var(--tx3); margin:6px 0 14px; max-width:52ch; line-height:1.55}
+.inp{width:100%; background:transparent; border:0; border-bottom:1px solid var(--line2); color:var(--tx);
+  padding:11px 0; font-family:var(--f); font-size:18.5px; transition:border-color .2s}
+.inp:focus{outline:0; border-color:var(--acc)}
+.inp::placeholder{color:var(--tx3)}
+textarea.inp{resize:vertical; min-height:82px; line-height:1.55; font-size:16.5px}
+.ig{position:relative}
+.ig span{position:absolute; left:0; top:11px; color:var(--tx3); font-size:18.5px}
+.ig .inp{padding-left:19px}
+.chips{display:flex; gap:8px; flex-wrap:wrap}
+.chip{font-size:14.5px; font-weight:500; color:var(--tx2); background:transparent; border:1px solid var(--line);
+  padding:9px 16px; border-radius:100px; cursor:pointer; transition:.18s; user-select:none}
+.chip:hover{color:var(--tx); border-color:var(--line2)}
+.chip.on{background:var(--acc); color:var(--acc-ink); border-color:var(--acc); font-weight:600}
+.swatches{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+.sw{width:30px; height:30px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:.18s}
+.sw:hover{transform:scale(1.14)}
+.sw.on{border-color:var(--tx); box-shadow:0 0 0 3px rgba(243,237,227,.14)}
+.swc{position:relative; width:30px; height:30px; border-radius:50%; overflow:hidden; cursor:pointer;
+  background:conic-gradient(#e0b562,#d9538a,#8e7cd8,#2e9bd6,#22b27a,#e07a28,#e0b562); border:2px solid var(--line2)}
+.swc input{position:absolute; inset:-30%; opacity:0; cursor:pointer}
+.cnt{font-family:var(--fm); font-size:11.5px; color:var(--tx3); text-align:right; margin-top:7px}
+.assuntos{display:grid; gap:16px}
+.assunto .num{display:flex; justify-content:space-between; align-items:baseline; gap:10px;
+  font-family:var(--fm); font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--tx3); margin-bottom:7px}
+.assunto .num b{color:var(--acc); font-weight:600}
+.assunto textarea{min-height:62px; font-size:15.5px}
+.assunto:first-child textarea{min-height:82px; font-size:16.5px}
+
+/* prévia */
+.sticky{position:sticky; top:calc(var(--nav) + 22px)}
+.pvHead{display:flex; align-items:center; justify-content:space-between; margin-bottom:13px}
+.pvHead .mono{color:var(--tx3)}
+.pvHead .vivo{color:var(--acc); display:flex; align-items:center; gap:7px}
+.pvHead .vivo s{width:5px; height:5px; border-radius:50%; background:var(--acc); text-decoration:none;
+  animation:pisca 2s infinite}
+@keyframes pisca{0%,100%{opacity:1}50%{opacity:.3}}
+.pv{position:relative; touch-action:pan-y}
+.frame{border-radius:16px; overflow:hidden; border:1px solid var(--line2);
+  box-shadow:0 30px 70px rgba(0,0,0,.65); user-select:none}
+.seta{position:absolute; top:50%; margin-top:-21px; z-index:8; width:42px; height:42px;
+  border-radius:50%; display:grid; place-items:center; cursor:pointer; font-size:22px;
+  line-height:1; color:#fff; background:rgba(10,9,8,.5); backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.24); opacity:0; transition:.2s}
+.pv:hover .seta{opacity:1}
+.seta:hover{background:var(--acc); color:var(--acc-ink); border-color:var(--acc)}
+.seta.esq{left:12px} .seta.dir{right:12px}
+@media (hover:none){ .seta{opacity:.9} }
+.pvFoot{display:flex; align-items:center; justify-content:space-between; margin-top:12px; gap:12px}
+.pvFoot .dica{color:var(--tx3)}
+.frame .sl{animation:aparece .34s ease}
+@keyframes aparece{from{opacity:0}to{opacity:1}}
+.tiras{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px}
+.tiras .palco{border-radius:5px; cursor:pointer; opacity:.42; transition:opacity .2s, transform .2s;
+  border:1px solid transparent}
+.tiras .palco:hover{opacity:.8; transform:translateY(-2px)}
+.tiras .palco.on{opacity:1; border-color:var(--acc)}
+.resumo{margin-top:22px; border-top:1px solid var(--line); padding-top:18px}
+.rl{display:flex; justify-content:space-between; gap:14px; font-size:15px; padding:7px 0}
+.rl span{color:var(--tx3)}
+.rl b{font-weight:500}
+.total{display:flex; justify-content:space-between; align-items:flex-end; margin-top:14px;
+  padding-top:16px; border-top:1px solid var(--line)}
+.total .p{font-family:var(--fd); font-weight:500; font-size:46px; line-height:.94; letter-spacing:-.03em}
+.total .mono{color:var(--tx3)}
+.cta{margin-top:20px; display:grid; gap:11px}
+.cta .btn{width:100%; padding:17px; font-size:16.5px}
+.aviso{font-size:13px; color:var(--tx3); text-align:center; line-height:1.6}
+
+/* barra fixa do celular: o botão de comprar sempre ao alcance do polegar */
+.barra{position:fixed; left:0; right:0; bottom:0; z-index:70; display:none;
+  align-items:center; gap:14px; padding:11px 16px calc(11px + env(safe-area-inset-bottom));
+  background:rgba(10,9,8,.94); backdrop-filter:blur(18px); border-top:1px solid var(--line2)}
+.barra.on{display:flex}
+.barra .v span{display:block; font-family:var(--fm); font-size:9px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--tx3); margin-bottom:3px}
+.barra .v b{display:block; font-family:var(--fd); font-weight:500; font-size:27px; line-height:1}
+.barra .btn{flex:1; padding:15px 16px; font-size:15.5px}
+@media(min-width:1001px){ .barra{display:none !important} }
+
+/* ---------- entrega ---------- */
+.entrega{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1px;
+  background:var(--line); border:1px solid var(--line)}
+.entrega > div{background:var(--bg); padding:30px 26px}
+.entrega .ic{font-family:var(--fd); font-size:16.5px; color:var(--acc); border:1px solid var(--line2);
+  width:38px; height:38px; border-radius:50%; display:grid; place-items:center}
+.entrega h4{font-size:17.5px; font-weight:600; margin:19px 0 9px; letter-spacing:-.015em}
+.entrega p{color:var(--tx2); font-size:15px; line-height:1.65}
+
+/* ---------- comparação ---------- */
+.tblwrap{overflow-x:auto; border:1px solid var(--line); border-radius:14px}
+table{width:100%; border-collapse:collapse; min-width:660px}
+th,td{padding:18px 20px; text-align:left; font-size:15px; border-bottom:1px solid var(--line)}
+thead th{color:var(--tx3); font-family:var(--fm); font-size:11px; letter-spacing:.18em; text-transform:uppercase; font-weight:600}
+thead th.nos{color:var(--acc)}
+tbody td:first-child{color:var(--tx2)}
+tbody td.nos{color:var(--tx); font-weight:600; background:rgba(224,181,98,.05)}
+tbody tr:last-child td{border-bottom:0}
+
+/* seletor de pacote dentro do configurador: é a decisão de dinheiro,
+   então tem que ter tamanho de decisão, não de caixinha de opção */
+.packs{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.packs > div{position:relative; border:1px solid var(--line); border-radius:16px;
+  padding:20px 20px 18px; cursor:pointer; transition:.2s; overflow:hidden}
+.packs > div:hover{border-color:var(--line2); background:rgba(255,255,255,.02)}
+.packs > div.on{border-color:var(--acc); background:rgba(224,181,98,.07);
+  box-shadow:0 0 0 1px var(--acc)}
+.packs b{display:block; font-size:19px; font-weight:600; letter-spacing:-.015em; padding-right:34px}
+.packs .pr{display:block; font-family:var(--fd); font-weight:500; font-size:34px;
+  letter-spacing:-.03em; line-height:1; margin:12px 0 7px}
+.packs u{display:block; text-decoration:none; font-size:13.5px; color:var(--tx2)}
+.packs .eco{display:block; font-size:12.5px; color:var(--acc); margin-top:9px}
+.packs .eco.nada{color:var(--tx3)}
+.packs .mk{position:absolute; top:18px; right:18px; width:24px; height:24px; border-radius:50%;
+  border:1px solid var(--line2); display:grid; place-items:center; transition:.2s}
+.packs > div.on .mk{background:var(--acc); border-color:var(--acc); color:var(--acc-ink)}
+.packs .mk svg{opacity:0; transition:.2s}
+.packs > div.on .mk svg{opacity:1}
+.packs .top{position:absolute; top:0; left:0; right:0; height:2px; background:var(--acc)}
+.packs .fav{position:absolute; bottom:0; right:0; background:var(--acc); color:var(--acc-ink);
+  font-family:var(--fm); font-size:9.5px; letter-spacing:.12em; text-transform:uppercase;
+  font-weight:600; padding:5px 11px; border-radius:10px 0 0 0}
+
+/* ---------- preço ---------- */
+.preco{display:grid; grid-template-columns:1.1fr .9fr; gap:0; border:1px solid var(--line); border-radius:18px; overflow:hidden}
+.preco .esq{padding:44px 40px; border-right:1px solid var(--line)}
+.preco .dir{padding:44px 40px; background:var(--bg2); display:flex; flex-direction:column; justify-content:center}
+.preco .val{display:flex; align-items:baseline; gap:12px}
+.preco .val b{font-family:var(--fd); font-weight:500; font-size:72px; line-height:.9; letter-spacing:-.035em}
+.preco .val span{color:var(--tx2); font-size:14px}
+.preco ul{list-style:none; margin-top:28px; display:grid; gap:12px}
+.preco li{display:flex; gap:12px; align-items:flex-start; font-size:14.5px; color:var(--tx2); line-height:1.45}
+.preco li s{text-decoration:none; color:var(--acc); flex:0 0 auto; font-size:11px; line-height:1.7}
+.preco .dir h4{font-family:var(--fd); font-size:27px; font-weight:500; line-height:1.16; letter-spacing:-.02em; margin-bottom:12px}
+.preco .dir p{color:var(--tx2); font-size:14px; line-height:1.6; margin-bottom:24px}
+
+/* ---------- faq ---------- */
+.faq{border-top:1px solid var(--line)}
+.q{border-bottom:1px solid var(--line); padding:22px 0; cursor:pointer}
+.q h5{font-size:18.5px; font-weight:500; display:flex; justify-content:space-between; gap:20px;
+  letter-spacing:-.01em; transition:color .2s}
+.q:hover h5{color:var(--acc)}
+.q h5 i{color:var(--acc); font-style:normal; transition:transform .25s; flex:0 0 auto; font-size:20px; line-height:1}
+.q.open h5 i{transform:rotate(45deg)}
+.q .a{max-height:0; overflow:hidden; transition:max-height .32s ease, margin .32s}
+.q.open .a{max-height:400px; margin-top:14px}
+.q .a p{color:var(--tx2); font-size:16px; line-height:1.72; max-width:66ch}
+
+/* ---------- fecho ---------- */
+.fecho{text-align:center; padding:110px 0}
+.fecho h2{font-family:var(--fd); font-weight:500; font-size:clamp(34px,5.6vw,72px); line-height:1.04; letter-spacing:-.03em}
+.fecho h2 em{font-style:italic; color:var(--acc)}
+.fecho p{color:var(--tx2); max-width:46ch; margin:24px auto 34px; font-size:17.5px}
+
+footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); font-size:13.5px}
+.fnav{display:flex; justify-content:space-between; gap:18px; flex-wrap:wrap; align-items:center}
+
+/* ---------- toast ---------- */
+#toast{position:fixed; left:50%; bottom:30px; transform:translate(-50%,150%); z-index:99;
+  background:var(--card2); border:1px solid var(--line2); color:var(--tx);
+  padding:15px 22px; border-radius:100px; font-size:15px; font-weight:500;
+  box-shadow:0 22px 55px rgba(0,0,0,.7); transition:transform .34s cubic-bezier(.2,.9,.3,1); max-width:90vw}
+#toast.on{transform:translate(-50%,0)}
+
+.rev{opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1)}
+.rev.in{opacity:1; transform:none}
+
+@media(max-width:1080px){ .links{display:none} }
+@media(max-width:900px){
+  .packs{grid-template-columns:1fr 1fr}
+}
+@media(max-width:1000px){
+  /* no celular a prévia sobe: você acabou de escolher o molde e quer vê-lo,
+     não encarar um formulário. O botão fica na barra fixa do rodapé. */
+  .cols{grid-template-columns:1fr; gap:36px}
+  .sticky{position:static; order:-1}
+  .pv{max-width:min(400px,100%); margin:0 auto}
+  .pvFoot{max-width:min(400px,100%); margin:12px auto 0}
+  /* miniaturas viram uma fita que rola com o dedo, em vez de sete colunas espremidas */
+  .tiras{display:flex; overflow-x:auto; gap:8px; max-width:min(400px,100%); margin:10px auto 0;
+    scroll-snap-type:x mandatory; padding-bottom:6px}
+  .tiras .palco{flex:0 0 60px; scroll-snap-align:center}
+  .tiras::-webkit-scrollbar{height:3px}
+  .tiras::-webkit-scrollbar-thumb{background:var(--line2); border-radius:3px}
+  #config.on{padding-bottom:86px}
+  .tres > div{border-right:0; border-bottom:1px solid var(--line); padding-right:0}
+}
+@media(max-width:640px){
+  section{padding:70px 0}
+  .packs{grid-template-columns:1fr}
+  .wrap{padding:0 18px}
+  .hero{padding-top:calc(var(--nav) + 44px)}
+  .esteira .palco{width:158px; flex:0 0 158px}
+  .navr .mono{display:none}
+  .logo{font-size:18px; white-space:nowrap}
+  .links{display:none}
+  .btn.sm{padding:8px 14px; font-size:12.5px; white-space:nowrap}
+  .heroCta{gap:10px}
+  .heroCta .btn{flex:1 1 auto; text-align:center}
+  .heroCta .nota{flex:1 0 100%; margin-top:4px}
+  .mono.eyebrow{font-size:9.5px; letter-spacing:.16em}
+  .entrega > div{padding:26px 22px}
+}
+</style>
+<style id="estiloSlide"></style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="logo">Carrossel Studio<s></s></div>
+    <nav class="links">
+      <a href="#entrega">O que vem</a>
+      <a href="#moldes">Moldes</a>
+      <a href="#duvidas">Dúvidas</a>
+    </nav>
+    <div class="navr">
+      <div class="mono" id="modoTag">Entrega em 24h</div>
+      <button class="btn sm" onclick="irMoldes()">Ver os moldes</button>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- ======================= HERO ======================= -->
+<section class="hero">
+  <div class="wrap">
+    <div class="mono eyebrow"><i></i>10 narrativas prontas, uma por nicho</div>
+    <h1>Chega de postar <em>para ninguém</em>.</h1>
+    <p class="lead">Post bonito segura o dedo por meio segundo. História prende até o último slide, e é o último slide que vira mensagem no seu direct. Escolha o molde do seu nicho, preencha quatro campos e receba em 24 horas. O resto é com a gente.</p>
+    <div class="heroCta">
+      <button class="btn" onclick="irMoldes()">Escolher meu molde</button>
+      <button class="btn ghost" onclick="document.getElementById('entrega').scrollIntoView()">O que vem no pack</button>
+      <span class="nota">Sem reunião. Sem briefing de 40 minutos.</span>
+    </div>
+  </div>
+
+  <div class="esteira" id="esteira">
+    <div class="trilho" id="trilho1"></div>
+    <div class="trilho volta" id="trilho2"></div>
+  </div>
+
+  <div class="tira">
+    <div class="row" id="tira"></div>
+  </div>
+</section>
+
+<!-- ======================= PROBLEMA ======================= -->
+<section>
+  <div class="wrap">
+    <div class="shead">
+      <div class="mono eyebrow"><i></i>por que o seu post morre no segundo slide</div>
+      <h2>O problema quase nunca é o <em>design</em>.</h2>
+      <p>É a ordem das coisas. A maioria dos carrosseis abre se apresentando, entrega tudo na primeira tela e não dá nenhum motivo para continuar. Quem não chega ao fim conta como quem não se interessou, e o alcance cai junto.</p>
+    </div>
+    <div class="tres">
+      <div>
+        <div class="n disp">01</div>
+        <h4>Abre falando de si</h4>
+        <p>"Conheça a nossa clínica" não interrompe ninguém. O primeiro slide existe para travar o dedo, não para apresentar a empresa.</p>
+      </div>
+      <div>
+        <div class="n disp">02</div>
+        <h4>Entrega tudo de uma vez</h4>
+        <p>Se a primeira tela já disse tudo, o segundo slide não tem por que existir. Cada tela precisa deixar uma pergunta que só a próxima responde.</p>
+      </div>
+      <div>
+        <div class="n disp">03</div>
+        <h4>Pede antes de merecer</h4>
+        <p>"Chama no direct" no segundo slide é cedo demais. A chamada só funciona depois de a pessoa concordar com você três telas seguidas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= ENTREGA ======================= -->
+<section id="entrega">
+  <div class="wrap">
+    <div class="shead">
+      <div class="mono eyebrow"><i></i>o que chega no seu WhatsApp</div>
+      <h2>Pronto para postar, <em>não para editar</em>.</h2>
+    </div>
+    <div class="entrega">
+      <div><div class="ic disp">7</div><h4>Sete imagens por carrossel</h4><p>Narrativa fechada em cada um, do gancho à chamada. Nada de arquivo solto para você montar.</p></div>
+      <div><div class="ic disp">HD</div><h4>1080 &times; 1350</h4><p>O formato que o Instagram exibe maior. Vai por link, nunca por foto no zap, porque o app comprime e estraga.</p></div>
+      <div><div class="ic disp">Aa</div><h4>Legenda escrita</h4><p>Copiar e colar. Já vem com a chamada no fim e as hashtags do seu nicho escolhidas.</p></div>
+      <div><div class="ic disp">1</div><h4>Uma rodada de ajuste</h4><p>Inclusa no pack. Ajuste além disso é combinado antes, nunca cobrado de surpresa.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= VALOR ======================= -->
+<section id="valor">
+  <div class="wrap">
+    <div class="shead">
+      <div class="mono eyebrow"><i></i>o que você leva de verdade</div>
+      <h2>Você não está comprando <em>carrossel</em>.</h2>
+      <p>Carrossel é o arquivo que chega. O que você leva embora é outra coisa, e é ela que faz a conta fechar.</p>
+    </div>
+    <div class="tres">
+      <div>
+        <div class="w disp">Tempo</div>
+        <h4>As três horas do domingo à noite</h4>
+        <p>Aquelas que você ia passar no Canva escolhendo fonte, tentando alinhar, desistindo e postando qualquer coisa. Esse tempo volta inteiro para você.</p>
+      </div>
+      <div>
+        <div class="w disp">Decisão</div>
+        <h4>Segunda-feira sem a pergunta</h4>
+        <p>Você não precisa pensar no que postar. Já está pronto, na sua pasta, com a legenda escrita esperando um copiar e colar.</p>
+      </div>
+      <div>
+        <div class="w disp">Presença</div>
+        <h4>Um perfil que parece sério</h4>
+        <p>O cliente decide se confia em você antes de mandar a primeira mensagem. Ele decide olhando o seu feed, e leva menos de cinco segundos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= MOLDES ======================= -->
+<section id="moldes">
+  <div class="wrap">
+    <div class="shead">
+      <div class="mono eyebrow"><i></i>passo 1 &middot; escolha o molde</div>
+      <h2>Escolha o molde do <em>seu nicho</em>.</h2>
+      <p>Cada molde é uma narrativa de sete slides: gancho, tensão, espelho, virada, prova, como e chamada. A foto ocupa a tela inteira e a paleta inteira sai da sua cor. <span id="dicaMolde">Passe o mouse para ver a história andar.</span></p>
+    </div>
+    <div class="grid" id="galeria"></div>
+  </div>
+</section>
+
+<!-- ======================= CONFIGURADOR ======================= -->
+<section id="config">
+  <div class="wrap">
+    <div class="cfgTop">
+      <div>
+        <div class="mono eyebrow"><i></i>passo 2 &middot; ajuste e envie</div>
+        <h2 id="cfgTitulo" style="margin-top:14px">Molde</h2>
+      </div>
+      <button class="btn ghost sm" onclick="voltar()">Trocar molde</button>
+    </div>
+
+    <div class="cols">
+      <div>
+        <div class="campo">
+          <label>Nome do negócio</label>
+          <div class="hint">Aparece no cabeçalho dos slides e na chamada final.</div>
+          <input class="inp" id="fNome" placeholder="Clínica Sorriso Vivo" maxlength="42">
+        </div>
+        <div class="campo">
+          <label>@ do Instagram</label>
+          <div class="hint">Usamos para ver seu visual e manter o mesmo tom.</div>
+          <div class="ig"><span>@</span><input class="inp" id="fArroba" placeholder="seunegocio" maxlength="34"></div>
+        </div>
+        <div class="campo">
+          <label>Quantos carrosseis</label>
+          <div class="hint">Cada um tem sete imagens e narrativa completa. Quanto mais no mesmo pedido, menor o preço de cada.</div>
+          <div class="packs" id="chPacks"></div>
+        </div>
+        <div class="campo">
+          <label>Cor principal</label>
+          <div class="hint">Dela sai a paleta inteira: acento, duotone, gradiente e blocos. Clique no círculo colorido para escolher outra.</div>
+          <div class="swatches" id="swatches"></div>
+        </div>
+        <div class="campo">
+          <label>Sobre o que é cada carrossel</label>
+          <div class="hint" id="hintAssunto">Quanto mais específico, melhor. Serviço, oferta, dúvida comum do seu cliente. O molde escolhido vale para todos.</div>
+          <div class="assuntos" id="assuntos"></div>
+        </div>
+        <div class="campo" style="border-bottom:0">
+          <label>Tom de voz</label>
+          <div class="hint">Como os títulos e a legenda vão falar.</div>
+          <div class="chips" id="chTom"></div>
+        </div>
+      </div>
+
+      <div class="sticky">
+        <div class="pvHead">
+          <div class="mono">Prévia do seu carrossel</div>
+          <div class="mono vivo"><s></s>ao vivo</div>
+        </div>
+        <div class="pv" id="pv">
+          <div class="frame palco" id="frame"></div>
+          <div class="seta esq" id="setaEsq" aria-label="Slide anterior">&#8249;</div>
+          <div class="seta dir" id="setaDir" aria-label="Próximo slide">&#8250;</div>
+        </div>
+        <div class="pvFoot">
+          <div class="mono" id="pvCont">01 / 07</div>
+          <div class="mono dica" id="pvDica">arraste ou use as setas</div>
+        </div>
+        <div class="tiras" id="tiras"></div>
+
+        <div class="resumo">
+          <div class="rl"><span>Molde</span><b id="rMolde">-</b></div>
+          <div class="rl"><span>Fontes</span><b id="rFonte">-</b></div>
+          <div class="rl"><span>Pacote</span><b id="rPacote">-</b></div>
+          <div class="rl"><span>Preço por carrossel</span><b id="rCada">-</b></div>
+          <div class="rl"><span>Formato</span><b>1080 &times; 1350</b></div>
+          <div class="rl"><span>Prazo</span><b>24 horas</b></div>
+          <div class="total">
+            <div><div class="mono" style="color:var(--tx3);margin-bottom:8px">total</div><div class="p disp" id="rPreco">R$ 99,90</div></div>
+            <div class="mono" id="rCod">CS-0000</div>
+          </div>
+        </div>
+
+        <div class="cta">
+          <button class="btn" id="btnFinal" disabled>Preencha o pedido</button>
+          <div class="aviso" id="avisoFinal"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= COMPARAÇÃO ======================= -->
+<section>
+  <div class="wrap">
+    <div class="shead">
+      <div class="mono eyebrow"><i></i>onde isso se encaixa</div>
+      <h2>Comparando com as <em>outras saídas</em>.</h2>
+      <p>Não somos o mais barato nem o mais completo. Somos o mais rápido para quem precisa postar esta semana e não quer gerenciar mais ninguém.</p>
+    </div>
+    <div class="tblwrap">
+      <table>
+        <thead>
+          <tr><th></th><th class="nos">Carrossel Studio</th><th>Freelancer</th><th>Agência</th><th>Você mesmo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Investimento</td><td class="nos">Pacote fechado, sem mensalidade</td><td>R$ 50 a 150 por arte</td><td>Mensalidade fechada</td><td>Seu tempo</td></tr>
+          <tr><td>Prazo</td><td class="nos">24 horas</td><td>3 a 7 dias</td><td>Entra na fila</td><td>Quando sobrar</td></tr>
+          <tr><td>Briefing</td><td class="nos">4 campos, 2 minutos</td><td>Conversa longa</td><td>Reunião de alinhamento</td><td>Não tem</td></tr>
+          <tr><td>Estrutura do conteúdo</td><td class="nos">Narrativa pronta</td><td>Você explica o que quer</td><td>Planejamento mensal</td><td>Você inventa</td></tr>
+          <tr><td>Compromisso</td><td class="nos">Nenhum, é avulso</td><td>Por peça</td><td>Contrato</td><td>Nenhum</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= FAQ ======================= -->
+<section id="duvidas">
+  <div class="wrap">
+    <div class="shead">
+      <div class="mono eyebrow"><i></i>dúvidas</div>
+      <h2>O que costumam <em>perguntar</em>.</h2>
+    </div>
+    <div class="faq" id="faq"></div>
+  </div>
+</section>
+
+<!-- ======================= FECHO ======================= -->
+<section class="fecho">
+  <div class="wrap">
+    <h2>O post de amanhã pode estar pronto <em>hoje à noite</em>.</h2>
+    <p>Escolha um molde, preencha em dois minutos e volte para o que realmente dá dinheiro no seu negócio.</p>
+    <button class="btn" onclick="irMoldes()">Escolher meu molde</button>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap fnav">
+    <div>Carrossel Studio &nbsp;&middot;&nbsp; carrosseis de Instagram sob medida</div>
+    <div class="mono" id="modoFoot"></div>
+  </div>
+</footer>
+
+<div class="barra" id="barra">
+  <div class="v"><span>total</span><b id="bPreco">R$ 99,90</b></div>
+  <button class="btn" id="bBtn">Enviar pedido</button>
+</div>
+
+<div id="toast"></div>
+
+<script src="moldes.js"></script>
+<script>
+/* =========================================================================
+   CONFIGURAÇÃO  (é só aqui que se mexe)
+   ========================================================================= */
+const CFG = {
+  whatsapp : '5554999858402'                       // comercial +55 (54) 99985-8402
+};
+
+/* Os pacotes. Referência de mercado: freelancer cobra de R$ 40 a 150
+   por arte, então R$ 59,90 na unidade fica na faixa e os pacotes puxam o
+   ticket para cima sem parecer caro. Mexer só aqui. */
+const PACOTES = [
+  {q:1, preco:59.90,  selo:'',                link:''},
+  {q:2, preco:99.90,  selo:'mais escolhido',  link:''},
+  {q:4, preco:179.90, selo:'',                link:''},
+  {q:8, preco:297.00, selo:'melhor preço',    link:''}
+];
+/* link: cole aqui a URL do checkout da Cakto de cada pacote. Enquanto estiver
+   vazio, o modo ?m=pago avisa em vez de abrir uma página quebrada. */
+const brl = v => 'R$ ' + v.toFixed(2).replace('.', ',');
+const MODO = (new URLSearchParams(location.search).get('m') === 'pago') ? 'pago' : 'zap';
+
+const TONS = ['Direto','Acolhedor','Sofisticado','Divertido','Autoridade'];
+const CORES  = ['#2E9BD6','#D9538A','#E0A81E','#E07A28','#8BC421','#8E7CD8','#22A98E','#22B27A','#B08968','#D99518'];
+
+const S = {
+  molde:null, cor:null, foto:'', fotos:null, tom:'Direto', pack:1,
+  nome:'', arroba:'', assuntos:[''],
+  frame:0, codigo:'CS-' + Date.now().toString(36).slice(-4).toUpperCase()
+};
+
+/* Uma foto por slide. O slide da virada entra desfocado sob o gradiente da
+   marca, então reaproveita a foto principal em vez de pedir um arquivo
+   que não existe e tomar 404 numa página que vai receber anúncio. */
+function fotosDo(m){
+  return m.seq.map((s,i)=> (s.t === 'virada')
+    ? 'assets/' + m.id + '.jpg'
+    : 'assets/' + m.id + '-' + (i+1) + '.jpg');
+}
+function dadosDo(m){ return {foto:'assets/'+m.id+'.jpg', fotos:fotosDo(m)}; }
+
+/* ---------- palco: layout fixo de 420px escalado para caber -------------- */
+function ajustarPalcos(raiz){
+  const r = raiz || document;
+  r.querySelectorAll('.palco').forEach(p=>{
+    const sl = p.querySelector('.sl'); if(!sl) return;
+    sl.style.transform = 'scale(' + (p.clientWidth/420) + ')';
+  });
+  r.querySelectorAll('img[data-fb]').forEach(im=>{
+    im.onerror = () => { im.onerror = null; im.src = im.dataset.fb; };
+  });
+}
+window.addEventListener('resize', ()=>ajustarPalcos());
+
+/* ---------- esteira do hero --------------------------------------------- */
+function montarEsteira(){
+  const cenas = [];
+  CS.MOLDES.forEach(m=>{ cenas.push([m,0]); cenas.push([m,4]); });   // capa e prova
+  const html = (lista)=> lista.map(([m,i])=>
+    '<div class="palco">' + CS.renderSlide(m, dadosDo(m), i, m.seq.length) + '</div>').join('');
+  const a = cenas, b = cenas.slice().reverse();
+  document.getElementById('trilho1').innerHTML = html(a) + html(a);   // duplicado para o laço
+  document.getElementById('trilho2').innerHTML = html(b) + html(b);
+  ajustarPalcos(document.getElementById('esteira'));
+
+  const itens = ['7 imagens por carrossel','1080 x 1350','Legenda escrita','Entrega em 24 horas',
+                 '1 ajuste incluso','Sem reunião','Pagamento único','10 nichos prontos'];
+  const linha = itens.map(t=>'<span><b>&#9679;</b>'+t+'</span>').join('');
+  document.getElementById('tira').innerHTML = linha + linha;
+}
+
+/* ---------- galeria ------------------------------------------------------ */
+const relogios = {};
+const SEM_MOUSE = window.matchMedia('(hover: none)').matches;
+function montarGaleria(){
+  const g = document.getElementById('galeria');
+  g.innerHTML = CS.MOLDES.map(m=>`
+    <article class="mcard" data-id="${m.id}">
+      <div class="palco">${CS.renderSlide(m, dadosDo(m), 0, m.seq.length)}</div>
+      <div class="pontos">${m.seq.map((_,i)=>`<i class="${i===0?'on':''}"></i>`).join('')}</div>
+      <div class="mmeta">
+        <div>
+          <div class="mono nicho">${CS.esc(m.nicho)}</div>
+          <h3>${CS.esc(m.nome)}</h3>
+          <p>${CS.esc(m.desc)}</p>
+        </div>
+        <div class="mgo">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+    </article>`).join('');
+  ajustarPalcos(g);
+
+  g.querySelectorAll('.mcard').forEach((el,idx)=>{
+    const m = CS.MOLDES.find(x=>x.id===el.dataset.id);
+    const palco = el.querySelector('.palco');
+    const pontos = [...el.querySelectorAll('.pontos i')];
+    let i = 0;
+    el.onclick = ()=> escolher(el.dataset.id);
+    // a história anda sozinha enquanto o mouse está em cima
+    el.onmouseenter = ()=>{
+      clearInterval(relogios[m.id]);
+      relogios[m.id] = setInterval(()=>{
+        i = (i+1) % m.seq.length;
+        palco.innerHTML = CS.renderSlide(m, dadosDo(m), i, m.seq.length);
+        ajustarPalcos(el);
+        pontos.forEach((p,k)=>p.classList.toggle('on', k===i));
+      }, 1100);
+    };
+    el.onmouseleave = ()=>{
+      clearInterval(relogios[m.id]); i = 0;
+      palco.innerHTML = CS.renderSlide(m, dadosDo(m), 0, m.seq.length);
+      ajustarPalcos(el);
+      pontos.forEach((p,k)=>p.classList.toggle('on', k===0));
+    };
+    setTimeout(()=>el.classList.add('in'), 45*idx);
+    el._roda = el.onmouseenter;   // reaproveitado no toque
+    el._para = el.onmouseleave;
+  });
+
+  /* No celular não existe passar o mouse. A história roda sozinha
+     quando o card entra na tela e para quando sai, para não gastar
+     bateria com dez animações ao mesmo tempo. */
+  if(SEM_MOUSE){
+    const io = new IntersectionObserver(es=>es.forEach(e=>{
+      if(e.isIntersecting) e.target._roda(); else e.target._para();
+    }), {threshold:.62});
+    g.querySelectorAll('.mcard').forEach(el=>io.observe(el));
+  }
+}
+
+/* ---------- configurador ------------------------------------------------- */
+function escolher(id){
+  S.molde = CS.MOLDES.find(m=>m.id===id);
+  S.cor = S.molde.cor; S.frame = 0;
+  S.foto = 'assets/' + S.molde.id + '.jpg';
+  S.fotos = fotosDo(S.molde);
+  document.getElementById('cfgTitulo').innerHTML =
+    CS.esc(S.molde.nome) + ' <em>/ ' + CS.esc(S.molde.nicho) + '</em>';
+  document.getElementById('config').classList.add('on');
+  document.querySelectorAll('.mcard').forEach(c=>c.classList.toggle('sel', c.dataset.id===id));
+  montarSwatches(); atualizar();
+  setTimeout(()=>document.getElementById('config').scrollIntoView({block:'start'}), 70);
+}
+function voltar(){ document.getElementById('moldes').scrollIntoView({block:'start'}); }
+function irMoldes(){ document.getElementById('moldes').scrollIntoView({block:'start'}); }
+
+function montarSwatches(){
+  const w = document.getElementById('swatches');
+  w.innerHTML = CORES.map(c=>`<div class="sw ${c===S.cor?'on':''}" data-c="${c}" style="background:${c}"></div>`).join('')
+    + `<label class="swc"><input type="color" id="corLivre" value="${S.cor}"></label>`;
+  w.querySelectorAll('.sw').forEach(s=>s.onclick=()=>{S.cor=s.dataset.c; montarSwatches(); atualizar();});
+  document.getElementById('corLivre').oninput = e=>{
+    S.cor=e.target.value; w.querySelectorAll('.sw').forEach(x=>x.classList.remove('on')); atualizar();
+  };
+}
+/* Um campo por carrossel do pacote. Só o primeiro é obrigatório: exigir oito
+   temas de quem comprou oito seria atrito demais, e o resto se combina na conversa. */
+function montarAssuntos(){
+  const n = PACOTES[S.pack].q;
+  while(S.assuntos.length < n) S.assuntos.push('');
+  S.assuntos.length = n;
+
+  const c = document.getElementById('assuntos');
+  c.innerHTML = S.assuntos.map((v,i)=>`
+    <div class="assunto">
+      <div class="num">
+        <span>${n>1 ? 'carrossel ' + (i+1) : 'assunto'}</span>
+        <span>${i===0 ? '<b>obrigatório</b>' : 'opcional'}</span>
+      </div>
+      <textarea class="inp" data-i="${i}" maxlength="420"
+        placeholder="${i===0
+          ? 'Ex.: por que o aparelho invisível custa o que custa'
+          : 'Se ainda não souber, deixe em branco e a gente combina no WhatsApp'}">${CS.esc(v)}</textarea>
+    </div>`).join('');
+  c.querySelectorAll('textarea').forEach(el=>{
+    el.addEventListener('input', ()=>{ S.assuntos[+el.dataset.i] = el.value; atualizar(); });
+  });
+  document.getElementById('hintAssunto').textContent = n>1
+    ? 'Um tema por carrossel. O molde e a paleta escolhidos valem para todos os ' + n + '.'
+    : 'Quanto mais específico, melhor. Serviço, oferta ou dúvida comum do seu cliente.';
+}
+
+function montarChips(){
+  const t = document.getElementById('chTom');
+  t.innerHTML = TONS.map(x=>`<div class="chip ${x===S.tom?'on':''}" data-v="${x}">${x}</div>`).join('');
+  t.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{S.tom=c.dataset.v; montarChips(); atualizar();});
+  const k = document.getElementById('chPacks');
+  const base = PACOTES[0].preco;
+  k.innerHTML = PACOTES.map((p,i)=>{
+    const eco = base * p.q - p.preco;
+    return `<div class="${i===S.pack?'on':''}" data-i="${i}">
+      ${p.selo ? '<div class="top"></div><div class="fav">'+p.selo+'</div>' : ''}
+      <div class="mk"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="3.4"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <b>${p.q} carross${p.q>1?'eis':'el'}</b>
+      <span class="pr">${brl(p.preco)}</span>
+      <u>${p.q>1 ? brl(p.preco/p.q) + ' por carrossel' : '7 imagens, narrativa completa'}</u>
+      <span class="eco ${eco>0?'':'nada'}">${eco>0 ? 'economiza ' + brl(eco) : 'ideal para testar'}</span>
+    </div>`;
+  }).join('');
+  k.querySelectorAll('[data-i]').forEach(c=>c.onclick=()=>{
+    S.pack = +c.dataset.i; montarChips(); montarAssuntos(); atualizar();
+  });
+}
+
+/* navegação do carrossel: setas, arrasto de dedo e teclado */
+function passo(d){
+  if(!S.molde) return;
+  const n = S.molde.seq.length;
+  S.frame = (S.frame + d + n) % n;   // dá a volta em vez de travar na ponta
+  atualizar();
+}
+function ligarNavegacao(){
+  document.getElementById('setaEsq').onclick = ()=>passo(-1);
+  document.getElementById('setaDir').onclick = ()=>passo(1);
+
+  const pv = document.getElementById('pv');
+  let x0 = null, y0 = null;
+  pv.addEventListener('pointerdown', e=>{ x0 = e.clientX; y0 = e.clientY; });
+  pv.addEventListener('pointerup', e=>{
+    if(x0 === null) return;
+    const dx = e.clientX - x0, dy = e.clientY - y0;
+    x0 = null;
+    // só conta como arrasto horizontal se andou mais na horizontal que na vertical
+    if(Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy)) passo(dx < 0 ? 1 : -1);
+  });
+  pv.addEventListener('pointercancel', ()=>{ x0 = null; });
+
+  document.addEventListener('keydown', e=>{
+    if(!S.molde || !document.getElementById('config').classList.contains('on')) return;
+    if(e.target.matches('input, textarea')) return;
+    if(e.key === 'ArrowRight') passo(1);
+    if(e.key === 'ArrowLeft')  passo(-1);
+  });
+}
+
+function atualizar(){
+  if(!S.molde) return;
+  const n = S.molde.seq.length;
+  document.documentElement.style.setProperty('--acc', S.cor);
+  document.documentElement.style.setProperty('--acc-ink', CS.tinta(S.cor));
+
+  const f = document.getElementById('frame');
+  f.innerHTML = CS.renderSlide(S.molde, S, S.frame, n);
+  ajustarPalcos(f.parentElement);
+
+  const t = document.getElementById('tiras');
+  t.innerHTML = Array.from({length:n},(_,i)=>
+    `<div class="palco ${i===S.frame?'on':''}" data-i="${i}">${CS.renderSlide(S.molde,S,i,n)}</div>`).join('');
+  ajustarPalcos(t);
+  t.querySelectorAll('.palco').forEach(p=>p.onclick=()=>{ S.frame = +p.dataset.i; atualizar(); });
+  /* rola só a fita, nunca a página. scrollIntoView subiria por todos os
+     ancestrais roláveis e arrastava o site inteiro na horizontal. */
+  const ativa = t.querySelector('.palco.on');
+  if(ativa && t.scrollWidth > t.clientWidth){
+    t.scrollTo({left: ativa.offsetLeft - (t.clientWidth - ativa.offsetWidth)/2, behavior:'smooth'});
+  }
+  document.getElementById('pvCont').textContent =
+    String(S.frame+1).padStart(2,'0') + ' / ' + String(n).padStart(2,'0');
+
+  const P = PACOTES[S.pack];
+  document.getElementById('rMolde').textContent = S.molde.nome;
+  document.getElementById('rFonte').textContent = S.molde.fonte[0] + ' + ' + S.molde.fonte[1];
+  document.getElementById('rPacote').textContent = P.q + ' carross' + (P.q>1?'eis':'el');
+  document.getElementById('rCada').textContent   = P.q>1 ? brl(P.preco/P.q) + ' cada' : '7 imagens';
+  document.getElementById('rPreco').textContent  = brl(P.preco);
+  document.getElementById('rCod').textContent    = S.codigo;
+
+  const ok = S.nome.trim().length>1 && S.arroba.trim().length>1
+          && (S.assuntos[0]||'').trim().length>9;
+  const b = document.getElementById('btnFinal');
+  b.disabled = !ok;
+
+  // barra fixa do celular acompanha o mesmo estado
+  const barra = document.getElementById('barra'), bb = document.getElementById('bBtn');
+  barra.classList.add('on');
+  document.getElementById('bPreco').textContent = brl(P.preco);
+  bb.disabled = !ok;
+  bb.textContent = ok ? (MODO==='pago' ? 'Pagar e enviar' : 'Enviar pedido') : 'Faltam campos';
+  if(MODO==='pago'){
+    b.textContent = ok ? ('Pagar ' + brl(P.preco) + ' e enviar pedido') : 'Preencha nome, @ e assunto';
+    document.getElementById('avisoFinal').textContent =
+      'Pagamento seguro. Depois de pagar, o pedido cai no nosso WhatsApp e a entrega vem no mesmo número.';
+  } else {
+    b.textContent = ok ? 'Enviar pedido no WhatsApp' : 'Preencha nome, @ e assunto';
+    document.getElementById('avisoFinal').textContent =
+      'Seu pedido vai escrito, é só apertar enviar. Você confirma o valor na conversa.';
+  }
+}
+
+/* ---------- mensagem e envio --------------------------------------------- */
+function mensagem(){
+  const L = [];
+  L.push('Pedido ' + S.codigo + ' | Carrossel Studio');
+  L.push('');
+  L.push('Molde: ' + S.molde.nome + ' (' + S.molde.nicho + ')');
+  L.push('Negócio: ' + S.nome.trim() + ' | @' + S.arroba.trim().replace(/^@/,''));
+  L.push('Cor: ' + S.cor);
+  L.push('Tom: ' + S.tom);
+  L.push('Pacote: ' + PACOTES[S.pack].q + (PACOTES[S.pack].q>1 ? ' carrosseis' : ' carrossel') + ' de 7 imagens');
+  L.push('Valor: ' + brl(PACOTES[S.pack].preco));
+  L.push('');
+  const temas = S.assuntos.map(a=>(a||'').trim()).filter(Boolean);
+  if(temas.length === 1){
+    L.push('Assunto: ' + temas[0].slice(0,400));
+  } else {
+    L.push('Assuntos:');
+    temas.forEach((a,i)=> L.push('  ' + (i+1) + '. ' + a.slice(0,240)));
+    const faltam = PACOTES[S.pack].q - temas.length;
+    if(faltam > 0) L.push('  (' + faltam + ' a combinar aqui)');
+  }
+  L.push('');
+  L.push(MODO==='pago' ? 'Pagamento feito. Mando minha logo aqui.' : 'Quero fechar. Mando minha logo aqui.');
+  return L.join('\n');
+}
+function pedidoJSON(){
+  return {codigo:S.codigo, molde:S.molde.id, nome:S.nome.trim(),
+          arroba:S.arroba.trim().replace(/^@/,''), cor:S.cor, tom:S.tom,
+          qtd:PACOTES[S.pack].q, valor:PACOTES[S.pack].preco,
+          assuntos:S.assuntos.map(a=>(a||'').trim()).filter(Boolean), modo:MODO};
+}
+function abrirZap(){
+  window.open('https://wa.me/' + CFG.whatsapp + '?text=' + encodeURIComponent(mensagem()), '_blank');
+}
+function finalizar(){
+  try{ localStorage.setItem('cs_pedido', JSON.stringify(pedidoJSON())); }catch(e){}
+  if(MODO==='pago'){
+    const link = PACOTES[S.pack].link;
+    if(!link){
+      toast('Checkout deste pacote ainda não configurado. Enviando pelo WhatsApp.');
+      abrirZap();
+      return;
+    }
+    toast('Abrindo o pagamento. Em seguida o pedido vai para o WhatsApp.');
+    window.open(link, '_blank');
+    setTimeout(abrirZap, 1400);
+  } else {
+    abrirZap(); toast('Pedido ' + S.codigo + ' pronto no WhatsApp.');
+  }
+}
+let tt;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(tt); tt = setTimeout(()=>t.classList.remove('on'), 4400);
+}
+
+/* ---------- faq ---------------------------------------------------------- */
+const FAQ = [
+ ['Em quanto tempo eu recebo?','Em até 24 horas depois de você mandar a logo e confirmar o assunto. Pedido feito no fim de semana entra na segunda de manhã.'],
+ ['E se eu não gostar?','Uma rodada de ajuste vem inclusa, sem custo. Ajuste além disso é combinado antes e cobrado à parte, nunca de surpresa. Como você escolhe o molde antes de pedir, já sabe o estilo que vai receber.'],
+ ['Carrossel ainda funciona? Não é tudo reels agora?','Reels alcança quem não te conhece. Carrossel converte quem já chegou, porque fica no perfil, é salvo e é relido. São dois trabalhos diferentes, e o segundo é o que gera mensagem no direct.'],
+ ['As fotos são minhas ou de vocês?','Cada molde vem com fotografia própria, exatamente a que você vê aqui. Se você tiver fotos do seu negócio, melhor ainda: elas entram no lugar das nossas sem custo.'],
+ ['Vem com a legenda?','Vem escrita, pronta para copiar e colar, já com a chamada no fim e as hashtags do seu nicho.'],
+ ['Em que formato chega?','PNG em 1080 x 1350, o tamanho que o Instagram exibe maior. Vai por link e não por foto no WhatsApp, porque o app comprime a imagem e estraga o resultado.'],
+ ['A cor muda só um detalhe?','Muda a paleta inteira. Da sua cor saem o acento, o duotone do terceiro slide, o gradiente da virada e o bloco da chamada final. Escolha uma cor aqui em cima e veja acontecer.'],
+ ['Comprei 4 carrosseis. São todos do mesmo molde?','São, e é de propósito: quatro posts no mesmo estilo deixam o seu feed coerente e reconhecível. O que muda é o tema de cada um, e você escreve um por carrossel no formulário. Se quiser molde diferente em algum deles, é só avisar no WhatsApp, sem custo a mais.'],
+ ['E se eu não souber todos os temas agora?','Só o primeiro é obrigatório. Os outros ficam em aberto e a gente combina na conversa, antes de começar a produzir.'],
+ ['Meu nicho não está na lista.','Escolha o molde cuja narrativa mais se parece com a sua situação e escreva no campo de assunto. A gente adapta o conteúdo sem cobrar a mais.'],
+ ['Preciso ter alguma coisa pronta?','Só a logo. O resto sai dos quatro campos que você preenche aqui, e leva dois minutos.'],
+ ['Posso pedir mais de um pack?','Pode. A partir do segundo já conhecemos a sua marca, então costuma sair mais rápido. Combine no WhatsApp.']
+];
+function montarFaq(){
+  const f = document.getElementById('faq');
+  f.innerHTML = FAQ.map(([q,a])=>`<div class="q"><h5>${q}<i>+</i></h5><div class="a"><p>${a}</p></div></div>`).join('');
+  f.querySelectorAll('.q').forEach(q=>q.onclick=()=>q.classList.toggle('open'));
+}
+
+/* ---------- boot --------------------------------------------------------- */
+function bind(id, campo, extra){
+  const el = document.getElementById(id);
+  el.addEventListener('input', ()=>{ S[campo] = el.value; if(extra) extra(el.value); atualizar(); });
+}
+(function init(){
+  document.getElementById('estiloSlide').textContent = CS.ESTILO_SLIDE;
+  if(SEM_MOUSE) document.getElementById('dicaMolde').textContent =
+    'Toque em um molde para abrir. A história roda sozinha aqui embaixo.';
+  montarEsteira(); montarGaleria(); montarChips(); montarFaq();
+
+  bind('fNome','nome'); bind('fArroba','arroba');
+  montarAssuntos();
+  document.getElementById('fArroba').addEventListener('input', e=>{
+    e.target.value = e.target.value.replace(/[^a-zA-Z0-9._]/g,'');
+  });
+  document.getElementById('btnFinal').onclick = finalizar;
+  document.getElementById('bBtn').onclick = finalizar;
+  ligarNavegacao();
+  if(SEM_MOUSE) document.getElementById('pvDica').textContent = 'arraste para o lado';
+
+  document.getElementById('modoFoot').textContent = 'modo ' + MODO;
+  if(MODO==='pago') document.getElementById('modoTag').textContent = 'Pague e receba em 24h';
+
+  // menu do topo marca a seção onde a pessoa está
+  const elos = [...document.querySelectorAll('.links a')];
+  const secs = elos.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  if(secs.length){
+    const spy = new IntersectionObserver(es=>{
+      es.forEach(e=>{
+        if(!e.isIntersecting) return;
+        elos.forEach(a=>a.classList.toggle('aqui', a.getAttribute('href') === '#' + e.target.id));
+      });
+    }, {rootMargin:'-45% 0px -50% 0px'});
+    secs.forEach(x=>spy.observe(x));
+  }
+
+  // revelar ao rolar
+  document.querySelectorAll('.shead, .tres > div, .entrega > div, .tblwrap, .preco, .fecho .wrap')
+    .forEach(el=>el.classList.add('rev'));
+  const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); }),
+    {threshold:.12});
+  document.querySelectorAll('.rev').forEach(el=>io.observe(el));
+
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>ajustarPalcos());
+})();
+</script>
+</body>
+</html>

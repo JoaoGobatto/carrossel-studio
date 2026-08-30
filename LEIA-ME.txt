@@ -1,0 +1,107 @@
+CARROSSEL STUDIO
+================================================================
+Loja de carrosseis de Instagram sob medida. Tudo roda local,
+sem build, sem dependencia de framework.
+
+
+COMO ABRIR
+----------------------------------------------------------------
+Clique em "ABRIR SITE.bat". Ele sobe um servidor Python na porta
+3399 e abre o navegador.
+
+NAO abra o index.html por duplo clique (file://). O Chrome bloqueia
+parte do carregamento e a pagina aparece quebrada. Sempre por HTTP.
+
+Precisa ter Python instalado. Node 18 ou superior so e necessario
+para a parte de producao.
+
+
+ARQUIVOS DO SITE
+----------------------------------------------------------------
+index.html   A vitrine inteira: HTML, CSS e JS num arquivo so.
+             Sem framework, sem build. E so editar e recarregar.
+
+moldes.js    FONTE UNICA dos 10 moldes. Contem a paleta, o CSS do
+             slide e o renderizador. A vitrine e a producao leem
+             este mesmo arquivo, entao molde novo aparece nos dois
+             lugares sem duplicar nada. Mexa aqui, nao no index.
+
+assets/      Banco de imagens. Nomenclatura:
+               <molde>.jpg      foto base do molde
+               <molde>-N.jpg    foto do slide N (1 a 7)
+             O slide 4 nao tem arquivo proprio de proposito: ele
+             entra desfocado sob o gradiente da marca e a imagem
+             quase nao aparece, entao reaproveita a base.
+             Todas em 1080x1350, JPEG qualidade 80.
+
+
+ONDE MEXER PARA CONFIGURAR
+----------------------------------------------------------------
+Tudo fica no bloco CFG e no array PACOTES, no topo do <script>
+do index.html:
+
+  CFG.whatsapp     numero comercial, so digitos, com 55 na frente
+  PACOTES[].preco  preco de cada pacote
+  PACOTES[].link   URL do checkout da Cakto de cada pacote
+
+O site tem dois modos, escolhidos pela URL:
+  index.html            modo anuncio: manda o pedido pro WhatsApp
+  index.html?m=pago     modo pago: cobra na Cakto e depois manda
+
+
+COMO O SLIDE E DESENHADO
+----------------------------------------------------------------
+Cada slide vive num palco fixo de 420 x 525 pixels e e escalado
+por transform: scale() para caber em qualquer caixa. E isso que
+permite exportar em 1080 x 1350 sem o layout refluir.
+
+Se for mexer no CSS do slide, mexa em ESTILO_SLIDE dentro do
+moldes.js. Nao duplique no index.
+
+Cuidado com nomes de classe: o slide usa .kick e .tg justamente
+porque .tag e .pill colidiam com o CSS do site.
+
+
+PRODUCAO DE UM PEDIDO
+----------------------------------------------------------------
+Clique em "PRODUZIR.bat". Ele pergunta molde, nome, arroba, cor e
+cidade, gera o carrossel e exporta os PNG.
+
+Por linha de comando:
+  node producao/gerar.js --molde solar --nome "Solar Sul" --arroba solarsul
+  python producao/exportar.py "entregas/CS-XXXX"
+
+gerar.js      monta o carousel.html no formato que a skill
+              instagram-carousel exporta, mais legenda.txt e
+              pedido.json. As fotos vao embutidas em base64.
+exportar.py   Playwright com device_scale_factor de 2,5714.
+              Mantem o viewport em 420 e multiplica na saida.
+gemini.js     gerador de imagem pela API do Gemini. Precisa de
+              chave em ~/.claude/gemini.key e faturamento ativo
+              no projeto do Google Cloud.
+processar.py  recorta em 4:5, reduz para 1080x1350 e vira JPEG.
+exemplos.sh   gera e exporta os 10 carrosseis de mostruario.
+
+
+PASTAS
+----------------------------------------------------------------
+entregas/     as 10 entregas de exemplo, uma por molde. Cada uma
+              tem carousel.html, legenda.txt, pedido.json e a
+              pasta slides/ com os 7 PNG em 1080x1350.
+pedidos/      vazia, para guardar pedidos em JSON.
+producao/     scripts de producao.
+
+
+O QUE JA FOI RESOLVIDO E NAO DEVE VOLTAR
+----------------------------------------------------------------
+1. Itens de grid precisam de min-width:0 (.cols > *), senao a
+   fita de miniaturas estica a coluna inteira.
+2. O brilho decorativo do hero e absoluto e maior que a tela, por
+   isso .hero tem overflow:hidden. Sem isso estoura no celular.
+3. Nao use scrollIntoView na miniatura ativa: ele sobe por todos
+   os ancestrais rolaveis e arrasta a pagina na horizontal. Use
+   scrollTo na propria fita.
+4. mix-blend-mode: multiply do gradiente sobre a foto desfocada
+   mata a cor da marca. O resultado e gradiente vezes foto.
+5. Campo de cor com texto branco: cada ponto do gradiente e
+   ajustado ate bater um brilho alvo, na funcao paleta().
