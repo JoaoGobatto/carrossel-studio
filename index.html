@@ -5,19 +5,35 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Carrossel Studio | Chega de postar para ninguém</title>
 <meta name="description" content="Carrossel de Instagram a partir de R$ 59,90, com foto de verdade e uma historia que prende ate o ultimo slide. Escolha o molde do seu nicho e receba em 24 horas.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a0908'/%3E%3Ccircle cx='16' cy='16' r='6.5' fill='%23e0b562'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23f7f6f3'/%3E%3Cg stroke='%23c0281e' stroke-width='2.2' fill='none' stroke-linecap='round'%3E%3Ccircle cx='16' cy='16' r='5.6'/%3E%3Cpath d='M16 5.5v21M5.5 16h21'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&family=Lora:wght@400;600;700&family=Nunito+Sans:wght@300;400;600;700&family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&family=Fraunces:wght@300;400;600;700&family=Outfit:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Libre+Baskerville:wght@400;700&family=Work+Sans:wght@300;400;600&family=Bricolage+Grotesque:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;600&family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..700,0..100,0..1&family=Karla:wght@300;400;500;600;700&family=Libre+Baskerville:wght@400;700&family=Outfit:wght@300;400;600;700&family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0a0908; --bg2:#100f0e; --card:#141312; --card2:#1a1817;
-  --line:rgba(255,255,255,.085); --line2:rgba(255,255,255,.17);
-  --tx:#f3ede3; --tx2:#a69d92; --tx3:#6d665e;
-  --acc:#e0b562; --acc-ink:#17110a;
-  --f:'Inter',system-ui,-apple-system,Segoe UI,sans-serif;
-  --fm:'IBM Plex Mono',ui-monospace,monospace;
-  --fd:'Newsreader',Georgia,'Times New Roman',serif;
+  /* A OFICINA: papel frio, tinta e vermelho de gráfica.
+     O dourado antigo (#e0b562) ficava a menos de 4 graus de matiz dos moldes
+     de barbearia e de energia solar, então a cor do cliente e a cor do site
+     viravam a mesma coisa justamente na tela que existe para mostrar a cor
+     do cliente. #c0281e fica em 3,7 graus, dentro do maior vão livre da roda. */
+  --bg:#f7f6f3; --bg2:#efede8; --card:#ffffff; --card2:#f2f0eb;
+  --line:rgba(18,18,20,.12); --line2:rgba(18,18,20,.26);
+  --tx:#121214; --tx2:#57544e; --tx3:#8b877f;
+  --acc:#c0281e; --acc-ink:#f7f6f3;
+  /* --acc  = preenchimento (fundo, borda, ponto): sempre a cor viva do cliente.
+     --acc-tx = a MESMA cor rebaixada ate passar 4,5:1 sobre o papel, para uso
+     como texto. Sem essa separação o papel quebra: das 10 cores dos moldes,
+     zero passam como texto sobre #f7f6f3 (a barbearia dá 2,35:1). No fundo
+     preto antigo isso não aparecia, porque lá elas eram as cores claras. */
+  --acc-tx:#b02419;
+  /* O PALCO: --acc é reescrito em tempo real dentro de #moldes e #config
+     pela cor do molde ativo. Tudo que deriva do acento usa color-mix sobre
+     var(--acc), então acompanha a troca sozinho, sem token paralelo. */
+  --sombra:rgba(18,18,20,.16); --sombra-forte:rgba(18,18,20,.26);
+  --palco-bg:#0d0c0b;
+  --f:'Karla',system-ui,-apple-system,Segoe UI,sans-serif;
+  --fu:'Karla',system-ui,sans-serif;
+  --fd:'Fraunces',Georgia,'Times New Roman',serif;
   --nav:66px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -25,30 +41,41 @@ html{scroll-behavior:smooth}
 body{background:var(--bg); color:var(--tx); font-family:var(--f); line-height:1.58;
   -webkit-font-smoothing:antialiased; overflow-x:hidden}
 /* textura de filme, a mesma linguagem dos slides */
-body::after{content:''; position:fixed; inset:0; z-index:3; pointer-events:none; opacity:.34;
-  mix-blend-mode:overlay; background-size:260px 260px;
+body::after{content:''; position:fixed; inset:0; z-index:3; pointer-events:none; opacity:.09;
+  mix-blend-mode:multiply; background-size:260px 260px;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E")}
 .wrap{position:relative; z-index:2; max-width:1200px; margin:0 auto; padding:0 24px}
 ::selection{background:var(--acc); color:var(--acc-ink)}
 
 /* ---------- tipografia ---------- */
-.mono{font-family:var(--fm); font-size:11.5px; letter-spacing:.19em; text-transform:uppercase; font-weight:600}
+.mono{font-family:var(--fu); font-size:11px; letter-spacing:.15em; text-transform:uppercase;
+  font-weight:600; font-variant-numeric:tabular-nums}
 .disp{font-family:var(--fd); font-weight:500; letter-spacing:-.022em; line-height:.98}
-/* Newsreader é variável: o tamanho óptico ajusta o desenho conforme a escala,
-   e um pouco mais de peso compensa o afinamento da serifada em fundo escuro. */
+/* Fraunces é variável em quatro eixos. WONK torce as terminações e SOFT
+   arredonda os cantos: é o que separa isso de mais uma serifada bonita.
+   Fica só nos seletores de display; em body vazaria para dentro dos slides,
+   porque font-variation-settings é herdado. */
 .disp,.logo,.hero h1,.shead h2,.cfgTop h2,.fecho h2,.mmeta h3,.tres .n,
-.entrega .ic,.preco .val b,.preco .dir h4,.total .p{font-optical-sizing:auto}
-.eyebrow{display:inline-flex; align-items:center; gap:10px; color:var(--acc)}
+.entrega .ic,.preco .val b,.preco .dir h4,.total .p{font-optical-sizing:auto;
+  font-variation-settings:'SOFT' 30,'WONK' 1}
+.eyebrow{display:inline-flex; align-items:center; gap:10px; color:var(--acc-tx)}
 .eyebrow i{display:block; width:26px; height:1px; background:currentColor; opacity:.7}
 
 /* ---------- topo ---------- */
 header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
-  backdrop-filter:blur(16px); background:rgba(10,9,8,.7); border-bottom:1px solid var(--line);
+  backdrop-filter:blur(16px); background:rgba(247,246,243,.78); border-bottom:1px solid var(--line);
   transition:background .3s}
 .nav{display:flex; align-items:center; justify-content:space-between; height:var(--nav)}
 .logo{display:flex; align-items:baseline; gap:9px; font-family:var(--fd); font-weight:500; font-size:24px; letter-spacing:-.015em}
-.logo s{text-decoration:none; width:7px; height:7px; border-radius:50%; background:var(--acc);
-  display:inline-block; transform:translateY(-4px)}
+/* Cruz de registro: a marca que a gráfica usa para alinhar as chapas de cor.
+   Traço fino e círculo, senão lê como um sinal de mais. Sem markup extra:
+   dois gradientes fazem a mira e o ::after faz o anel. */
+.logo s{text-decoration:none; width:13px; height:13px; display:inline-block;
+  position:relative; transform:translateY(-5px);
+  background:linear-gradient(var(--acc),var(--acc)) center/1.2px 100% no-repeat,
+             linear-gradient(var(--acc),var(--acc)) center/100% 1.2px no-repeat}
+.logo s::after{content:''; position:absolute; inset:3px; border-radius:50%;
+  border:1.2px solid var(--acc)}
 .links{display:flex; align-items:center; gap:26px; margin-left:auto; margin-right:26px}
 .links a{color:var(--tx2); text-decoration:none; font-size:14.5px; font-weight:500;
   letter-spacing:-.01em; position:relative; transition:color .2s}
@@ -56,7 +83,7 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
   background:var(--acc); transform:scaleX(0); transform-origin:left; transition:transform .25s}
 .links a:hover{color:var(--tx)}
 .links a:hover::after{transform:scaleX(1)}
-.links a.aqui{color:var(--acc)}
+.links a.aqui{color:var(--acc-tx)}
 .links a.aqui::after{transform:scaleX(1)}
 .navr{display:flex; align-items:center; gap:18px}
 .navr .mono{color:var(--tx3)}
@@ -64,11 +91,12 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
   border-radius:100px; padding:14px 26px; font-size:15.5px; letter-spacing:-.01em;
   background:var(--acc); color:var(--acc-ink);
   transition:transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s, background .2s}
-.btn:hover{transform:translateY(-2px); box-shadow:0 12px 30px rgba(224,181,98,.22)}
+.btn:hover{transform:translateY(-2px);
+  box-shadow:0 10px 26px color-mix(in srgb, var(--acc) 26%, transparent)}
 .btn:active{transform:translateY(0)}
-.btn:disabled{background:#2b2825; color:#6d665e; cursor:not-allowed; transform:none; box-shadow:none}
+.btn:disabled{background:#e4e1da; color:#a8a49c; cursor:not-allowed; transform:none; box-shadow:none}
 .btn.ghost{background:transparent; color:var(--tx); border:1px solid var(--line2)}
-.btn.ghost:hover{border-color:var(--acc); color:var(--acc); box-shadow:none}
+.btn.ghost:hover{border-color:var(--acc-tx); color:var(--acc-tx); box-shadow:none}
 .btn.sm{padding:10px 18px; font-size:14px}
 
 /* ---------- hero ---------- */
@@ -77,14 +105,175 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
 .hero{padding:calc(var(--nav) + 78px) 0 0; position:relative; overflow:hidden}
 .hero::before{content:''; position:absolute; top:-10%; left:50%; transform:translateX(-50%);
   width:900px; height:620px; pointer-events:none; z-index:0;
-  background:radial-gradient(closest-side, rgba(224,181,98,.13), transparent 72%)}
+  background:radial-gradient(closest-side, color-mix(in srgb, var(--acc) 7%, transparent), transparent 72%)}
 .hero .wrap{position:relative; z-index:2}
-.hero h1{font-family:var(--fd); font-weight:500; font-size:clamp(44px,7.6vw,96px);
-  line-height:.98; letter-spacing:-.03em; max-width:15ch}
-.hero h1 em{font-style:italic; color:var(--acc)}
-.hero .lead{color:var(--tx2); font-size:clamp(17px,1.9vw,20.5px); max-width:50ch; margin-top:28px}
-.heroCta{display:flex; gap:12px; flex-wrap:wrap; margin-top:34px; align-items:center}
+/* duas colunas: a copy à esquerda, o celular à direita.
+   min-width:0 nos dois filhos pela mesma razão do .cols lá embaixo — sem isso
+   o celular estica a coluna inteira e a copy fica espremida. */
+.heroGrid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,380px);
+  gap:clamp(30px,4.5vw,66px); align-items:center}
+.heroGrid > *{min-width:0}
+.hero h1{font-family:var(--fd); font-weight:500; font-size:clamp(40px,5.4vw,74px);
+  line-height:.99; letter-spacing:-.03em; max-width:13ch}
+.hero h1 em{font-style:italic; color:var(--acc-tx)}
+.hero .lead{color:var(--tx2); font-size:clamp(16.5px,1.4vw,19px); max-width:46ch; margin-top:22px}
+.heroCta{display:flex; gap:12px; flex-wrap:wrap; margin-top:30px; align-items:center}
 .heroCta .nota{font-size:14px; color:var(--tx3)}
+/* flex-start, nao center: quando o texto quebra em duas linhas o visto tem
+   de ficar na primeira, nao no meio das duas */
+.heroPe{display:flex; align-items:flex-start; gap:9px; margin-top:20px; color:var(--tx3);
+  font-size:13.5px; line-height:1.5}
+.heroPe s{text-decoration:none; color:var(--acc-tx); font-weight:700; line-height:inherit}
+
+/* ---------- demonstração do hero ----------
+   O espaço do celular é reservado desde o primeiro paint, mesmo ele só entrando
+   aos ~5s: sem isso a página salta quando ele chega, e numa landing que recebe
+   anúncio o LCP salta junto. */
+.demo{position:relative; display:grid; grid-template-rows:1fr auto; place-items:center;
+  min-height:600px}
+/* Só a ficha e o celular se empilham; a nota tem linha própria. Empilhar os
+   três punha o celular por cima do botão de pausa e ele deixava de ser
+   clicável — um controle de parada que não recebe clique não é um controle. */
+.dFicha,.dPalco{grid-area:1/1; width:100%}
+.dNota{grid-area:2/1; width:100%}
+
+/* ficha do pedido — é o campo que existe de verdade no configurador */
+.dFicha{max-width:352px; margin:0 auto; background:var(--card); border:1px solid var(--line);
+  border-radius:4px; padding:20px; box-shadow:0 12px 34px rgba(18,18,20,.07); align-self:center}
+.dRot{font-family:var(--fu); font-size:10px; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--tx3); font-weight:600}
+.dCampo{position:relative; margin-top:11px; font-size:15px; line-height:1.45; color:var(--tx)}
+/* o fantasma reserva a altura da frase inteira, para a digitação nunca reflowar
+   a caixa nem no último caractere */
+.dFantasma{visibility:hidden; display:block}
+.dEscrito{position:absolute; inset:0}
+.dCaret{display:inline-block; width:1.5px; height:1.05em; background:var(--acc);
+  vertical-align:-2px; margin-left:1px; animation:dPisca 1.1s steps(1) infinite}
+@keyframes dPisca{0%,55%{opacity:1}56%,100%{opacity:0}}
+.dRegua{height:1px; background:var(--line); margin-top:14px; overflow:hidden}
+.dRegua i{display:block; height:100%; background:var(--acc); transform:scaleX(0);
+  transform-origin:left}
+.dEtapas{position:relative; height:16px; margin-top:12px}
+.dEtapa{position:absolute; inset:0; font-family:var(--fu); font-size:10px; letter-spacing:.13em;
+  text-transform:uppercase; font-weight:600; color:var(--acc-tx);
+  opacity:0; translate:0 5px; transition:opacity .3s ease, translate .3s ease}
+.dEtapa.on{opacity:1; translate:0 0}
+
+/* A inclinação vive no invólucro. O #fone NÃO ganha transform próprio: a
+   combinação overflow:hidden + border-radius + contexto 3D no mesmo elemento é
+   onde o WebKit perde o recorte arredondado e a quina volta viva no iPhone. */
+.dPalco{perspective:1500px; display:grid; place-items:center; align-self:center}
+.dTombo{transform:rotateY(-9deg) rotateX(3.5deg) rotateZ(-1.2deg); width:100%; max-width:352px}
+.dNota{align-self:end; display:flex; align-items:center; justify-content:center; gap:9px;
+  font-size:11.5px; color:var(--tx3); padding-top:14px; flex-wrap:wrap}
+.dPausa{appearance:none; background:transparent; border:1px solid var(--line2); cursor:pointer;
+  border-radius:100px; padding:3px 11px; font-family:var(--fu); font-size:10px; font-weight:600;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--tx2);
+  transition:border-color .2s, color .2s}
+.dPausa:hover{border-color:var(--acc); color:var(--acc-tx)}
+.dPausa:focus-visible{outline:2px solid var(--acc); outline-offset:2px}
+
+/* ---------- celular do hero ---------- */
+.fone{width:100%; max-width:352px; position:relative; overflow:hidden;
+  background:#fff; border-radius:44px; border:9px solid #16151a;
+  box-shadow:0 34px 70px rgba(18,18,20,.24), 0 2px 6px rgba(18,18,20,.10)}
+.foneTopo{position:relative; display:flex; align-items:center; justify-content:space-between;
+  padding:10px 20px 7px; font-size:11px; font-weight:700; color:#16151a;
+  font-variant-numeric:tabular-nums}
+.foneTopo .ilha{position:absolute; left:50%; top:6px; transform:translateX(-50%);
+  width:64px; height:18px; border-radius:12px; background:#16151a}
+.foneTopo .sinal{display:flex; gap:2.5px; align-items:flex-end}
+.foneTopo .sinal i{width:3px; background:#16151a; border-radius:1px}
+.igTopo{display:flex; align-items:center; gap:9px; padding:7px 13px 9px}
+.igAv{width:28px; height:28px; border-radius:50%; background:var(--acc); color:var(--acc-ink);
+  display:grid; place-items:center; font-size:11px; font-weight:800; flex:0 0 28px}
+.igNome{font-size:12px; font-weight:600; color:#16151a; line-height:1.25}
+.igNome small{display:block; font-size:10px; color:#8b8b90; font-weight:400}
+.igMais{margin-left:auto; color:#16151a; font-weight:700; letter-spacing:1.5px; font-size:13px}
+.igPost{position:relative; background:var(--palco-bg); overflow:hidden}
+.igPost .palco{border-radius:0}
+/* Fita rígida com os 7 slides reais, renderizados UMA vez. Cada quadro carrega
+   a classe .palco de propósito: ajustarPalcos() já os enxerga e o seletor de
+   filho direto .palco > .sl continua casando. Nada é recriado durante o swipe.
+   translate é longhand, não transform: se alguém puser um transform no trilho
+   depois, as duas propriedades compõem em vez de uma apagar a outra. */
+.dRail{display:flex; width:100%; translate:calc(var(--i,0) * -100% - var(--puxa,0%))}
+.dRail > .palco{flex:0 0 100%}
+/* duas curvas, porque um dedo puxando é linear: é a soltura que desacelera */
+.dRail.arrasta{transition:translate .16s linear}
+.dRail.desliza{transition:translate .54s cubic-bezier(.2,.8,.2,1)}
+
+/* ---------- estados da demonstração ----------
+   Tudo que esconde vive sob .dOn, que só o JS põe. JS quebrado, CS ausente ou
+   observer mudo: o hero continua sendo o hero, com o celular pintado. */
+#demo.dOn .dFicha{opacity:0; translate:0 9px;
+  transition:opacity .4s ease, translate .4s cubic-bezier(.2,.8,.2,1)}
+#demo.dOn:is([data-fase=digita],[data-fase=gera]) .dFicha{opacity:1; translate:0 0}
+#demo.dOn .dPalco{opacity:0; translate:0 20px; scale:.975;
+  transition:opacity .6s ease, translate .72s cubic-bezier(.2,.8,.2,1),
+             scale .72s cubic-bezier(.2,.8,.2,1)}
+#demo.dOn:is([data-fase=fone],[data-fase=chrome],[data-fase=monta],[data-fase=ler],[data-fase=roda],[data-fase=fim]) .dPalco{opacity:1; translate:0 0; scale:1}
+#demo.dOn :is(.igTopo,.igAcoes,.igTexto){opacity:0; translate:0 6px;
+  transition:opacity .32s ease, translate .32s ease}
+#demo.dOn:is([data-fase=chrome],[data-fase=monta],[data-fase=ler],[data-fase=roda],[data-fase=fim]) :is(.igTopo,.igAcoes,.igTexto){opacity:1; translate:0 0}
+#demo.dOn .igAcoes{transition-delay:70ms} #demo.dOn .igTexto{transition-delay:140ms}
+#demo.dOn[data-fase=gera] .dRegua i{transform:scaleX(1); transition:transform 1.7s linear}
+
+/* Montagem do slide 1 por partes. Anima só FILHOS do .sl — o transform do
+   próprio .sl é do ajustarPalcos(), e uma regra aqui venceria o inline,
+   devolvendo o slide a 420px crus dentro de uma caixa de 302px.
+   Nada disto entra no ESTILO_SLIDE: o export em PNG continua estático. */
+#demo.dOn .dz{opacity:0; translate:0 10px}
+#demo.dOn .dph{opacity:0; scale:1.05}
+#demo.dOn.dMontar .dz{opacity:1; translate:0 0;
+  transition:opacity .34s ease, translate .44s cubic-bezier(.2,.8,.2,1);
+  transition-delay:calc(var(--dz,0) * 1ms)}
+#demo.dOn.dMontar .dph{opacity:1; scale:1;
+  transition:opacity .5s ease, scale .9s cubic-bezier(.2,.8,.2,1)}
+/* o grão usa mix-blend-mode: durante o swipe ele obriga o compositor a refazer
+   a camada a cada quadro. Some só enquanto a fita anda. */
+#demo.dOn[data-fase=roda] .sl .grain{opacity:0; transition:opacity .2s}
+.igAcoes{position:relative; display:flex; align-items:center; gap:13px; padding:10px 13px 5px}
+.igAcoes svg{width:21px; height:21px; fill:none; stroke:#16151a; stroke-width:1.7;
+  stroke-linecap:round; stroke-linejoin:round; display:block}
+.igAcoes .salvar{margin-left:auto}
+.igPontos{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  display:flex; gap:4px}
+.igPontos i{width:5px; height:5px; border-radius:50%; background:#cfcfd4; transition:background .25s}
+.igPontos i.on{background:#3897f0}
+.igTexto{padding:3px 13px 15px; color:#16151a}
+.igTexto .curtidas{display:block; font-size:12px; font-weight:600; margin-bottom:5px;
+  font-variant-numeric:tabular-nums}
+.igTexto p{font-size:12px; line-height:1.45; margin:0}
+.igTexto p .arraste{color:#8b8b90}
+.igTexto p b{font-weight:600}
+.igTexto .vercom{display:block; font-size:11.5px; color:#8b8b90; margin-top:5px}
+@media(max-width:900px){
+  .heroGrid{grid-template-columns:1fr; gap:42px}
+  .demo{min-height:560px}
+  .dTombo,.fone,.dFicha{max-width:318px}
+  .hero h1{max-width:15ch}
+}
+/* Abaixo de ~1040px a coluna encosta na borda do .wrap e a projeção da
+   perspectiva mais a sombra passariam por baixo do overflow:hidden do .hero,
+   que não pode ser afrouxado por causa do brilho de 900px do ::before.
+   Endireitar uns graus resolve sem tirar a personalidade. */
+@media(max-width:1040px){ .dTombo{transform:rotateY(-6deg) rotateX(2.5deg) rotateZ(-.8deg)} }
+
+/* Movimento reduzido: a peça assenta no estado final e para. Cobre também o
+   .tira .row, que usa a keyframe corre e tinha ficado de fora da media query
+   original lá de cima. */
+@media (prefers-reduced-motion:reduce){
+  .tira .row{animation:none}
+  .dCaret{animation:none}
+  #demo.dOn .dFicha{display:none}
+  #demo.dOn .dPalco{opacity:1; translate:0 0; scale:1}
+  #demo.dOn :is(.igTopo,.igAcoes,.igTexto){opacity:1; translate:0 0}
+  #demo.dOn .dz{opacity:1; translate:0 0}
+  #demo.dOn .dph{opacity:1; scale:1}
+  .dRail{transition:none}
+  .dPausa{display:none}
+}
 
 /* faixa de slides em movimento */
 .esteira{margin-top:64px; position:relative; overflow:hidden; padding:2px 0}
@@ -102,22 +291,22 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
 .tira{border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin-top:64px; overflow:hidden}
 .tira .row{display:flex; gap:56px; width:max-content; padding:15px 0; animation:corre 40s linear infinite}
 .tira span{display:flex; align-items:center; gap:12px; color:var(--tx2); font-size:14.5px; white-space:nowrap}
-.tira b{color:var(--acc); font-family:var(--fm); font-size:12px; letter-spacing:.16em}
+.tira b{color:var(--acc-tx); font-family:var(--fu); font-size:12px; letter-spacing:.16em}
 
 /* ---------- seções ---------- */
 section{padding:96px 0; scroll-margin-top:var(--nav)}
 .shead{max-width:60ch; margin-bottom:44px}
 .shead h2{font-family:var(--fd); font-weight:500; font-size:clamp(31px,4.4vw,52px);
   line-height:1.06; letter-spacing:-.025em; margin:16px 0 14px}
-.shead h2 em{font-style:italic; color:var(--acc)}
+.shead h2 em{font-style:italic; color:var(--acc-tx)}
 .shead p{color:var(--tx2); font-size:17.5px; max-width:54ch; line-height:1.62}
 
 /* problema */
 .tres{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:0; border-top:1px solid var(--line)}
 .tres > div{padding:30px 26px 30px 0; border-right:1px solid var(--line)}
 .tres > div:last-child{border-right:0}
-.tres .n{font-family:var(--fd); font-size:46px; color:var(--acc); line-height:1; opacity:.85}
-.tres .w{font-family:var(--fd); font-weight:500; font-size:40px; color:var(--acc);
+.tres .n{font-family:var(--fd); font-size:46px; color:var(--acc-tx); line-height:1; opacity:.85}
+.tres .w{font-family:var(--fd); font-weight:500; font-size:40px; color:var(--acc-tx);
   line-height:1; letter-spacing:-.025em}
 .tres h4{font-size:18.5px; font-weight:600; letter-spacing:-.015em; margin:15px 0 9px}
 .tres p{color:var(--tx2); font-size:15.5px; line-height:1.65}
@@ -130,8 +319,8 @@ section{padding:96px 0; scroll-margin-top:var(--nav)}
 .mcard .palco{border-radius:14px; border:1px solid var(--line);
   transition:border-color .25s, transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s}
 .mcard:hover .palco{transform:translateY(-8px) scale(1.012); border-color:var(--line2);
-  box-shadow:0 26px 60px rgba(0,0,0,.6)}
-.mcard.sel .palco{border-color:var(--acc); box-shadow:0 0 0 1px var(--acc),0 26px 60px rgba(0,0,0,.6)}
+  box-shadow:0 18px 44px var(--sombra)}
+.mcard.sel .palco{border-color:var(--acc); box-shadow:0 0 0 1px var(--acc),0 18px 44px var(--sombra)}
 .mmeta{padding:15px 2px 0; display:flex; align-items:flex-start; justify-content:space-between; gap:12px}
 .mmeta .nicho{color:var(--tx3); margin-bottom:7px}
 .mmeta h3{font-family:var(--fd); font-size:23.5px; font-weight:500; letter-spacing:-.02em; line-height:1.12}
@@ -144,7 +333,7 @@ section{padding:96px 0; scroll-margin-top:var(--nav)}
 .pontos i.on{background:var(--acc)}
 
 /* palco: layout fixo de 420 x 525 escalado para caber */
-.palco{position:relative; aspect-ratio:4/5; overflow:hidden; background:#0d0c0b}
+.palco{position:relative; aspect-ratio:4/5; overflow:hidden; background:var(--palco-bg)}
 .palco > .sl{position:absolute; top:0; left:0; transform-origin:top left}
 
 /* ---------- configurador ---------- */
@@ -153,7 +342,7 @@ section{padding:96px 0; scroll-margin-top:var(--nav)}
 .cfgTop{display:flex; align-items:flex-end; justify-content:space-between; gap:18px;
   flex-wrap:wrap; padding-bottom:26px; border-bottom:1px solid var(--line); margin-bottom:38px}
 .cfgTop h2{font-family:var(--fd); font-weight:500; font-size:clamp(29px,3.8vw,44px); line-height:1.04; letter-spacing:-.025em}
-.cfgTop h2 em{font-style:italic; color:var(--acc)}
+.cfgTop h2 em{font-style:italic; color:var(--acc-tx)}
 .cols{display:grid; grid-template-columns:1fr 420px; gap:56px; align-items:start}
 /* sem isto a coluna de grid nunca encolhe abaixo do min-content dos filhos,
    e a fita de miniaturas (7 itens que não encolhem) estica a coluna inteira */
@@ -179,16 +368,16 @@ textarea.inp{resize:vertical; min-height:82px; line-height:1.55; font-size:16.5p
 .swatches{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
 .sw{width:30px; height:30px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:.18s}
 .sw:hover{transform:scale(1.14)}
-.sw.on{border-color:var(--tx); box-shadow:0 0 0 3px rgba(243,237,227,.14)}
+.sw.on{border-color:var(--tx); box-shadow:0 0 0 3px rgba(18,18,20,.14)}
 .swc{position:relative; width:30px; height:30px; border-radius:50%; overflow:hidden; cursor:pointer;
   background:conic-gradient(#e0b562,#d9538a,#8e7cd8,#2e9bd6,#22b27a,#e07a28,#e0b562); border:2px solid var(--line2)}
 .swc input{position:absolute; inset:-30%; opacity:0; cursor:pointer}
-.cnt{font-family:var(--fm); font-size:11.5px; color:var(--tx3); text-align:right; margin-top:7px}
+.cnt{font-family:var(--fu); font-size:11.5px; color:var(--tx3); text-align:right; margin-top:7px}
 .assuntos{display:grid; gap:16px}
 .assunto .num{display:flex; justify-content:space-between; align-items:baseline; gap:10px;
-  font-family:var(--fm); font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
+  font-family:var(--fu); font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
   color:var(--tx3); margin-bottom:7px}
-.assunto .num b{color:var(--acc); font-weight:600}
+.assunto .num b{color:var(--acc-tx); font-weight:600}
 .assunto textarea{min-height:62px; font-size:15.5px}
 .assunto:first-child textarea{min-height:82px; font-size:16.5px}
 
@@ -196,13 +385,13 @@ textarea.inp{resize:vertical; min-height:82px; line-height:1.55; font-size:16.5p
 .sticky{position:sticky; top:calc(var(--nav) + 22px)}
 .pvHead{display:flex; align-items:center; justify-content:space-between; margin-bottom:13px}
 .pvHead .mono{color:var(--tx3)}
-.pvHead .vivo{color:var(--acc); display:flex; align-items:center; gap:7px}
+.pvHead .vivo{color:var(--acc-tx); display:flex; align-items:center; gap:7px}
 .pvHead .vivo s{width:5px; height:5px; border-radius:50%; background:var(--acc); text-decoration:none;
   animation:pisca 2s infinite}
 @keyframes pisca{0%,100%{opacity:1}50%{opacity:.3}}
 .pv{position:relative; touch-action:pan-y}
 .frame{border-radius:16px; overflow:hidden; border:1px solid var(--line2);
-  box-shadow:0 30px 70px rgba(0,0,0,.65); user-select:none}
+  box-shadow:0 22px 52px var(--sombra); user-select:none}
 .seta{position:absolute; top:50%; margin-top:-21px; z-index:8; width:42px; height:42px;
   border-radius:50%; display:grid; place-items:center; cursor:pointer; font-size:22px;
   line-height:1; color:#fff; background:rgba(10,9,8,.5); backdrop-filter:blur(10px);
@@ -235,9 +424,9 @@ textarea.inp{resize:vertical; min-height:82px; line-height:1.55; font-size:16.5p
 /* barra fixa do celular: o botão de comprar sempre ao alcance do polegar */
 .barra{position:fixed; left:0; right:0; bottom:0; z-index:70; display:none;
   align-items:center; gap:14px; padding:11px 16px calc(11px + env(safe-area-inset-bottom));
-  background:rgba(10,9,8,.94); backdrop-filter:blur(18px); border-top:1px solid var(--line2)}
+  background:rgba(247,246,243,.94); backdrop-filter:blur(18px); border-top:1px solid var(--line2)}
 .barra.on{display:flex}
-.barra .v span{display:block; font-family:var(--fm); font-size:9px; letter-spacing:.2em;
+.barra .v span{display:block; font-family:var(--fu); font-size:9px; letter-spacing:.2em;
   text-transform:uppercase; color:var(--tx3); margin-bottom:3px}
 .barra .v b{display:block; font-family:var(--fd); font-weight:500; font-size:27px; line-height:1}
 .barra .btn{flex:1; padding:15px 16px; font-size:15.5px}
@@ -247,7 +436,7 @@ textarea.inp{resize:vertical; min-height:82px; line-height:1.55; font-size:16.5p
 .entrega{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1px;
   background:var(--line); border:1px solid var(--line)}
 .entrega > div{background:var(--bg); padding:30px 26px}
-.entrega .ic{font-family:var(--fd); font-size:16.5px; color:var(--acc); border:1px solid var(--line2);
+.entrega .ic{font-family:var(--fd); font-size:16.5px; color:var(--acc-tx); border:1px solid var(--line2);
   width:38px; height:38px; border-radius:50%; display:grid; place-items:center}
 .entrega h4{font-size:17.5px; font-weight:600; margin:19px 0 9px; letter-spacing:-.015em}
 .entrega p{color:var(--tx2); font-size:15px; line-height:1.65}
@@ -256,10 +445,10 @@ textarea.inp{resize:vertical; min-height:82px; line-height:1.55; font-size:16.5p
 .tblwrap{overflow-x:auto; border:1px solid var(--line); border-radius:14px}
 table{width:100%; border-collapse:collapse; min-width:660px}
 th,td{padding:18px 20px; text-align:left; font-size:15px; border-bottom:1px solid var(--line)}
-thead th{color:var(--tx3); font-family:var(--fm); font-size:11px; letter-spacing:.18em; text-transform:uppercase; font-weight:600}
-thead th.nos{color:var(--acc)}
+thead th{color:var(--tx3); font-family:var(--fu); font-size:11px; letter-spacing:.18em; text-transform:uppercase; font-weight:600}
+thead th.nos{color:var(--acc-tx)}
 tbody td:first-child{color:var(--tx2)}
-tbody td.nos{color:var(--tx); font-weight:600; background:rgba(224,181,98,.05)}
+tbody td.nos{color:var(--tx); font-weight:600; background:color-mix(in srgb, var(--acc) 6%, transparent)}
 tbody tr:last-child td{border-bottom:0}
 
 /* seletor de pacote dentro do configurador: é a decisão de dinheiro,
@@ -267,14 +456,14 @@ tbody tr:last-child td{border-bottom:0}
 .packs{display:grid; grid-template-columns:1fr 1fr; gap:12px}
 .packs > div{position:relative; border:1px solid var(--line); border-radius:16px;
   padding:20px 20px 18px; cursor:pointer; transition:.2s; overflow:hidden}
-.packs > div:hover{border-color:var(--line2); background:rgba(255,255,255,.02)}
-.packs > div.on{border-color:var(--acc); background:rgba(224,181,98,.07);
+.packs > div:hover{border-color:var(--line2); background:rgba(18,18,20,.03)}
+.packs > div.on{border-color:var(--acc); background:color-mix(in srgb, var(--acc) 8%, transparent);
   box-shadow:0 0 0 1px var(--acc)}
 .packs b{display:block; font-size:19px; font-weight:600; letter-spacing:-.015em; padding-right:34px}
 .packs .pr{display:block; font-family:var(--fd); font-weight:500; font-size:34px;
   letter-spacing:-.03em; line-height:1; margin:12px 0 7px}
 .packs u{display:block; text-decoration:none; font-size:13.5px; color:var(--tx2)}
-.packs .eco{display:block; font-size:12.5px; color:var(--acc); margin-top:9px}
+.packs .eco{display:block; font-size:12.5px; color:var(--acc-tx); margin-top:9px}
 .packs .eco.nada{color:var(--tx3)}
 .packs .mk{position:absolute; top:18px; right:18px; width:24px; height:24px; border-radius:50%;
   border:1px solid var(--line2); display:grid; place-items:center; transition:.2s}
@@ -283,7 +472,7 @@ tbody tr:last-child td{border-bottom:0}
 .packs > div.on .mk svg{opacity:1}
 .packs .top{position:absolute; top:0; left:0; right:0; height:2px; background:var(--acc)}
 .packs .fav{position:absolute; bottom:0; right:0; background:var(--acc); color:var(--acc-ink);
-  font-family:var(--fm); font-size:9.5px; letter-spacing:.12em; text-transform:uppercase;
+  font-family:var(--fu); font-size:9.5px; letter-spacing:.12em; text-transform:uppercase;
   font-weight:600; padding:5px 11px; border-radius:10px 0 0 0}
 
 /* ---------- preço ---------- */
@@ -324,7 +513,7 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
 #toast{position:fixed; left:50%; bottom:30px; transform:translate(-50%,150%); z-index:99;
   background:var(--card2); border:1px solid var(--line2); color:var(--tx);
   padding:15px 22px; border-radius:100px; font-size:15px; font-weight:500;
-  box-shadow:0 22px 55px rgba(0,0,0,.7); transition:transform .34s cubic-bezier(.2,.9,.3,1); max-width:90vw}
+  box-shadow:0 16px 40px var(--sombra-forte); transition:transform .34s cubic-bezier(.2,.9,.3,1); max-width:90vw}
 #toast.on{transform:translate(-50%,0)}
 
 .rev{opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1)}
@@ -389,14 +578,69 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
 <main>
 <!-- ======================= HERO ======================= -->
 <section class="hero">
-  <div class="wrap">
-    <div class="mono eyebrow"><i></i>10 narrativas prontas, uma por nicho</div>
-    <h1>Chega de postar <em>para ninguém</em>.</h1>
-    <p class="lead">Post bonito segura o dedo por meio segundo. História prende até o último slide, e é o último slide que vira mensagem no seu direct. Escolha o molde do seu nicho, preencha quatro campos e receba em 24 horas. O resto é com a gente.</p>
-    <div class="heroCta">
-      <button class="btn" onclick="irMoldes()">Escolher meu molde</button>
-      <button class="btn ghost" onclick="document.getElementById('entrega').scrollIntoView()">O que vem no pack</button>
-      <span class="nota">Sem reunião. Sem briefing de 40 minutos.</span>
+  <div class="wrap heroGrid">
+    <div>
+      <div class="mono eyebrow"><i></i>10 narrativas prontas, uma por nicho</div>
+      <h1>Chega de postar <em>para ninguém</em>.</h1>
+      <p class="lead">Post bonito segura o dedo por meio segundo. História prende até o último slide, e é o último slide que vira mensagem no seu direct. Escolha o molde do seu nicho, preencha quatro campos e receba em 24 horas.</p>
+      <div class="heroCta">
+        <button class="btn" onclick="irMoldes()">Escolher meu molde</button>
+        <button class="btn ghost" onclick="document.getElementById('entrega').scrollIntoView()">O que vem no pack</button>
+      </div>
+      <div class="heroPe"><s>&#10003;</s> Sem reunião, sem briefing de 40 minutos &middot; pagamento único &middot; entrega em 24h</div>
+    </div>
+
+    <!-- Demonstração: pedido -> estúdio -> o carrossel real no feed.
+         Nada aqui é imagem: os 7 slides são os mesmos que a produção exporta. -->
+    <div class="demo" id="demo">
+
+      <div class="dFicha" id="dFicha">
+        <div class="dRot">Sobre o que é cada carrossel</div>
+        <div class="dCampo">
+          <span class="dFantasma" aria-hidden="true">Faça um carrossel para minha empresa de advocacia.</span>
+          <span class="dEscrito"><span id="dTexto"></span><span class="dCaret"></span></span>
+        </div>
+        <div class="dRegua"><i></i></div>
+        <div class="dEtapas" id="dEtapas"></div>
+      </div>
+
+      <div class="dPalco">
+        <div class="dTombo">
+    <div class="fone" id="fone">
+      <div class="foneTopo">
+        <span>9:41</span><i class="ilha"></i>
+        <span class="sinal"><i style="height:5px"></i><i style="height:7px"></i><i style="height:9px"></i><i style="height:11px"></i></span>
+      </div>
+      <div class="igTopo">
+        <span class="igAv" id="igAv">S</span>
+        <span class="igNome">sua marca<small>Patrocinado</small></span>
+        <span class="igMais">&middot;&middot;&middot;</span>
+      </div>
+      <div class="igPost">
+        <div class="dRail" id="dRail"></div>
+      </div>
+      <div class="igAcoes">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.7S3.8 15.6 3.8 10.2A4.4 4.4 0 0 1 12 7.8a4.4 4.4 0 0 1 8.2 2.4c0 5.4-8.2 10.5-8.2 10.5z"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.7 11.6a8 8 0 0 1-8.6 8 9 9 0 0 1-3.4-.7L3.3 20.6l1.8-4.6a8 8 0 0 1-1.8-5 8 8 0 0 1 8.6-7.7 8 8 0 0 1 8.8 8.3z"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.4 2.6 10.6 13.4M21.4 2.6l-6.9 19.6-3.9-8.8-8.8-3.9 19.6-6.9z"/></svg>
+        <span class="igPontos" id="fonePontos"></span>
+        <svg class="salvar" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.7 20.9 12 16.1l-6.7 4.8V5.2a2 2 0 0 1 2-2h9.4a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div class="igTexto">
+        <p id="foneLeg"></p>
+        <span class="vercom" id="foneNicho"></span>
+      </div>
+    </div>
+        </div>
+      </div>
+
+      <!-- WCAG 2.2.2: movimento automático por mais de 5s precisa de parada.
+           E a nota diz o prazo real: o h1 ao lado promete 24 horas, e uma demo
+           de 19 segundos não pode desmentir ele. -->
+      <div class="dNota">
+        <button class="dPausa" id="dPausa" type="button">Pausar</button>
+        <span>demonstração &middot; o pedido real é entregue em 24h</span>
+      </div>
     </div>
   </div>
 
@@ -647,9 +891,9 @@ const CFG = {
   whatsapp : '5554999858402'                       // comercial +55 (54) 99985-8402
 };
 
-/* Os pacotes. Referência de mercado: freelancer cobra de R$ 40 a 150
-   por arte, então R$ 59,90 na unidade fica na faixa e os pacotes puxam o
-   ticket para cima sem parecer caro. Mexer só aqui. */
+/* Os pacotes. Preço e link de checkout de cada um: mexer só aqui.
+   O raciocínio comercial por trás dos valores fica no LEIA-ME, que não é
+   servido — comentário em HTML vai inteiro no ver-código-fonte do visitante. */
 const PACOTES = [
   {q:1, preco:59.90,  selo:'',                link:''},
   {q:2, preco:99.90,  selo:'mais escolhido',  link:''},
@@ -659,6 +903,8 @@ const PACOTES = [
 /* link: cole aqui a URL do checkout da Cakto de cada pacote. Enquanto estiver
    vazio, o modo ?m=pago avisa em vez de abrir uma página quebrada. */
 const brl = v => 'R$ ' + v.toFixed(2).replace('.', ',');
+/* O papel sai do token, não de um literal, para não descolar se --bg mudar. */
+const PAPEL = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#f7f6f3';
 const MODO = (new URLSearchParams(location.search).get('m') === 'pago') ? 'pago' : 'zap';
 
 const TONS = ['Direto','Acolhedor','Sofisticado','Divertido','Autoridade'];
@@ -696,7 +942,11 @@ window.addEventListener('resize', ()=>ajustarPalcos());
 /* ---------- esteira do hero --------------------------------------------- */
 function montarEsteira(){
   const cenas = [];
-  CS.MOLDES.forEach(m=>{ cenas.push([m,0]); cenas.push([m,4]); });   // capa e prova
+  /* fora o molde da demonstração: a esteira mostraria a mesma capa que o
+     celular acabou de revelar, a poucos pixels de distância, tirando o efeito
+     do reveal e repetindo a mesma foto duas vezes na mesma dobra. */
+  CS.MOLDES.filter(m => m.id !== DEMO.molde)
+           .forEach(m=>{ cenas.push([m,0]); cenas.push([m,4]); });   // capa e prova
   const html = (lista)=> lista.map(([m,i])=>
     '<div class="palco">' + CS.renderSlide(m, dadosDo(m), i, m.seq.length) + '</div>').join('');
   const a = cenas, b = cenas.slice().reverse();
@@ -710,13 +960,212 @@ function montarEsteira(){
   document.getElementById('tira').innerHTML = linha + linha;
 }
 
+/* ---------- demonstração do hero ---------------------------------------- */
+/* Um pedido virando carrossel. Nada aqui é mockup: os sete quadros saem do
+   mesmo CS.renderSlide que a produção exporta em PNG, com as fotos de verdade.
+   Para mexer no ritmo, mexa só no ROTEIRO. */
+const DEMO = {
+  molde : 'juri',
+  frase : 'Faça um carrossel para minha empresa de advocacia.',
+  /* O estúdio trabalhando, não uma IA gerando. O produto é um humano entregando
+     em 24 horas — o h1 ao lado promete isso — então a hero não pode contar a
+     história de geração instantânea. */
+  etapas: ['Lendo o pedido', 'Escolhendo o molde', 'Escrevendo os sete slides',
+           'Aplicando a sua cor', 'Fechando a arte'],
+  /* [fase, slide, quanto tempo fica nela em ms] — volta inteira ≈ 19s */
+  roteiro: [
+    ['digita', 0, 2700],
+    ['gera',   0, 1900],
+    ['fone',   0,  700],
+    ['chrome', 0,  380],
+    ['monta',  0, 1250],
+    ['ler',    0,  760],
+    ['roda',   1, 1300], ['roda', 2, 1300], ['roda', 3, 1300],
+    ['roda',   4, 1300], ['roda', 5, 1300], ['roda', 6, 1300],
+    ['fim',    6, 2200],
+    ['sai',    6,  680],
+    ['pausa',  0,  620]
+  ]
+};
+
+/* Um único timer vivo por vez. O token invalida callback já agendado que
+   dispararia depois de uma pausa — sem ele a fita anda com a aba escondida. */
+let dTk = 0, dTid = null;
+function dEsperar(ms, fn){ const meu = dTk; dTid = setTimeout(()=>{ if(meu === dTk) fn(); }, ms); }
+function dAbortar(){ dTk++; clearTimeout(dTid); dTid = null; }
+
+/* A ordem de documento que o querySelectorAll devolve JÁ é a ordem de leitura
+   do slide, nos sete tipos. Por isso a montagem não usa nth-child nem índice
+   fixo: o .mark só existe em dois tipos e o .hook não existe no cta, então
+   cronograma por constante deixaria buraco morto em algum deles. */
+const D_PARTES = '.top, .mark, .in h1, .in .sub, .in .fig, .in .figl, .in .say,' +
+                 '.in .chk > div, .in .stp > div, .in .btn2, .hook, .bar';
+/* intervalo ANTES de cada peça: a foto é o chão, a moldura vem colada, e o
+   título segura 150ms antes do subtítulo porque manchete precisa de silêncio */
+const D_GAP = {top:110, mark:70, h1:90, sub:150, fig:90, figl:130, say:150,
+               item:70, btn2:120, hook:90, bar:60};
+
+function dPapel(el){
+  if(el.tagName === 'H1') return 'h1';
+  for(const k of ['top','mark','sub','fig','figl','say','btn2','hook','bar'])
+    if(el.classList.contains(k)) return k;
+  return 'item';
+}
+function dMarcar(sl){
+  if(!sl) return;
+  const ph = sl.querySelector('.ph'); if(ph) ph.classList.add('dph');
+  let t = 0;
+  sl.querySelectorAll(D_PARTES).forEach(el=>{
+    if(el.classList.contains('dz')) return;
+    t += D_GAP[dPapel(el)] || 70;
+    el.classList.add('dz');
+    el.style.setProperty('--dz', t);
+  });
+}
+
+function montarDemo(){
+  const demo = document.getElementById('demo');
+  if(!demo || !window.CS) return;                    // sem CS o hero fica como está
+  const m = CS.MOLDES.find(x => x.id === DEMO.molde) || CS.MOLDES[0];
+  /* 'sua marca' explicito: sem ele inicial() cai em 'C' e o avatar do slide
+     discorda do avatar do cabeçalho, sendo a mesma conta postando. Com ele as
+     quatro aparições da marca no celular saem do mesmo valor. */
+  const d = Object.assign(dadosDo(m), {nome:'sua marca', arroba:'seunegocio'});
+  const n = m.seq.length;
+  const rail    = document.getElementById('dRail');
+  const fone    = document.getElementById('fone');
+  const pontos  = document.getElementById('fonePontos');
+  const escrito = document.getElementById('dTexto');
+  const botao   = document.getElementById('dPausa');
+
+  /* os sete slides, renderizados UMA vez. Daqui para frente nada dentro do
+     celular é recriado: só o trilho anda. */
+  rail.innerHTML = m.seq.map((_, i) =>
+    '<div class="palco">' + CS.renderSlide(m, d, i, n) + '</div>').join('');
+  pontos.innerHTML = Array.from({length:n}, (_, i) =>
+    '<i class="' + (i === 0 ? 'on' : '') + '"></i>').join('');
+  document.getElementById('dEtapas').innerHTML = DEMO.etapas.map(t =>
+    '<span class="dEtapa">' + CS.esc(t) + '</span>').join('');
+
+  fone.style.setProperty('--acc', m.cor);
+  fone.style.setProperty('--acc-ink', CS.tinta(m.cor));
+  /* o terceiro faltava na versão anterior desta função: ela escrevia só dois,
+     enquanto atualizar() escreve os três. Sem ele o texto de acento dentro do
+     celular ficava no vermelho da marca em vez da cor do molde. */
+  fone.style.setProperty('--acc-tx', CS.corTexto(m.cor, '#ffffff'));
+
+  document.getElementById('foneLeg').innerHTML =
+    '<b>seunegocio</b> ' + CS.esc(m.seq[0].titulo) + ' <span class="arraste">arraste &#8594;</span>';
+  document.getElementById('foneNicho').textContent = m.nicho.toLowerCase();
+  document.getElementById('igAv').textContent = d.nome.charAt(0).toUpperCase();
+
+  ajustarPalcos(demo);
+  dMarcar(rail.firstElementChild && rail.firstElementChild.querySelector('.sl'));
+
+  const menos = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let p = 0, vivo = false, pausado = false;
+
+  function ponto(i){
+    pontos.querySelectorAll('i').forEach((e, k) => e.classList.toggle('on', k === i));
+  }
+  function fita(i, puxa){
+    rail.style.setProperty('--i', i);
+    rail.style.setProperty('--puxa', puxa || '0%');
+  }
+
+  /* Duas curvas por swipe: um dedo puxando é linear, é a soltura que
+     desacelera. É o que separa "slide trocando" de "alguém arrastando". */
+  function passar(i){
+    rail.classList.remove('desliza'); rail.classList.add('arrasta');
+    rail.style.setProperty('--puxa', '6%');
+    dEsperar(165, ()=>{
+      rail.classList.remove('arrasta'); rail.classList.add('desliza');
+      fita(i, '0%');
+      ponto(i);
+    });
+  }
+
+  function girarEtapas(){
+    const els = demo.querySelectorAll('.dEtapa');
+    let k = 0;
+    (function passo(){
+      els.forEach(e => e.classList.remove('on'));
+      if(els[k]) els[k].classList.add('on');
+      if(++k < els.length) dEsperar(370, passo);
+    })();
+  }
+
+  function digitar(){
+    escrito.textContent = '';
+    let k = 0;
+    (function passo(){
+      escrito.textContent = DEMO.frase.slice(0, k);
+      if(k >= DEMO.frase.length) return;
+      const c = DEMO.frase[k++];
+      dEsperar(30 + Math.random() * 22 + (c === ' ' ? 45 : 0), passo);
+    })();
+  }
+
+  /* Estado de repouso: celular visível, slide 1 montado, nada em movimento.
+     É como a peça nasce, para o primeiro paint já ser o produto. */
+  function assentar(){
+    dAbortar();
+    demo.dataset.fase = 'fim';
+    demo.classList.add('dMontar');
+    rail.classList.remove('arrasta', 'desliza');
+    fita(0, '0%'); ponto(0);
+  }
+
+  function tocar(){
+    const linha = DEMO.roteiro[p], f = linha[0], slide = linha[1], ms = linha[2];
+    demo.dataset.fase = f;
+    if(f === 'digita'){ demo.classList.remove('dMontar'); digitar(); }
+    else if(f === 'gera')  girarEtapas();
+    else if(f === 'monta') demo.classList.add('dMontar');
+    else if(f === 'roda')  passar(slide);
+    else if(f === 'pausa'){                       // volta ao slide 1 com a tela apagada
+      rail.classList.remove('arrasta', 'desliza');
+      fita(0, '0%'); ponto(0);
+      demo.classList.remove('dMontar');
+    }
+    dEsperar(ms, ()=>{ p = (p + 1) % DEMO.roteiro.length; tocar(); });
+  }
+
+  function seguir(){ if(vivo || pausado || menos.matches) return; vivo = true; tocar(); }
+  function parar(){ if(!vivo) return; vivo = false; dAbortar(); }
+
+  demo.classList.add('dOn');
+  assentar();
+
+  if(!menos.matches){
+    /* primeiro deixa ver o resultado, depois conta como ele foi feito */
+    new IntersectionObserver(es => es.forEach(e => {
+      if(e.isIntersecting) dEsperar(1400, seguir); else parar();
+    }), {threshold:.3}).observe(demo);
+    /* o observer não cobre aba no fundo: lá o elemento continua intersecting */
+    document.addEventListener('visibilitychange', ()=> document.hidden ? parar() : seguir());
+  }
+
+  /* se a pessoa ligar a preferência com a página aberta, a peça assenta na hora */
+  menos.addEventListener('change', e => {
+    if(e.matches){ parar(); assentar(); } else { p = 0; seguir(); }
+  });
+
+  /* WCAG 2.2.2: movimento automático por mais de 5s precisa de parada */
+  botao.addEventListener('click', ()=>{
+    pausado = !pausado;
+    botao.textContent = pausado ? 'Continuar' : 'Pausar';
+    if(pausado) parar(); else seguir();
+  });
+}
+
 /* ---------- galeria ------------------------------------------------------ */
 const relogios = {};
 const SEM_MOUSE = window.matchMedia('(hover: none)').matches;
 function montarGaleria(){
   const g = document.getElementById('galeria');
   g.innerHTML = CS.MOLDES.map(m=>`
-    <article class="mcard" data-id="${m.id}">
+    <article class="mcard" data-id="${m.id}" style="--acc:${m.cor};--acc-ink:${CS.tinta(m.cor)};--acc-tx:${CS.corTexto(m.cor, PAPEL)}">
       <div class="palco">${CS.renderSlide(m, dadosDo(m), 0, m.seq.length)}</div>
       <div class="pontos">${m.seq.map((_,i)=>`<i class="${i===0?'on':''}"></i>`).join('')}</div>
       <div class="mmeta">
@@ -879,8 +1328,15 @@ function ligarNavegacao(){
 function atualizar(){
   if(!S.molde) return;
   const n = S.molde.seq.length;
-  document.documentElement.style.setProperty('--acc', S.cor);
-  document.documentElement.style.setProperty('--acc-ink', CS.tinta(S.cor));
+  /* O PALCO: a cor escolhida vale só dentro de #moldes e #config, que são
+     as telas onde o cliente está montando o pedido. Antes isso ia no
+     documentElement e repintava header, hero, FAQ e rodapé junto, então o
+     site inteiro virava a cor do molde e não sobrava marca nenhuma de pé. */
+  [document.getElementById('moldes'), document.getElementById('config')].forEach(sec=>{
+    sec.style.setProperty('--acc', S.cor);                          // preenchimento: cor viva
+    sec.style.setProperty('--acc-ink', CS.tinta(S.cor));            // tinta por cima do preenchimento
+    sec.style.setProperty('--acc-tx', CS.corTexto(S.cor, PAPEL));   // texto: rebaixada até 4,5:1
+  });
 
   const f = document.getElementById('frame');
   f.innerHTML = CS.renderSlide(S.molde, S, S.frame, n);
@@ -1017,7 +1473,7 @@ function bind(id, campo, extra){
   document.getElementById('estiloSlide').textContent = CS.ESTILO_SLIDE;
   if(SEM_MOUSE) document.getElementById('dicaMolde').textContent =
     'Toque em um molde para abrir. A história roda sozinha aqui embaixo.';
-  montarEsteira(); montarGaleria(); montarChips(); montarFaq();
+  montarEsteira(); montarDemo(); montarGaleria(); montarChips(); montarFaq();
 
   bind('fNome','nome'); bind('fArroba','arroba');
   montarAssuntos();
@@ -1052,7 +1508,23 @@ function bind(id, campo, extra){
     {threshold:.12});
   document.querySelectorAll('.rev').forEach(el=>io.observe(el));
 
-  if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>ajustarPalcos());
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>{
+    ajustarPalcos();
+    /* O <link> do topo carrega só as fontes dos 10 moldes que existem hoje.
+       A skill instagram-carousel oferece sete pares de estilo, e o par
+       "Warm / approachable" (Lora + Nunito Sans) saiu do <link> por não ter
+       molde usando. Molde novo com par novo precisa da família lá, senão o
+       slide renderiza em fonte de sistema sem reclamar de nada.
+       document.fonts.check() não serve de teste: ele devolve true mesmo com
+       a família ausente, porque considera o fallback como "consigo renderizar".
+       Só a lista de FontFace realmente carregadas diz a verdade. */
+    const carregadas = new Set([...document.fonts]
+      .filter(f => f.status === 'loaded')
+      .map(f => f.family.replace(/["']/g, '')));
+    const faltando = CS.FONTES.filter(f => !carregadas.has(f));
+    if(faltando.length) console.warn('[carrossel-studio] fonte de molde fora do <link> ' +
+      'do Google Fonts, o slide vai cair em fonte de sistema: ' + faltando.join(', '));
+  });
 })();
 </script>
 </body>

@@ -34,6 +34,39 @@ function hsl2hex(h,s,l){
 function luz(hex){const [r,g,b]=hex2rgb(hex);return (r*.299+g*.587+b*.114)/255;}
 function tinta(hex){return luz(hex)>.62 ? '#141210' : '#ffffff';}
 
+/* Luminância relativa e contraste da WCAG. luz() acima é brilho percebido e
+   serve para decidir tinta sobre foto; isto aqui é a conta oficial, e é ela
+   que o site usa para saber se a cor do cliente pode virar texto. */
+function lumin(hex){
+  const [r,g,b] = hex2rgb(hex);
+  const f = v => { v /= 255; return v <= .04045 ? v/12.92 : Math.pow((v+.055)/1.055, 2.4); };
+  return .2126*f(r) + .7152*f(g) + .0722*f(b);
+}
+function contraste(a, b){
+  const x = lumin(a), y = lumin(b);
+  return (Math.max(x,y) + .05) / (Math.min(x,y) + .05);
+}
+/* Rebaixa (ou clareia) a cor mantendo matiz e saturação até ela passar o
+   contraste pedido sobre o fundo. É o que permite usar a cor do cliente como
+   TEXTO no papel do site: crua, nenhuma das 10 cores dos moldes passa sobre
+   #f7f6f3 — a da barbearia dá 2,35:1 contra os 4,5:1 exigidos. Para
+   preenchimento (fundo, borda, ponto) continua-se usando a cor viva. */
+function corTexto(cor, fundo, alvo){
+  alvo = alvo || 4.5;
+  if (contraste(cor, fundo) >= alvo) return cor;
+  const [h,s,l] = rgb2hsl.apply(null, hex2rgb(cor));
+  const sg = Math.min(s + 8, 96);
+  const passo = lumin(fundo) > .18 ? -1.5 : 1.5;   // fundo claro escurece, fundo escuro clareia
+  let L = l;
+  for(let k = 0; k <= 70; k++){
+    L += passo;
+    if(L < 0 || L > 100) break;
+    const c = hsl2hex(h, sg, L);
+    if(contraste(c, fundo) >= alvo) return c;
+  }
+  return passo < 0 ? '#141210' : '#ffffff';
+}
+
 /* Paleta derivada de uma cor só. Como o texto é sempre branco sobre foto,
    a paleta serve para acento, duotone e blocos, não para decidir tinta. */
 function paleta(primary){
@@ -610,7 +643,8 @@ const MOLDES = [
 
 const FONTES = [...new Set(MOLDES.flatMap(m => m.fonte))];
 
-const API = {MOLDES, FONTES, ESTILO_SLIDE, paleta, renderSlide, renderCarrossel, esc, tinta, luz};
+const API = {MOLDES, FONTES, ESTILO_SLIDE, paleta, renderSlide, renderCarrossel, esc, tinta, luz,
+             lumin, contraste, corTexto};
 if (typeof module !== 'undefined' && module.exports) module.exports = API;
 raiz.CS = API;
 
