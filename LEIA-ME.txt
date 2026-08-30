@@ -130,3 +130,14 @@ O QUE JA FOI RESOLVIDO E NAO DEVE VOLTAR
    senao o slide cai em fonte de sistema. O console avisa quando isso
    acontece; document.fonts.check() NAO serve para testar, porque devolve
    true mesmo com a familia ausente.
+
+
+PRECO: DE ONDE SAIRAM OS VALORES
+----------------------------------------------------------------
+Referencia de mercado: freelancer cobra de R$ 40 a 150 por arte.
+R$ 59,90 na unidade fica dentro da faixa, e os pacotes puxam o
+ticket medio para cima sem que a unidade pareca cara.
+
+Isto morava num comentario dentro do index.html e ia junto para o
+ver-codigo-fonte de qualquer visitante. Raciocinio comercial fica
+aqui, e o LEIA-ME esta no .vercelignore justamente por isso.
