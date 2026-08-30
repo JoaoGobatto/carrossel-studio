@@ -44,6 +44,18 @@ do index.html:
   PACOTES[].preco  preco de cada pacote
   PACOTES[].link   URL do checkout da Cakto de cada pacote
 
+A marca fica no bloco :root do <style>, no topo do index.html:
+
+  --bg / --tx      papel e tinta
+  --acc            vermelho da marca, usado como PREENCHIMENTO
+  --acc-tx         o mesmo acento, mas para TEXTO (leia o item 6 abaixo)
+  --fd / --f       Fraunces no display, Karla no corpo
+
+Dentro de #moldes e #config esses tres acentos sao reescritos em tempo
+real pela cor do molde ativo. Fora dali o site fica no vermelho da marca.
+Se voce mudar o --acc no :root, muda so a marca; a cor do cliente
+continua vindo do molde.
+
 O site tem dois modos, escolhidos pela URL:
   index.html            modo anuncio: manda o pedido pro WhatsApp
   index.html?m=pago     modo pago: cobra na Cakto e depois manda
@@ -105,3 +117,16 @@ O QUE JA FOI RESOLVIDO E NAO DEVE VOLTAR
    mata a cor da marca. O resultado e gradiente vezes foto.
 5. Campo de cor com texto branco: cada ponto do gradiente e
    ajustado ate bater um brilho alvo, na funcao paleta().
+6. Sobre papel, NENHUMA das 10 cores dos moldes passa como texto: a da
+   barbearia da 2,35:1 contra os 4,5:1 exigidos. No fundo preto antigo
+   isso nao aparecia, porque la elas eram as cores claras. Por isso sao
+   dois tokens e nao um: --acc e a cor viva, para fundo, borda e ponto;
+   --acc-tx e a mesma cor rebaixada ate passar, para texto. Quem calcula
+   e CS.corTexto(), no moldes.js. Nao volte a usar --acc em color:.
+7. O <link> do Google Fonts carrega so as fontes dos 10 moldes que
+   existem. A skill instagram-carousel oferece sete pares de estilo, e o
+   par "Warm / approachable" (Lora + Nunito Sans) saiu de la por nao ter
+   molde usando. Molde novo com par novo precisa da familia no <link>,
+   senao o slide cai em fonte de sistema. O console avisa quando isso
+   acontece; document.fonts.check() NAO serve para testar, porque devolve
+   true mesmo com a familia ausente.

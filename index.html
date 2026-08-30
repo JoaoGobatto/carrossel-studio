@@ -1089,7 +1089,23 @@ function bind(id, campo, extra){
     {threshold:.12});
   document.querySelectorAll('.rev').forEach(el=>io.observe(el));
 
-  if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>ajustarPalcos());
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>{
+    ajustarPalcos();
+    /* O <link> do topo carrega só as fontes dos 10 moldes que existem hoje.
+       A skill instagram-carousel oferece sete pares de estilo, e o par
+       "Warm / approachable" (Lora + Nunito Sans) saiu do <link> por não ter
+       molde usando. Molde novo com par novo precisa da família lá, senão o
+       slide renderiza em fonte de sistema sem reclamar de nada.
+       document.fonts.check() não serve de teste: ele devolve true mesmo com
+       a família ausente, porque considera o fallback como "consigo renderizar".
+       Só a lista de FontFace realmente carregadas diz a verdade. */
+    const carregadas = new Set([...document.fonts]
+      .filter(f => f.status === 'loaded')
+      .map(f => f.family.replace(/["']/g, '')));
+    const faltando = CS.FONTES.filter(f => !carregadas.has(f));
+    if(faltando.length) console.warn('[carrossel-studio] fonte de molde fora do <link> ' +
+      'do Google Fonts, o slide vai cair em fonte de sistema: ' + faltando.join(', '));
+  });
 })();
 </script>
 </body>
