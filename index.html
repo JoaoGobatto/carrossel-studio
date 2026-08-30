@@ -107,12 +107,63 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
   width:900px; height:620px; pointer-events:none; z-index:0;
   background:radial-gradient(closest-side, color-mix(in srgb, var(--acc) 7%, transparent), transparent 72%)}
 .hero .wrap{position:relative; z-index:2}
-.hero h1{font-family:var(--fd); font-weight:500; font-size:clamp(44px,7.6vw,96px);
-  line-height:.98; letter-spacing:-.03em; max-width:15ch}
+/* duas colunas: a copy à esquerda, o celular à direita.
+   min-width:0 nos dois filhos pela mesma razão do .cols lá embaixo — sem isso
+   o celular estica a coluna inteira e a copy fica espremida. */
+.heroGrid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,380px);
+  gap:clamp(30px,4.5vw,66px); align-items:center}
+.heroGrid > *{min-width:0}
+.hero h1{font-family:var(--fd); font-weight:500; font-size:clamp(40px,5.4vw,74px);
+  line-height:.99; letter-spacing:-.03em; max-width:13ch}
 .hero h1 em{font-style:italic; color:var(--acc-tx)}
-.hero .lead{color:var(--tx2); font-size:clamp(17px,1.9vw,20.5px); max-width:50ch; margin-top:28px}
-.heroCta{display:flex; gap:12px; flex-wrap:wrap; margin-top:34px; align-items:center}
+.hero .lead{color:var(--tx2); font-size:clamp(16.5px,1.4vw,19px); max-width:46ch; margin-top:22px}
+.heroCta{display:flex; gap:12px; flex-wrap:wrap; margin-top:30px; align-items:center}
 .heroCta .nota{font-size:14px; color:var(--tx3)}
+/* flex-start, nao center: quando o texto quebra em duas linhas o visto tem
+   de ficar na primeira, nao no meio das duas */
+.heroPe{display:flex; align-items:flex-start; gap:9px; margin-top:20px; color:var(--tx3);
+  font-size:13.5px; line-height:1.5}
+.heroPe s{text-decoration:none; color:var(--acc-tx); font-weight:700; line-height:inherit}
+
+/* ---------- celular do hero ---------- */
+.fone{width:100%; max-width:352px; margin-left:auto; position:relative; overflow:hidden;
+  background:#fff; border-radius:44px; border:9px solid #16151a;
+  box-shadow:0 34px 70px rgba(18,18,20,.24), 0 2px 6px rgba(18,18,20,.10)}
+.foneTopo{position:relative; display:flex; align-items:center; justify-content:space-between;
+  padding:10px 20px 7px; font-size:11px; font-weight:700; color:#16151a;
+  font-variant-numeric:tabular-nums}
+.foneTopo .ilha{position:absolute; left:50%; top:6px; transform:translateX(-50%);
+  width:64px; height:18px; border-radius:12px; background:#16151a}
+.foneTopo .sinal{display:flex; gap:2.5px; align-items:flex-end}
+.foneTopo .sinal i{width:3px; background:#16151a; border-radius:1px}
+.igTopo{display:flex; align-items:center; gap:9px; padding:7px 13px 9px}
+.igAv{width:28px; height:28px; border-radius:50%; background:var(--acc); color:var(--acc-ink);
+  display:grid; place-items:center; font-size:11px; font-weight:800; flex:0 0 28px}
+.igNome{font-size:12px; font-weight:600; color:#16151a; line-height:1.25}
+.igNome small{display:block; font-size:10px; color:#8b8b90; font-weight:400}
+.igMais{margin-left:auto; color:#16151a; font-weight:700; letter-spacing:1.5px; font-size:13px}
+.igPost{position:relative; background:var(--palco-bg)}
+.igPost .palco{border-radius:0}
+.igAcoes{position:relative; display:flex; align-items:center; gap:13px; padding:10px 13px 5px}
+.igAcoes svg{width:21px; height:21px; fill:none; stroke:#16151a; stroke-width:1.7;
+  stroke-linecap:round; stroke-linejoin:round; display:block}
+.igAcoes .salvar{margin-left:auto}
+.igPontos{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  display:flex; gap:4px}
+.igPontos i{width:5px; height:5px; border-radius:50%; background:#cfcfd4; transition:background .25s}
+.igPontos i.on{background:#3897f0}
+.igTexto{padding:3px 13px 15px; color:#16151a}
+.igTexto .curtidas{display:block; font-size:12px; font-weight:600; margin-bottom:5px;
+  font-variant-numeric:tabular-nums}
+.igTexto p{font-size:12px; line-height:1.45; margin:0}
+.igTexto p .arraste{color:#8b8b90}
+.igTexto p b{font-weight:600}
+.igTexto .vercom{display:block; font-size:11.5px; color:#8b8b90; margin-top:5px}
+@media(max-width:900px){
+  .heroGrid{grid-template-columns:1fr; gap:42px}
+  .fone{margin:0 auto; max-width:320px}
+  .hero h1{max-width:15ch}
+}
 
 /* faixa de slides em movimento */
 .esteira{margin-top:64px; position:relative; overflow:hidden; padding:2px 0}
@@ -417,14 +468,43 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
 <main>
 <!-- ======================= HERO ======================= -->
 <section class="hero">
-  <div class="wrap">
-    <div class="mono eyebrow"><i></i>10 narrativas prontas, uma por nicho</div>
-    <h1>Chega de postar <em>para ninguém</em>.</h1>
-    <p class="lead">Post bonito segura o dedo por meio segundo. História prende até o último slide, e é o último slide que vira mensagem no seu direct. Escolha o molde do seu nicho, preencha quatro campos e receba em 24 horas. O resto é com a gente.</p>
-    <div class="heroCta">
-      <button class="btn" onclick="irMoldes()">Escolher meu molde</button>
-      <button class="btn ghost" onclick="document.getElementById('entrega').scrollIntoView()">O que vem no pack</button>
-      <span class="nota">Sem reunião. Sem briefing de 40 minutos.</span>
+  <div class="wrap heroGrid">
+    <div>
+      <div class="mono eyebrow"><i></i>10 narrativas prontas, uma por nicho</div>
+      <h1>Chega de postar <em>para ninguém</em>.</h1>
+      <p class="lead">Post bonito segura o dedo por meio segundo. História prende até o último slide, e é o último slide que vira mensagem no seu direct. Escolha o molde do seu nicho, preencha quatro campos e receba em 24 horas.</p>
+      <div class="heroCta">
+        <button class="btn" onclick="irMoldes()">Escolher meu molde</button>
+        <button class="btn ghost" onclick="document.getElementById('entrega').scrollIntoView()">O que vem no pack</button>
+      </div>
+      <div class="heroPe"><s>&#10003;</s> Sem reunião, sem briefing de 40 minutos &middot; pagamento único &middot; entrega em 24h</div>
+    </div>
+
+    <!-- Celular com o slide de verdade rodando dentro, não um mockup desenhado -->
+    <div class="fone" id="fone">
+      <div class="foneTopo">
+        <span>9:41</span><i class="ilha"></i>
+        <span class="sinal"><i style="height:5px"></i><i style="height:7px"></i><i style="height:9px"></i><i style="height:11px"></i></span>
+      </div>
+      <div class="igTopo">
+        <span class="igAv">S</span>
+        <span class="igNome">sua marca<small>Patrocinado</small></span>
+        <span class="igMais">&middot;&middot;&middot;</span>
+      </div>
+      <div class="igPost">
+        <div class="palco" id="fonePalco"></div>
+      </div>
+      <div class="igAcoes">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.7S3.8 15.6 3.8 10.2A4.4 4.4 0 0 1 12 7.8a4.4 4.4 0 0 1 8.2 2.4c0 5.4-8.2 10.5-8.2 10.5z"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.7 11.6a8 8 0 0 1-8.6 8 9 9 0 0 1-3.4-.7L3.3 20.6l1.8-4.6a8 8 0 0 1-1.8-5 8 8 0 0 1 8.6-7.7 8 8 0 0 1 8.8 8.3z"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.4 2.6 10.6 13.4M21.4 2.6l-6.9 19.6-3.9-8.8-8.8-3.9 19.6-6.9z"/></svg>
+        <span class="igPontos" id="fonePontos"></span>
+        <svg class="salvar" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.7 20.9 12 16.1l-6.7 4.8V5.2a2 2 0 0 1 2-2h9.4a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <div class="igTexto">
+        <p id="foneLeg"></p>
+        <span class="vercom" id="foneNicho"></span>
+      </div>
     </div>
   </div>
 
@@ -738,6 +818,45 @@ function montarEsteira(){
                  '1 ajuste incluso','Sem reunião','Pagamento único','10 nichos prontos'];
   const linha = itens.map(t=>'<span><b>&#9679;</b>'+t+'</span>').join('');
   document.getElementById('tira').innerHTML = linha + linha;
+}
+
+/* ---------- celular do hero ---------------------------------------------- */
+/* O mockup da referência é imagem parada. Aqui dentro roda o slide de verdade,
+   pelo mesmo CS.renderSlide que a produção usa para exportar o PNG. O que a
+   pessoa vê no hero é o produto, não um desenho do produto. Cada molde traz a
+   própria cor junto, então o celular também demonstra a troca de paleta. */
+function montarFone(){
+  const palco = document.getElementById('fonePalco');
+  if(!palco) return;
+  const fone = document.getElementById('fone');
+  let mi = 0, si = 0;
+
+  function pinta(){
+    const m = CS.MOLDES[mi], n = m.seq.length;
+    palco.innerHTML = CS.renderSlide(m, dadosDo(m), si, n);
+    ajustarPalcos(palco.parentElement);
+    fone.style.setProperty('--acc', m.cor);
+    fone.style.setProperty('--acc-ink', CS.tinta(m.cor));
+    document.getElementById('fonePontos').innerHTML =
+      Array.from({length:n},(_,i)=>'<i class="'+(i===si?'on':'')+'"></i>').join('');
+    document.getElementById('foneLeg').innerHTML =
+      '<b>seunegocio</b> ' + CS.esc(m.seq[0].titulo) + ' <span class="arraste">arraste &#8594;</span>';
+    document.getElementById('foneNicho').textContent = m.nicho.toLowerCase();
+  }
+  pinta();
+
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  /* anda só enquanto está na tela: fora dela seria trabalho de layout à toa */
+  let relogio = null;
+  new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting && !relogio){
+      relogio = setInterval(()=>{
+        si++;
+        if(si >= CS.MOLDES[mi].seq.length){ si = 0; mi = (mi + 1) % CS.MOLDES.length; }
+        pinta();
+      }, 2600);
+    } else if(!e.isIntersecting && relogio){ clearInterval(relogio); relogio = null; }
+  }), {threshold:.2}).observe(fone);
 }
 
 /* ---------- galeria ------------------------------------------------------ */
@@ -1054,7 +1173,7 @@ function bind(id, campo, extra){
   document.getElementById('estiloSlide').textContent = CS.ESTILO_SLIDE;
   if(SEM_MOUSE) document.getElementById('dicaMolde').textContent =
     'Toque em um molde para abrir. A história roda sozinha aqui embaixo.';
-  montarEsteira(); montarGaleria(); montarChips(); montarFaq();
+  montarEsteira(); montarFone(); montarGaleria(); montarChips(); montarFaq();
 
   bind('fNome','nome'); bind('fArroba','arroba');
   montarAssuntos();
