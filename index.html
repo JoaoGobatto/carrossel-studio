@@ -125,8 +125,56 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
   font-size:13.5px; line-height:1.5}
 .heroPe s{text-decoration:none; color:var(--acc-tx); font-weight:700; line-height:inherit}
 
+/* ---------- demonstração do hero ----------
+   O espaço do celular é reservado desde o primeiro paint, mesmo ele só entrando
+   aos ~5s: sem isso a página salta quando ele chega, e numa landing que recebe
+   anúncio o LCP salta junto. */
+.demo{position:relative; display:grid; grid-template-rows:1fr auto; place-items:center;
+  min-height:600px}
+/* Só a ficha e o celular se empilham; a nota tem linha própria. Empilhar os
+   três punha o celular por cima do botão de pausa e ele deixava de ser
+   clicável — um controle de parada que não recebe clique não é um controle. */
+.dFicha,.dPalco{grid-area:1/1; width:100%}
+.dNota{grid-area:2/1; width:100%}
+
+/* ficha do pedido — é o campo que existe de verdade no configurador */
+.dFicha{max-width:352px; margin:0 auto; background:var(--card); border:1px solid var(--line);
+  border-radius:4px; padding:20px; box-shadow:0 12px 34px rgba(18,18,20,.07); align-self:center}
+.dRot{font-family:var(--fu); font-size:10px; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--tx3); font-weight:600}
+.dCampo{position:relative; margin-top:11px; font-size:15px; line-height:1.45; color:var(--tx)}
+/* o fantasma reserva a altura da frase inteira, para a digitação nunca reflowar
+   a caixa nem no último caractere */
+.dFantasma{visibility:hidden; display:block}
+.dEscrito{position:absolute; inset:0}
+.dCaret{display:inline-block; width:1.5px; height:1.05em; background:var(--acc);
+  vertical-align:-2px; margin-left:1px; animation:dPisca 1.1s steps(1) infinite}
+@keyframes dPisca{0%,55%{opacity:1}56%,100%{opacity:0}}
+.dRegua{height:1px; background:var(--line); margin-top:14px; overflow:hidden}
+.dRegua i{display:block; height:100%; background:var(--acc); transform:scaleX(0);
+  transform-origin:left}
+.dEtapas{position:relative; height:16px; margin-top:12px}
+.dEtapa{position:absolute; inset:0; font-family:var(--fu); font-size:10px; letter-spacing:.13em;
+  text-transform:uppercase; font-weight:600; color:var(--acc-tx);
+  opacity:0; translate:0 5px; transition:opacity .3s ease, translate .3s ease}
+.dEtapa.on{opacity:1; translate:0 0}
+
+/* A inclinação vive no invólucro. O #fone NÃO ganha transform próprio: a
+   combinação overflow:hidden + border-radius + contexto 3D no mesmo elemento é
+   onde o WebKit perde o recorte arredondado e a quina volta viva no iPhone. */
+.dPalco{perspective:1500px; display:grid; place-items:center; align-self:center}
+.dTombo{transform:rotateY(-9deg) rotateX(3.5deg) rotateZ(-1.2deg); width:100%; max-width:352px}
+.dNota{align-self:end; display:flex; align-items:center; justify-content:center; gap:9px;
+  font-size:11.5px; color:var(--tx3); padding-top:14px; flex-wrap:wrap}
+.dPausa{appearance:none; background:transparent; border:1px solid var(--line2); cursor:pointer;
+  border-radius:100px; padding:3px 11px; font-family:var(--fu); font-size:10px; font-weight:600;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--tx2);
+  transition:border-color .2s, color .2s}
+.dPausa:hover{border-color:var(--acc); color:var(--acc-tx)}
+.dPausa:focus-visible{outline:2px solid var(--acc); outline-offset:2px}
+
 /* ---------- celular do hero ---------- */
-.fone{width:100%; max-width:352px; margin-left:auto; position:relative; overflow:hidden;
+.fone{width:100%; max-width:352px; position:relative; overflow:hidden;
   background:#fff; border-radius:44px; border:9px solid #16151a;
   box-shadow:0 34px 70px rgba(18,18,20,.24), 0 2px 6px rgba(18,18,20,.10)}
 .foneTopo{position:relative; display:flex; align-items:center; justify-content:space-between;
@@ -142,8 +190,49 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
 .igNome{font-size:12px; font-weight:600; color:#16151a; line-height:1.25}
 .igNome small{display:block; font-size:10px; color:#8b8b90; font-weight:400}
 .igMais{margin-left:auto; color:#16151a; font-weight:700; letter-spacing:1.5px; font-size:13px}
-.igPost{position:relative; background:var(--palco-bg)}
+.igPost{position:relative; background:var(--palco-bg); overflow:hidden}
 .igPost .palco{border-radius:0}
+/* Fita rígida com os 7 slides reais, renderizados UMA vez. Cada quadro carrega
+   a classe .palco de propósito: ajustarPalcos() já os enxerga e o seletor de
+   filho direto .palco > .sl continua casando. Nada é recriado durante o swipe.
+   translate é longhand, não transform: se alguém puser um transform no trilho
+   depois, as duas propriedades compõem em vez de uma apagar a outra. */
+.dRail{display:flex; width:100%; translate:calc(var(--i,0) * -100% - var(--puxa,0%))}
+.dRail > .palco{flex:0 0 100%}
+/* duas curvas, porque um dedo puxando é linear: é a soltura que desacelera */
+.dRail.arrasta{transition:translate .16s linear}
+.dRail.desliza{transition:translate .54s cubic-bezier(.2,.8,.2,1)}
+
+/* ---------- estados da demonstração ----------
+   Tudo que esconde vive sob .dOn, que só o JS põe. JS quebrado, CS ausente ou
+   observer mudo: o hero continua sendo o hero, com o celular pintado. */
+#demo.dOn .dFicha{opacity:0; translate:0 9px;
+  transition:opacity .4s ease, translate .4s cubic-bezier(.2,.8,.2,1)}
+#demo.dOn:is([data-fase=digita],[data-fase=gera]) .dFicha{opacity:1; translate:0 0}
+#demo.dOn .dPalco{opacity:0; translate:0 20px; scale:.975;
+  transition:opacity .6s ease, translate .72s cubic-bezier(.2,.8,.2,1),
+             scale .72s cubic-bezier(.2,.8,.2,1)}
+#demo.dOn:is([data-fase=fone],[data-fase=chrome],[data-fase=monta],[data-fase=ler],[data-fase=roda],[data-fase=fim]) .dPalco{opacity:1; translate:0 0; scale:1}
+#demo.dOn :is(.igTopo,.igAcoes,.igTexto){opacity:0; translate:0 6px;
+  transition:opacity .32s ease, translate .32s ease}
+#demo.dOn:is([data-fase=chrome],[data-fase=monta],[data-fase=ler],[data-fase=roda],[data-fase=fim]) :is(.igTopo,.igAcoes,.igTexto){opacity:1; translate:0 0}
+#demo.dOn .igAcoes{transition-delay:70ms} #demo.dOn .igTexto{transition-delay:140ms}
+#demo.dOn[data-fase=gera] .dRegua i{transform:scaleX(1); transition:transform 1.7s linear}
+
+/* Montagem do slide 1 por partes. Anima só FILHOS do .sl — o transform do
+   próprio .sl é do ajustarPalcos(), e uma regra aqui venceria o inline,
+   devolvendo o slide a 420px crus dentro de uma caixa de 302px.
+   Nada disto entra no ESTILO_SLIDE: o export em PNG continua estático. */
+#demo.dOn .dz{opacity:0; translate:0 10px}
+#demo.dOn .dph{opacity:0; scale:1.05}
+#demo.dOn.dMontar .dz{opacity:1; translate:0 0;
+  transition:opacity .34s ease, translate .44s cubic-bezier(.2,.8,.2,1);
+  transition-delay:calc(var(--dz,0) * 1ms)}
+#demo.dOn.dMontar .dph{opacity:1; scale:1;
+  transition:opacity .5s ease, scale .9s cubic-bezier(.2,.8,.2,1)}
+/* o grão usa mix-blend-mode: durante o swipe ele obriga o compositor a refazer
+   a camada a cada quadro. Some só enquanto a fita anda. */
+#demo.dOn[data-fase=roda] .sl .grain{opacity:0; transition:opacity .2s}
 .igAcoes{position:relative; display:flex; align-items:center; gap:13px; padding:10px 13px 5px}
 .igAcoes svg{width:21px; height:21px; fill:none; stroke:#16151a; stroke-width:1.7;
   stroke-linecap:round; stroke-linejoin:round; display:block}
@@ -161,8 +250,29 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
 .igTexto .vercom{display:block; font-size:11.5px; color:#8b8b90; margin-top:5px}
 @media(max-width:900px){
   .heroGrid{grid-template-columns:1fr; gap:42px}
-  .fone{margin:0 auto; max-width:320px}
+  .demo{min-height:560px}
+  .dTombo,.fone,.dFicha{max-width:318px}
   .hero h1{max-width:15ch}
+}
+/* Abaixo de ~1040px a coluna encosta na borda do .wrap e a projeção da
+   perspectiva mais a sombra passariam por baixo do overflow:hidden do .hero,
+   que não pode ser afrouxado por causa do brilho de 900px do ::before.
+   Endireitar uns graus resolve sem tirar a personalidade. */
+@media(max-width:1040px){ .dTombo{transform:rotateY(-6deg) rotateX(2.5deg) rotateZ(-.8deg)} }
+
+/* Movimento reduzido: a peça assenta no estado final e para. Cobre também o
+   .tira .row, que usa a keyframe corre e tinha ficado de fora da media query
+   original lá de cima. */
+@media (prefers-reduced-motion:reduce){
+  .tira .row{animation:none}
+  .dCaret{animation:none}
+  #demo.dOn .dFicha{display:none}
+  #demo.dOn .dPalco{opacity:1; translate:0 0; scale:1}
+  #demo.dOn :is(.igTopo,.igAcoes,.igTexto){opacity:1; translate:0 0}
+  #demo.dOn .dz{opacity:1; translate:0 0}
+  #demo.dOn .dph{opacity:1; scale:1}
+  .dRail{transition:none}
+  .dPausa{display:none}
 }
 
 /* faixa de slides em movimento */
@@ -480,19 +590,34 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
       <div class="heroPe"><s>&#10003;</s> Sem reunião, sem briefing de 40 minutos &middot; pagamento único &middot; entrega em 24h</div>
     </div>
 
-    <!-- Celular com o slide de verdade rodando dentro, não um mockup desenhado -->
+    <!-- Demonstração: pedido -> estúdio -> o carrossel real no feed.
+         Nada aqui é imagem: os 7 slides são os mesmos que a produção exporta. -->
+    <div class="demo" id="demo">
+
+      <div class="dFicha" id="dFicha">
+        <div class="dRot">Sobre o que é cada carrossel</div>
+        <div class="dCampo">
+          <span class="dFantasma" aria-hidden="true">Faça um carrossel para minha empresa de advocacia.</span>
+          <span class="dEscrito"><span id="dTexto"></span><span class="dCaret"></span></span>
+        </div>
+        <div class="dRegua"><i></i></div>
+        <div class="dEtapas" id="dEtapas"></div>
+      </div>
+
+      <div class="dPalco">
+        <div class="dTombo">
     <div class="fone" id="fone">
       <div class="foneTopo">
         <span>9:41</span><i class="ilha"></i>
         <span class="sinal"><i style="height:5px"></i><i style="height:7px"></i><i style="height:9px"></i><i style="height:11px"></i></span>
       </div>
       <div class="igTopo">
-        <span class="igAv">S</span>
+        <span class="igAv" id="igAv">S</span>
         <span class="igNome">sua marca<small>Patrocinado</small></span>
         <span class="igMais">&middot;&middot;&middot;</span>
       </div>
       <div class="igPost">
-        <div class="palco" id="fonePalco"></div>
+        <div class="dRail" id="dRail"></div>
       </div>
       <div class="igAcoes">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.7S3.8 15.6 3.8 10.2A4.4 4.4 0 0 1 12 7.8a4.4 4.4 0 0 1 8.2 2.4c0 5.4-8.2 10.5-8.2 10.5z"/></svg>
@@ -504,6 +629,17 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
       <div class="igTexto">
         <p id="foneLeg"></p>
         <span class="vercom" id="foneNicho"></span>
+      </div>
+    </div>
+        </div>
+      </div>
+
+      <!-- WCAG 2.2.2: movimento automático por mais de 5s precisa de parada.
+           E a nota diz o prazo real: o h1 ao lado promete 24 horas, e uma demo
+           de 19 segundos não pode desmentir ele. -->
+      <div class="dNota">
+        <button class="dPausa" id="dPausa" type="button">Pausar</button>
+        <span>demonstração &middot; o pedido real é entregue em 24h</span>
       </div>
     </div>
   </div>
@@ -806,7 +942,11 @@ window.addEventListener('resize', ()=>ajustarPalcos());
 /* ---------- esteira do hero --------------------------------------------- */
 function montarEsteira(){
   const cenas = [];
-  CS.MOLDES.forEach(m=>{ cenas.push([m,0]); cenas.push([m,4]); });   // capa e prova
+  /* fora o molde da demonstração: a esteira mostraria a mesma capa que o
+     celular acabou de revelar, a poucos pixels de distância, tirando o efeito
+     do reveal e repetindo a mesma foto duas vezes na mesma dobra. */
+  CS.MOLDES.filter(m => m.id !== DEMO.molde)
+           .forEach(m=>{ cenas.push([m,0]); cenas.push([m,4]); });   // capa e prova
   const html = (lista)=> lista.map(([m,i])=>
     '<div class="palco">' + CS.renderSlide(m, dadosDo(m), i, m.seq.length) + '</div>').join('');
   const a = cenas, b = cenas.slice().reverse();
@@ -820,43 +960,203 @@ function montarEsteira(){
   document.getElementById('tira').innerHTML = linha + linha;
 }
 
-/* ---------- celular do hero ---------------------------------------------- */
-/* O mockup da referência é imagem parada. Aqui dentro roda o slide de verdade,
-   pelo mesmo CS.renderSlide que a produção usa para exportar o PNG. O que a
-   pessoa vê no hero é o produto, não um desenho do produto. Cada molde traz a
-   própria cor junto, então o celular também demonstra a troca de paleta. */
-function montarFone(){
-  const palco = document.getElementById('fonePalco');
-  if(!palco) return;
-  const fone = document.getElementById('fone');
-  let mi = 0, si = 0;
+/* ---------- demonstração do hero ---------------------------------------- */
+/* Um pedido virando carrossel. Nada aqui é mockup: os sete quadros saem do
+   mesmo CS.renderSlide que a produção exporta em PNG, com as fotos de verdade.
+   Para mexer no ritmo, mexa só no ROTEIRO. */
+const DEMO = {
+  molde : 'juri',
+  frase : 'Faça um carrossel para minha empresa de advocacia.',
+  /* O estúdio trabalhando, não uma IA gerando. O produto é um humano entregando
+     em 24 horas — o h1 ao lado promete isso — então a hero não pode contar a
+     história de geração instantânea. */
+  etapas: ['Lendo o pedido', 'Escolhendo o molde', 'Escrevendo os sete slides',
+           'Aplicando a sua cor', 'Fechando a arte'],
+  /* [fase, slide, quanto tempo fica nela em ms] — volta inteira ≈ 19s */
+  roteiro: [
+    ['digita', 0, 2700],
+    ['gera',   0, 1900],
+    ['fone',   0,  700],
+    ['chrome', 0,  380],
+    ['monta',  0, 1250],
+    ['ler',    0,  760],
+    ['roda',   1, 1300], ['roda', 2, 1300], ['roda', 3, 1300],
+    ['roda',   4, 1300], ['roda', 5, 1300], ['roda', 6, 1300],
+    ['fim',    6, 2200],
+    ['sai',    6,  680],
+    ['pausa',  0,  620]
+  ]
+};
 
-  function pinta(){
-    const m = CS.MOLDES[mi], n = m.seq.length;
-    palco.innerHTML = CS.renderSlide(m, dadosDo(m), si, n);
-    ajustarPalcos(palco.parentElement);
-    fone.style.setProperty('--acc', m.cor);
-    fone.style.setProperty('--acc-ink', CS.tinta(m.cor));
-    document.getElementById('fonePontos').innerHTML =
-      Array.from({length:n},(_,i)=>'<i class="'+(i===si?'on':'')+'"></i>').join('');
-    document.getElementById('foneLeg').innerHTML =
-      '<b>seunegocio</b> ' + CS.esc(m.seq[0].titulo) + ' <span class="arraste">arraste &#8594;</span>';
-    document.getElementById('foneNicho').textContent = m.nicho.toLowerCase();
+/* Um único timer vivo por vez. O token invalida callback já agendado que
+   dispararia depois de uma pausa — sem ele a fita anda com a aba escondida. */
+let dTk = 0, dTid = null;
+function dEsperar(ms, fn){ const meu = dTk; dTid = setTimeout(()=>{ if(meu === dTk) fn(); }, ms); }
+function dAbortar(){ dTk++; clearTimeout(dTid); dTid = null; }
+
+/* A ordem de documento que o querySelectorAll devolve JÁ é a ordem de leitura
+   do slide, nos sete tipos. Por isso a montagem não usa nth-child nem índice
+   fixo: o .mark só existe em dois tipos e o .hook não existe no cta, então
+   cronograma por constante deixaria buraco morto em algum deles. */
+const D_PARTES = '.top, .mark, .in h1, .in .sub, .in .fig, .in .figl, .in .say,' +
+                 '.in .chk > div, .in .stp > div, .in .btn2, .hook, .bar';
+/* intervalo ANTES de cada peça: a foto é o chão, a moldura vem colada, e o
+   título segura 150ms antes do subtítulo porque manchete precisa de silêncio */
+const D_GAP = {top:110, mark:70, h1:90, sub:150, fig:90, figl:130, say:150,
+               item:70, btn2:120, hook:90, bar:60};
+
+function dPapel(el){
+  if(el.tagName === 'H1') return 'h1';
+  for(const k of ['top','mark','sub','fig','figl','say','btn2','hook','bar'])
+    if(el.classList.contains(k)) return k;
+  return 'item';
+}
+function dMarcar(sl){
+  if(!sl) return;
+  const ph = sl.querySelector('.ph'); if(ph) ph.classList.add('dph');
+  let t = 0;
+  sl.querySelectorAll(D_PARTES).forEach(el=>{
+    if(el.classList.contains('dz')) return;
+    t += D_GAP[dPapel(el)] || 70;
+    el.classList.add('dz');
+    el.style.setProperty('--dz', t);
+  });
+}
+
+function montarDemo(){
+  const demo = document.getElementById('demo');
+  if(!demo || !window.CS) return;                    // sem CS o hero fica como está
+  const m = CS.MOLDES.find(x => x.id === DEMO.molde) || CS.MOLDES[0];
+  /* 'sua marca' explicito: sem ele inicial() cai em 'C' e o avatar do slide
+     discorda do avatar do cabeçalho, sendo a mesma conta postando. Com ele as
+     quatro aparições da marca no celular saem do mesmo valor. */
+  const d = Object.assign(dadosDo(m), {nome:'sua marca', arroba:'seunegocio'});
+  const n = m.seq.length;
+  const rail    = document.getElementById('dRail');
+  const fone    = document.getElementById('fone');
+  const pontos  = document.getElementById('fonePontos');
+  const escrito = document.getElementById('dTexto');
+  const botao   = document.getElementById('dPausa');
+
+  /* os sete slides, renderizados UMA vez. Daqui para frente nada dentro do
+     celular é recriado: só o trilho anda. */
+  rail.innerHTML = m.seq.map((_, i) =>
+    '<div class="palco">' + CS.renderSlide(m, d, i, n) + '</div>').join('');
+  pontos.innerHTML = Array.from({length:n}, (_, i) =>
+    '<i class="' + (i === 0 ? 'on' : '') + '"></i>').join('');
+  document.getElementById('dEtapas').innerHTML = DEMO.etapas.map(t =>
+    '<span class="dEtapa">' + CS.esc(t) + '</span>').join('');
+
+  fone.style.setProperty('--acc', m.cor);
+  fone.style.setProperty('--acc-ink', CS.tinta(m.cor));
+  /* o terceiro faltava na versão anterior desta função: ela escrevia só dois,
+     enquanto atualizar() escreve os três. Sem ele o texto de acento dentro do
+     celular ficava no vermelho da marca em vez da cor do molde. */
+  fone.style.setProperty('--acc-tx', CS.corTexto(m.cor, '#ffffff'));
+
+  document.getElementById('foneLeg').innerHTML =
+    '<b>seunegocio</b> ' + CS.esc(m.seq[0].titulo) + ' <span class="arraste">arraste &#8594;</span>';
+  document.getElementById('foneNicho').textContent = m.nicho.toLowerCase();
+  document.getElementById('igAv').textContent = d.nome.charAt(0).toUpperCase();
+
+  ajustarPalcos(demo);
+  dMarcar(rail.firstElementChild && rail.firstElementChild.querySelector('.sl'));
+
+  const menos = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let p = 0, vivo = false, pausado = false;
+
+  function ponto(i){
+    pontos.querySelectorAll('i').forEach((e, k) => e.classList.toggle('on', k === i));
   }
-  pinta();
+  function fita(i, puxa){
+    rail.style.setProperty('--i', i);
+    rail.style.setProperty('--puxa', puxa || '0%');
+  }
 
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  /* anda só enquanto está na tela: fora dela seria trabalho de layout à toa */
-  let relogio = null;
-  new IntersectionObserver(es=>es.forEach(e=>{
-    if(e.isIntersecting && !relogio){
-      relogio = setInterval(()=>{
-        si++;
-        if(si >= CS.MOLDES[mi].seq.length){ si = 0; mi = (mi + 1) % CS.MOLDES.length; }
-        pinta();
-      }, 2600);
-    } else if(!e.isIntersecting && relogio){ clearInterval(relogio); relogio = null; }
-  }), {threshold:.2}).observe(fone);
+  /* Duas curvas por swipe: um dedo puxando é linear, é a soltura que
+     desacelera. É o que separa "slide trocando" de "alguém arrastando". */
+  function passar(i){
+    rail.classList.remove('desliza'); rail.classList.add('arrasta');
+    rail.style.setProperty('--puxa', '6%');
+    dEsperar(165, ()=>{
+      rail.classList.remove('arrasta'); rail.classList.add('desliza');
+      fita(i, '0%');
+      ponto(i);
+    });
+  }
+
+  function girarEtapas(){
+    const els = demo.querySelectorAll('.dEtapa');
+    let k = 0;
+    (function passo(){
+      els.forEach(e => e.classList.remove('on'));
+      if(els[k]) els[k].classList.add('on');
+      if(++k < els.length) dEsperar(370, passo);
+    })();
+  }
+
+  function digitar(){
+    escrito.textContent = '';
+    let k = 0;
+    (function passo(){
+      escrito.textContent = DEMO.frase.slice(0, k);
+      if(k >= DEMO.frase.length) return;
+      const c = DEMO.frase[k++];
+      dEsperar(30 + Math.random() * 22 + (c === ' ' ? 45 : 0), passo);
+    })();
+  }
+
+  /* Estado de repouso: celular visível, slide 1 montado, nada em movimento.
+     É como a peça nasce, para o primeiro paint já ser o produto. */
+  function assentar(){
+    dAbortar();
+    demo.dataset.fase = 'fim';
+    demo.classList.add('dMontar');
+    rail.classList.remove('arrasta', 'desliza');
+    fita(0, '0%'); ponto(0);
+  }
+
+  function tocar(){
+    const linha = DEMO.roteiro[p], f = linha[0], slide = linha[1], ms = linha[2];
+    demo.dataset.fase = f;
+    if(f === 'digita'){ demo.classList.remove('dMontar'); digitar(); }
+    else if(f === 'gera')  girarEtapas();
+    else if(f === 'monta') demo.classList.add('dMontar');
+    else if(f === 'roda')  passar(slide);
+    else if(f === 'pausa'){                       // volta ao slide 1 com a tela apagada
+      rail.classList.remove('arrasta', 'desliza');
+      fita(0, '0%'); ponto(0);
+      demo.classList.remove('dMontar');
+    }
+    dEsperar(ms, ()=>{ p = (p + 1) % DEMO.roteiro.length; tocar(); });
+  }
+
+  function seguir(){ if(vivo || pausado || menos.matches) return; vivo = true; tocar(); }
+  function parar(){ if(!vivo) return; vivo = false; dAbortar(); }
+
+  demo.classList.add('dOn');
+  assentar();
+
+  if(!menos.matches){
+    /* primeiro deixa ver o resultado, depois conta como ele foi feito */
+    new IntersectionObserver(es => es.forEach(e => {
+      if(e.isIntersecting) dEsperar(1400, seguir); else parar();
+    }), {threshold:.3}).observe(demo);
+    /* o observer não cobre aba no fundo: lá o elemento continua intersecting */
+    document.addEventListener('visibilitychange', ()=> document.hidden ? parar() : seguir());
+  }
+
+  /* se a pessoa ligar a preferência com a página aberta, a peça assenta na hora */
+  menos.addEventListener('change', e => {
+    if(e.matches){ parar(); assentar(); } else { p = 0; seguir(); }
+  });
+
+  /* WCAG 2.2.2: movimento automático por mais de 5s precisa de parada */
+  botao.addEventListener('click', ()=>{
+    pausado = !pausado;
+    botao.textContent = pausado ? 'Continuar' : 'Pausar';
+    if(pausado) parar(); else seguir();
+  });
 }
 
 /* ---------- galeria ------------------------------------------------------ */
@@ -1173,7 +1473,7 @@ function bind(id, campo, extra){
   document.getElementById('estiloSlide').textContent = CS.ESTILO_SLIDE;
   if(SEM_MOUSE) document.getElementById('dicaMolde').textContent =
     'Toque em um molde para abrir. A história roda sozinha aqui embaixo.';
-  montarEsteira(); montarFone(); montarGaleria(); montarChips(); montarFaq();
+  montarEsteira(); montarDemo(); montarGaleria(); montarChips(); montarFaq();
 
   bind('fNome','nome'); bind('fArroba','arroba');
   montarAssuntos();
