@@ -471,6 +471,13 @@ header.emCima .nav{background:rgba(10,10,18,.30); border-color:rgba(255,255,255,
 @keyframes corre{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){ .trilho{animation:none} }
 .esteira .palco{width:212px; flex:0 0 212px; border-radius:12px; border:1px solid var(--line)}
+/* A escala de cada card é escrita a cada quadro pelo esteiraEmPerspectiva().
+   O transform-origin no meio da altura é o que faz o card crescer para os dois
+   lados em vez de "subir"; o backface e o translateZ(0) só pedem uma camada
+   própria, para o navegador não repintar a fileira inteira a cada passo.
+   Nada aqui mexe em layout: escala e opacidade não empurram vizinho, então a
+   grade, o gap de 14px e a largura de 212px continuam exatamente os mesmos. */
+.esteira .trilho > .palco{transform-origin:50% 50%; backface-visibility:hidden}
 
 /* ticker de garantias */
 /* A cama escura não é enfeite: dentro do hero o ticker corre por cima da
@@ -1171,6 +1178,110 @@ function montarEsteira(){
                  '1 ajuste incluso','Sem reunião','Pagamento único','10 nichos prontos'];
   const linha = itens.map(t=>'<span><b>&#9679;</b>'+t+'</span>').join('');
   document.getElementById('tira').innerHTML = linha + linha;
+}
+
+/* ---------- a esteira em perspectiva ------------------------------------
+   O card que passa pelo meio da tela é o maior; quanto mais longe do meio,
+   menor. A fileira continua correndo por CSS — quem manda no movimento
+   horizontal ainda é a keyframe `corre`, com o pause no hover e o
+   prefers-reduced-motion de sempre. Aqui só se escreve o tamanho.
+
+   POR QUE SCALE 2D E NÃO translateZ COM PERSPECTIVE. Projeção 3D obriga o
+   navegador a rasterizar a camada uma vez e reamostrá-la depois, e o preço
+   sai no texto: foi exatamente o que borrou o celular do hero até a
+   inclinação sair de lá. Estes cards são slides cheios de texto pequeno.
+   scale() é 2D, o Chrome redesenha as letras já no tamanho final e elas saem
+   limpas. A profundidade vem de outros dois sinais que não custam nitidez:
+   os cards das pontas afundam alguns pixels e perdem opacidade. É isso que
+   dá a leve curvatura, sem ninguém andar em círculo.
+
+   O CUSTO POR QUADRO é o que decide se isto roda no celular. São 72 cards
+   nas duas fileiras, e medir cada um com getBoundingClientRect() seria 72
+   leituras de layout por quadro. Em vez disso lê-se UMA por fileira — a da
+   própria fileira, que já carrega o translate da animação — e a posição de
+   cada card sai de um offset guardado uma vez. Escala não mexe em layout,
+   então esse offset nunca muda. Escrita no DOM só quando o valor andou o
+   bastante para alguém enxergar.
+   --------------------------------------------------------------------- */
+const ESTEIRA_MIN = 0.65;    // o card da ponta
+const ESTEIRA_MAX = 1.00;    // o card no meio da tela
+const ESTEIRA_AFUNDA = 13;   // quanto a ponta desce, em px
+const ESTEIRA_APAGA = 0.38;  // quanta opacidade a ponta perde
+
+/* A curva entre a ponta e o meio. Uma potência de (1-d) serviria, mas
+   qualquer potência deixa um BICO no pico: a derivada não zera em d=0, e o
+   card cresce até o máximo e vira de repente, o que se enxerga justamente no
+   quadro em que ele está no meio da tela e mais em evidência. O smoothstep
+   chega no 1 com inclinação zero dos dois lados, então o card ENCOSTA no
+   tamanho máximo em vez de bater nele. De quebra ele passa bem perto da
+   escala pedida: 0,86 a um card do meio e 0,70 a dois. */
+const perto = d => 1 - (3*d*d - 2*d*d*d);
+
+function esteiraEmPerspectiva(){
+  const esteira = document.getElementById('esteira');
+  if(!esteira) return;
+  const fileiras = [...esteira.querySelectorAll('.trilho')].map(t => ({
+    el: t,
+    cards: [...t.children].map(c => ({el:c, rel:0, meia:0, s:-1, y:-1, o:-1}))
+  }));
+  if(!fileiras.length) return;
+
+  /* Os offsets são medidos uma vez por layout. É a única parte cara, e ela
+     não acontece por quadro. */
+  function medir(){
+    fileiras.forEach(f=>{
+      const base = f.el.offsetLeft;
+      f.cards.forEach(c=>{
+        c.rel  = c.el.offsetLeft - base;
+        c.meia = c.el.offsetWidth / 2;
+        c.s = -1;                       // força reescrever depois de remedir
+      });
+    });
+  }
+
+  function pintar(){
+    const meioTela = window.innerWidth / 2;
+    if(meioTela <= 0) return;
+    fileiras.forEach(f=>{
+      const esq = f.el.getBoundingClientRect().left;   // a única leitura de layout
+      f.cards.forEach(c=>{
+        const centro = esq + c.rel + c.meia;
+        let d = Math.abs(centro - meioTela) / meioTela;  // 0 no meio, 1 na borda
+        if(d > 1) d = 1;                                 // além da borda, fica no mínimo
+        const k = perto(d);
+        const s = ESTEIRA_MIN + (ESTEIRA_MAX - ESTEIRA_MIN) * k;
+        const y = (1 - k) * ESTEIRA_AFUNDA;
+        const o = 1 - ESTEIRA_APAGA * (1 - k);
+        /* o olho não vê meio milésimo de escala; o navegador vê o repaint */
+        if(Math.abs(s - c.s) < 0.0015 && Math.abs(y - c.y) < 0.15) return;
+        c.s = s; c.y = y; c.o = o;
+        c.el.style.transform = 'translateY(' + y.toFixed(2) + 'px) scale(' + s.toFixed(4) + ')';
+        c.el.style.opacity = o.toFixed(3);
+      });
+    });
+  }
+
+  medir(); pintar();
+
+  /* Com movimento reduzido a fileira está parada: pinta uma vez e não abre
+     laço nenhum. Laço eterno para desenhar sempre a mesma coisa é bateria
+     jogada fora. */
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    window.addEventListener('resize', ()=>{ medir(); pintar(); });
+    return;
+  }
+
+  let visivel = true, laco = 0;
+  (function quadro(){
+    laco = requestAnimationFrame(quadro);
+    if(visivel) pintar();
+  })();
+  new IntersectionObserver(es => { visivel = es[0].isIntersecting; }, {threshold:0})
+    .observe(esteira);
+  document.addEventListener('visibilitychange', ()=>{ if(document.hidden) visivel = false; });
+
+  let espera;
+  window.addEventListener('resize', ()=>{ clearTimeout(espera); espera = setTimeout(()=>{ medir(); pintar(); }, 120); });
 }
 
 /* ---------- demonstração do hero ---------------------------------------- */
@@ -1986,7 +2097,9 @@ function bind(id, campo, extra){
   if(SEM_MOUSE) document.getElementById('dicaMolde').textContent =
     'Toque em um molde para abrir. A história roda sozinha aqui embaixo.';
   fitasDeLuz(); barraSobreOHero();
-  montarEsteira(); montarDemo(); montarGaleria(); montarChips(); montarFaq();
+  montarEsteira();
+  /* depois de montarEsteira(): os offsets só existem com os cards no DOM */
+  esteiraEmPerspectiva(); montarDemo(); montarGaleria(); montarChips(); montarFaq();
   montarDadosEstruturados();
 
   bind('fNome','nome'); bind('fArroba','arroba');
