@@ -160,7 +160,7 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
    aos ~5s: sem isso a página salta quando ele chega, e numa landing que recebe
    anúncio o LCP salta junto. */
 .demo{position:relative; display:grid; grid-template-rows:1fr auto; place-items:center;
-  min-height:600px}
+  min-height:560px}
 /* Só a ficha e o celular se empilham; a nota tem linha própria. Empilhar os
    três punha o celular por cima do botão de pausa e ele deixava de ser
    clicável — um controle de parada que não recebe clique não é um controle. */
@@ -193,9 +193,12 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
    combinação overflow:hidden + border-radius + contexto 3D no mesmo elemento é
    onde o WebKit perde o recorte arredondado e a quina volta viva no iPhone. */
 .dPalco{perspective:1500px; display:grid; place-items:center; align-self:center}
-.dTombo{transform:rotateY(-9deg) rotateX(3.5deg) rotateZ(-1.2deg); width:100%; max-width:352px}
+.dTombo{transform:rotateY(-9deg) rotateX(3.5deg) rotateZ(-1.2deg); width:100%; max-width:256px}
+/* O padding de cima folga a quina do celular: o rotateX joga a base pintada
+   uns 3px abaixo da linha onde a grade termina, e sem essa folga o canto do
+   aparelho encosta na nota. */
 .dNota{align-self:end; display:flex; align-items:center; justify-content:center; gap:9px;
-  font-size:11.5px; color:var(--tx3); padding-top:14px; flex-wrap:wrap}
+  font-size:11.5px; color:var(--tx3); padding-top:22px; flex-wrap:wrap}
 .dPausa{appearance:none; background:transparent; border:1px solid var(--line2); cursor:pointer;
   border-radius:100px; padding:3px 11px; font-family:var(--fu); font-size:10px; font-weight:600;
   letter-spacing:.1em; text-transform:uppercase; color:var(--tx2);
@@ -203,23 +206,32 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
 .dPausa:hover{border-color:var(--acc); color:var(--acc-tx)}
 .dPausa:focus-visible{outline:2px solid var(--acc); outline-offset:2px}
 
-/* ---------- celular do hero ---------- */
-.fone{width:100%; max-width:352px; position:relative; overflow:hidden;
-  background:#fff; border-radius:44px; border:9px solid #16151a;
+/* ---------- celular do hero ----------
+   A LARGURA MANDA NA SILHUETA. O post é 4:5, então a altura sai de
+   largura x 1,25 mais a moldura do app, que é fixa em ~200px. A 352px de
+   largura essa conta dava 1 para 1,72 e a peça lia como tablet; a 256 dá
+   1 para 2,03, perto do iPhone de verdade (393 x 852 = 1 para 2,17).
+   Mais estreito que isso o slide começa a ficar pequeno demais para ler,
+   e ler o slide é o motivo de a demonstração existir.
+   Foi por isso que a barra de abas de baixo entrou junto: ela não é enfeite,
+   são os ~62px de moldura fixa que faltavam para a conta fechar sem espremer
+   o post. Mexeu na largura? Refaça a conta antes. */
+.fone{width:100%; max-width:256px; position:relative; overflow:hidden;
+  background:#fff; border-radius:38px; border:8px solid #16151a;
   box-shadow:0 34px 70px rgba(18,18,20,.24), 0 2px 6px rgba(18,18,20,.10)}
 .foneTopo{position:relative; display:flex; align-items:center; justify-content:space-between;
-  padding:10px 20px 7px; font-size:11px; font-weight:700; color:#16151a;
+  padding:8px 15px 6px; font-size:10px; font-weight:700; color:#16151a;
   font-variant-numeric:tabular-nums}
-.foneTopo .ilha{position:absolute; left:50%; top:6px; transform:translateX(-50%);
-  width:64px; height:18px; border-radius:12px; background:#16151a}
+.foneTopo .ilha{position:absolute; left:50%; top:5px; transform:translateX(-50%);
+  width:52px; height:15px; border-radius:10px; background:#16151a}
 .foneTopo .sinal{display:flex; gap:2.5px; align-items:flex-end}
 .foneTopo .sinal i{width:3px; background:#16151a; border-radius:1px}
-.igTopo{display:flex; align-items:center; gap:9px; padding:7px 13px 9px}
-.igAv{width:28px; height:28px; border-radius:50%; background:var(--acc); color:var(--acc-ink);
-  display:grid; place-items:center; font-size:11px; font-weight:800; flex:0 0 28px}
-.igNome{font-size:12px; font-weight:600; color:#16151a; line-height:1.25}
-.igNome small{display:block; font-size:10px; color:#8b8b90; font-weight:400}
-.igMais{margin-left:auto; color:#16151a; font-weight:700; letter-spacing:1.5px; font-size:13px}
+.igTopo{display:flex; align-items:center; gap:8px; padding:5px 11px 7px}
+.igAv{width:24px; height:24px; border-radius:50%; background:var(--acc); color:var(--acc-ink);
+  display:grid; place-items:center; font-size:10px; font-weight:800; flex:0 0 24px}
+.igNome{font-size:11px; font-weight:600; color:#16151a; line-height:1.25}
+.igNome small{display:block; font-size:9px; color:#8b8b90; font-weight:400}
+.igMais{margin-left:auto; color:#16151a; font-weight:700; letter-spacing:1.5px; font-size:12px}
 .igPost{position:relative; background:var(--palco-bg); overflow:hidden}
 .igPost .palco{border-radius:0}
 /* Fita rígida com os 7 slides reais, renderizados UMA vez. Cada quadro carrega
@@ -243,10 +255,11 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
   transition:opacity .6s ease, translate .72s cubic-bezier(.2,.8,.2,1),
              scale .72s cubic-bezier(.2,.8,.2,1)}
 #demo.dOn:is([data-fase=fone],[data-fase=chrome],[data-fase=monta],[data-fase=ler],[data-fase=roda],[data-fase=fim]) .dPalco{opacity:1; translate:0 0; scale:1}
-#demo.dOn :is(.igTopo,.igAcoes,.igTexto){opacity:0; translate:0 6px;
+#demo.dOn :is(.igTopo,.igAcoes,.igTexto,.igAbas,.foneRisco){opacity:0; translate:0 6px;
   transition:opacity .32s ease, translate .32s ease}
-#demo.dOn:is([data-fase=chrome],[data-fase=monta],[data-fase=ler],[data-fase=roda],[data-fase=fim]) :is(.igTopo,.igAcoes,.igTexto){opacity:1; translate:0 0}
+#demo.dOn:is([data-fase=chrome],[data-fase=monta],[data-fase=ler],[data-fase=roda],[data-fase=fim]) :is(.igTopo,.igAcoes,.igTexto,.igAbas,.foneRisco){opacity:1; translate:0 0}
 #demo.dOn .igAcoes{transition-delay:70ms} #demo.dOn .igTexto{transition-delay:140ms}
+#demo.dOn :is(.igAbas,.foneRisco){transition-delay:200ms}
 #demo.dOn[data-fase=gera] .dRegua i{transform:scaleX(1); transition:transform 1.7s linear}
 
 /* Montagem do slide 1 por partes. Anima só FILHOS do .sl — o transform do
@@ -263,25 +276,36 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
 /* o grão usa mix-blend-mode: durante o swipe ele obriga o compositor a refazer
    a camada a cada quadro. Some só enquanto a fita anda. */
 #demo.dOn[data-fase=roda] .sl .grain{opacity:0; transition:opacity .2s}
-.igAcoes{position:relative; display:flex; align-items:center; gap:13px; padding:10px 13px 5px}
-.igAcoes svg{width:21px; height:21px; fill:none; stroke:#16151a; stroke-width:1.7;
+.igAcoes{position:relative; display:flex; align-items:center; gap:11px; padding:8px 11px 4px}
+.igAcoes svg{width:18px; height:18px; fill:none; stroke:#16151a; stroke-width:1.7;
   stroke-linecap:round; stroke-linejoin:round; display:block}
 .igAcoes .salvar{margin-left:auto}
 .igPontos{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
   display:flex; gap:4px}
 .igPontos i{width:5px; height:5px; border-radius:50%; background:#cfcfd4; transition:background .25s}
 .igPontos i.on{background:#3897f0}
-.igTexto{padding:3px 13px 15px; color:#16151a}
+.igTexto{padding:2px 11px 9px; color:#16151a}
 .igTexto .curtidas{display:block; font-size:12px; font-weight:600; margin-bottom:5px;
   font-variant-numeric:tabular-nums}
-.igTexto p{font-size:12px; line-height:1.45; margin:0}
+.igTexto p{font-size:11px; line-height:1.4; margin:0}
 .igTexto p .arraste{color:#8b8b90}
 .igTexto p b{font-weight:600}
-.igTexto .vercom{display:block; font-size:11.5px; color:#8b8b90; margin-top:5px}
+.igTexto .vercom{display:block; font-size:10.5px; color:#8b8b90; margin-top:4px}
+
+/* Barra de abas e o risco do home. É o rodapé que todo iPhone tem embaixo do
+   feed, e é ele que fecha a proporção: sem esses ~62px o post encostava na
+   borda de baixo e o aparelho ficava com cara de moldura cortada. */
+.igAbas{display:flex; align-items:center; justify-content:space-between;
+  padding:7px 16px 3px; border-top:1px solid #ebebee}
+.igAbas svg{width:17px; height:17px; fill:none; stroke:#16151a; stroke-width:1.6;
+  stroke-linecap:round; stroke-linejoin:round}
+.igAbas .eu{width:16px; height:16px; border-radius:50%; border:1.6px solid #16151a}
+.foneRisco{display:block; width:78px; height:3.5px; border-radius:99px; background:#16151a;
+  opacity:.82; margin:5px auto 6px}
 @media(max-width:900px){
   .heroGrid{grid-template-columns:1fr; gap:42px}
-  .demo{min-height:560px}
-  .dTombo,.fone,.dFicha{max-width:318px}
+  .demo{min-height:520px}
+  .dTombo,.fone{max-width:238px} .dFicha{max-width:318px}
   .hero h1{max-width:15ch}
 }
 /* Abaixo de ~1040px a coluna encosta na borda do .wrap e a projeção da
@@ -298,7 +322,7 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
   .dCaret{animation:none}
   #demo.dOn .dFicha{display:none}
   #demo.dOn .dPalco{opacity:1; translate:0 0; scale:1}
-  #demo.dOn :is(.igTopo,.igAcoes,.igTexto){opacity:1; translate:0 0}
+  #demo.dOn :is(.igTopo,.igAcoes,.igTexto,.igAbas,.foneRisco){opacity:1; translate:0 0}
   #demo.dOn .dz{opacity:1; translate:0 0}
   #demo.dOn .dph{opacity:1; scale:1}
   .dRail{transition:none}
@@ -660,6 +684,16 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
         <p id="foneLeg"></p>
         <span class="vercom" id="foneNicho"></span>
       </div>
+      <!-- casa, busca, reels, sacola e o perfil: a barra de abas do app.
+           Entrou pela silhueta, não pela decoração — leia a nota no .fone. -->
+      <div class="igAbas" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M3.6 10.4 12 3.7l8.4 6.7v9a1.4 1.4 0 0 1-1.4 1.4H5a1.4 1.4 0 0 1-1.4-1.4z"/></svg>
+        <svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.6"/><path d="M20.5 20.5l-5-5"/></svg>
+        <svg viewBox="0 0 24 24"><rect x="3.4" y="3.4" width="17.2" height="17.2" rx="4.6"/><path d="M3.6 8.7h16.8M9.9 12.4l4.6 2.6-4.6 2.6z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M5.4 8h13.2l-1 12.1a1.4 1.4 0 0 1-1.4 1.3H7.8a1.4 1.4 0 0 1-1.4-1.3z"/><path d="M8.8 8V6.3a3.2 3.2 0 0 1 6.4 0V8"/></svg>
+        <span class="eu"></span>
+      </div>
+      <span class="foneRisco" aria-hidden="true"></span>
     </div>
         </div>
       </div>
