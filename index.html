@@ -94,7 +94,20 @@ body::after{content:''; position:fixed; inset:0; z-index:3; pointer-events:none;
 /* ---------- topo ---------- */
 header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
   backdrop-filter:blur(16px); background:rgba(247,246,243,.78); border-bottom:1px solid var(--line);
-  transition:background .3s}
+  transition:background .3s, border-color .3s, color .3s}
+/* Enquanto a barra está POR CIMA da faixa escura ela se inverte junto, senão
+   fica uma tarja de papel boiando no meio da animação. O JS põe e tira a
+   classe; sem JS a barra continua clara e legível, que é o padrão seguro. */
+header.emCima{background:rgba(7,7,12,.34); border-bottom-color:rgba(255,255,255,.10);
+  --tx:#f4f3f0; --tx2:#c6c4d2; --tx3:#94919f; --line2:rgba(255,255,255,.30);
+  /* o color é obrigatório: a marca não pinta a si mesma, ela herda. Só
+     redefinir o token deixaria "Carrossel Studio" preto sobre preto. */
+  color:var(--tx)}
+/* Só a mira da marca clareia. O botão continua no vermelho de sempre porque
+   #c0281e com a tinta clara dá 5,5:1 sobre o quase preto, e mexer no --acc do
+   header inteiro levaria o botão junto. */
+header.emCima .logo s{--acc:#ff7f68}
+header.emCima .btn.ghost{color:var(--tx)}
 .nav{display:flex; align-items:center; justify-content:space-between; height:var(--nav)}
 .logo{display:flex; align-items:baseline; gap:9px; font-family:var(--fd); font-weight:500; font-size:24px; letter-spacing:-.015em}
 /* Cruz de registro: a marca que a gráfica usa para alinhar as chapas de cor.
@@ -129,13 +142,56 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
 .btn.ghost:hover{border-color:var(--acc-tx); color:var(--acc-tx); box-shadow:none}
 .btn.sm{padding:10px 18px; font-size:14px}
 
-/* ---------- hero ---------- */
-/* overflow escondido por causa do brilho de 900px do ::before, que sozinho
-   empurrava a largura do documento para 645px e cortava tudo no celular */
-.hero{padding:calc(var(--nav) + 78px) 0 0; position:relative; overflow:hidden}
-.hero::before{content:''; position:absolute; top:-10%; left:50%; transform:translateX(-50%);
-  width:900px; height:620px; pointer-events:none; z-index:0;
-  background:radial-gradient(closest-side, color-mix(in srgb, var(--acc) 7%, transparent), transparent 72%)}
+/* ---------- hero: a faixa escura ----------
+   O site é de papel. O hero, e SÓ o hero, é a faixa invertida: fundo quase
+   preto com as fitas de luz correndo atrás.
+
+   Os tokens são reescritos aqui dentro em vez de existir um segundo jogo de
+   nomes. Assim tudo que já lia var(--tx), var(--line) e var(--acc-tx) vira
+   claro sozinho — botão fantasma, ticker, nota da demonstração — e nada disso
+   precisou de regra nova. O preço disso é uma armadilha, e ela tem nome:
+   qualquer coisa CLARA que more dentro do hero herda os tokens escuros e
+   some. Hoje é a ficha do pedido, e é por isso que ela devolve os tokens de
+   papel logo abaixo. Peça clara nova aqui dentro precisa fazer o mesmo.
+
+   --acc continua o vermelho da marca: #c0281e com a tinta clara dá 5,5:1,
+   passa. Já --acc-tx, que no papel é o vermelho REBAIXADO, aqui precisa ser o
+   contrário — clareado até passar sobre o quase preto. Mesma lógica do item 6
+   do LEIA-ME, invertida. */
+.hero{
+  --bg:#07070c; --bg2:#0b0b13;
+  --tx:#f4f3f0; --tx2:#a8a6b6; --tx3:#7b788a;
+  --line:rgba(255,255,255,.13); --line2:rgba(255,255,255,.28);
+  --acc-tx:#ff7f68;
+  position:relative; overflow:hidden; isolation:isolate;
+  padding:calc(var(--nav) + 78px) 0 0; background:var(--bg); color:var(--tx)}
+
+/* A ficha do pedido é branca e mora dentro da faixa escura: devolve o papel. */
+.dFicha{--tx:#121214; --tx2:#57544e; --tx3:#8b877f;
+  --line:rgba(18,18,20,.12); --line2:rgba(18,18,20,.26); --acc-tx:#b02419; color:var(--tx)}
+
+/* O ::before deixou de ser o brilho vermelho e virou o VÉU DE LEGIBILIDADE.
+   Não é decoração: o texto agora é branco sobre uma animação que muda sozinha,
+   e sem isto a linha de contraste dependeria do que a fita de luz resolvesse
+   fazer naquele segundo. O véu é direcional — pesado à esquerda, onde a copy
+   mora, e some à direita, onde o celular fica — então o fundo continua vivo
+   exatamente onde não há texto por cima. */
+.hero::before{content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:linear-gradient(101deg, rgba(7,7,12,.96) 0%, rgba(7,7,12,.90) 26%,
+             rgba(7,7,12,.58) 44%, rgba(7,7,12,.16) 60%, rgba(7,7,12,0) 72%)}
+
+/* Tela das fitas de luz. Fica atrás de tudo e não recebe clique. O fundo em
+   CSS por baixo dela não é enfeite: é o que a pessoa vê no primeiro paint,
+   com WebGL desligado, com movimento reduzido no sistema ou se o shader não
+   compilar. A faixa escura nunca aparece vazia. */
+.heroFundo{position:absolute; inset:0; z-index:0; width:100%; height:100%;
+  display:block; pointer-events:none; border:0;
+  background:
+    radial-gradient(120% 90% at 78% 18%, rgba(64,92,232,.42), transparent 58%),
+    radial-gradient(90% 70% at 96% 62%, rgba(118,86,224,.34), transparent 62%),
+    radial-gradient(70% 60% at 62% 96%, rgba(30,66,200,.30), transparent 66%),
+    radial-gradient(40% 34% at 88% 40%, rgba(226,104,66,.18), transparent 70%),
+    linear-gradient(160deg, #0a0a14, #06060b 62%)}
 .hero .wrap{position:relative; z-index:2}
 /* duas colunas: a copy à esquerda, o celular à direita.
    min-width:0 nos dois filhos pela mesma razão do .cols lá embaixo — sem isso
@@ -312,6 +368,14 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
 .foneRisco{display:block; width:78px; height:3.5px; border-radius:99px; background:#16151a;
   opacity:.82; margin:5px auto 6px}
 @media(max-width:900px){
+  /* O véu do hero é DIRECIONAL no desktop porque lá a copy fica à esquerda e
+     o celular à direita. Aqui tudo empilha numa coluna só, e o mesmo gradiente
+     deixaria a fita de luz passar por trás do parágrafo — foi o que aconteceu.
+     Em coluna única ele vira vertical: pesado em cima, onde mora o texto, e
+     aberto embaixo, onde entra o celular. */
+  .hero::before{background:linear-gradient(180deg, rgba(7,7,12,.93) 0%, rgba(7,7,12,.90) 34%,
+                rgba(7,7,12,.72) 48%, rgba(7,7,12,.30) 62%, rgba(7,7,12,.10) 78%,
+                rgba(7,7,12,.34) 100%)}
   .heroGrid{grid-template-columns:1fr; gap:42px}
   .demo{min-height:520px}
   .dTombo,.fone{max-width:238px} .dFicha{max-width:318px}
@@ -339,7 +403,11 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
 }
 
 /* faixa de slides em movimento */
-.esteira{margin-top:64px; position:relative; overflow:hidden; padding:2px 0}
+/* z-index:2 põe a esteira ACIMA do véu de legibilidade do hero. Sem isso o
+   véu, que é absoluto e vem depois no fluxo, pinta por cima dos moldes e eles
+   chegam lavados — foi exatamente o que aconteceu na primeira versão da
+   faixa escura. Mesmo motivo no ticker logo abaixo. */
+.esteira{margin-top:64px; position:relative; z-index:2; overflow:hidden; padding:2px 0}
 .esteira::before,.esteira::after{content:''; position:absolute; top:0; bottom:0; width:16%; z-index:4; pointer-events:none}
 .esteira::before{left:0; background:linear-gradient(90deg,var(--bg),transparent)}
 .esteira::after{right:0; background:linear-gradient(270deg,var(--bg),transparent)}
@@ -351,7 +419,11 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
 .esteira .palco{width:212px; flex:0 0 212px; border-radius:12px; border:1px solid var(--line)}
 
 /* ticker de garantias */
-.tira{border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin-top:64px; overflow:hidden}
+/* A cama escura não é enfeite: dentro do hero o ticker corre por cima da
+   animação, e sem ela a fita de luz passa atrás do texto e o apaga. Fora do
+   hero o --bg é o papel, então a mesma regra serve nos dois lugares. */
+.tira{border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin-top:64px;
+  overflow:hidden; position:relative; z-index:2; background:var(--bg)}
 .tira .row{display:flex; gap:56px; width:max-content; padding:15px 0; animation:corre 40s linear infinite}
 .tira span{display:flex; align-items:center; gap:12px; color:var(--tx2); font-size:14.5px; white-space:nowrap}
 .tira b{color:var(--acc-tx); font-family:var(--fu); font-size:12px; letter-spacing:.16em}
@@ -641,6 +713,10 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
 <main>
 <!-- ======================= HERO ======================= -->
 <section class="hero">
+  <!-- As fitas de luz. É <canvas> e não vídeo de propósito: vídeo de fundo
+       nesta qualidade passa de 2 MB, e esta página recebe anúncio. O desenho
+       inteiro cabe num shader de algumas linhas e pesa zero de rede. -->
+  <canvas class="heroFundo" id="heroFundo" aria-hidden="true"></canvas>
   <div class="wrap heroGrid">
     <div>
       <div class="mono eyebrow"><i></i>10 narrativas prontas, uma por nicho</div>
@@ -1618,6 +1694,221 @@ function montarDadosEstruturados(){
   document.head.appendChild(tag);
 }
 
+/* ---------- as fitas de luz do hero -------------------------------------
+   Um shader, não um vídeo. Vídeo de fundo nesta qualidade passa de 2 MB e
+   esta página recebe anúncio; o desenho inteiro cabe aqui e pesa zero de
+   rede. A imagem sai de fbm com domain warping: duas passadas de ruído
+   distorcem as coordenadas da terceira, e é essa dobra que faz a matéria
+   parecer seda em vez de nuvem. As fitas claras são um seno do resultado
+   elevado a uma potência alta, que espreme a onda até sobrar só a crista.
+
+   Três coisas que NÃO são detalhe:
+   1. Desenha numa resolução menor que a tela e deixa o CSS ampliar. A imagem
+      é borrada por natureza, ninguém vê a diferença, e é o que separa isso de
+      fritar a bateria de um celular. ESCALA manda nisso.
+   2. Para de desenhar quando o hero sai da tela. Ninguém paga por pixel que
+      não está sendo visto.
+   3. prefers-reduced-motion desenha UM quadro e para. Fundo animado é o caso
+      de manual da regra, não uma formalidade.
+   Se qualquer coisa falhar, o canvas fica transparente e aparece o gradiente
+   em CSS que já está por baixo dele. A faixa nunca fica vazia.
+   --------------------------------------------------------------------- */
+const VERT = `attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }`;
+
+const FRAG = `
+precision highp float;
+uniform vec2  u_res;
+uniform float u_t;
+
+vec2 hash2(vec2 p){
+  p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3)));
+  return fract(sin(p) * 43758.5453) * 2.0 - 1.0;
+}
+float ruido(vec2 p){
+  vec2 i = floor(p), f = fract(p);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(dot(hash2(i + vec2(0.0,0.0)), f - vec2(0.0,0.0)),
+                 dot(hash2(i + vec2(1.0,0.0)), f - vec2(1.0,0.0)), u.x),
+             mix(dot(hash2(i + vec2(0.0,1.0)), f - vec2(0.0,1.0)),
+                 dot(hash2(i + vec2(1.0,1.0)), f - vec2(1.0,1.0)), u.x), u.y);
+}
+float fbm(vec2 p){
+  float a = 0.5, soma = 0.0;
+  for(int i = 0; i < 3; i++){ soma += a * ruido(p); p *= 2.03; a *= 0.5; }
+  return soma;
+}
+
+void main(){
+  vec2 uv = gl_FragCoord.xy / u_res;
+  /* Normaliza pela LARGURA, não pela altura. O hero é uma faixa alta — leva a
+     esteira de moldes e o ticker junto — e dividir pela altura fazia o padrão
+     inteiro caber numa lasca da tela: sobrava um borrão escuro só. Pela
+     largura, o desenho tem sempre a mesma escala de ponta a ponta, e a altura
+     apenas mostra mais ou menos dele. */
+  vec2 p  = (gl_FragCoord.xy - 0.5 * u_res) / u_res.x;
+  float t = u_t;
+
+  /* ANISOTROPIA. Esta linha é a peça inteira. Espremendo o x antes do ruído,
+     as formas nascem esticadas na horizontal e viram fitas varridas de ponta
+     a ponta. Sem ela o desenho marmoriza e vira pedra, não seda. */
+  p.x *= 0.42;
+  p *= 3.6;
+
+  /* Domain warping: dois níveis de ruído distorcem as coordenadas do
+     terceiro. É essa dobra que faz a matéria dobrar como tecido. Os
+     multiplicadores são baixos de propósito — warp forte volta a marmorizar. */
+  vec2 q = vec2(fbm(p + t * 0.030), fbm(p + vec2(5.2, 1.3) - t * 0.024));
+  vec2 r = vec2(fbm(p + 1.15 * q + vec2(1.7, 9.2) + t * 0.040),
+                fbm(p + 1.15 * q + vec2(8.3, 2.8) - t * 0.033));
+  float v = fbm(p + 1.55 * r);
+  float m = clamp(v * 2.2 + 0.5, 0.0, 1.0);
+
+  vec3 preto   = vec3(0.013, 0.014, 0.028);
+  vec3 marinho = vec3(0.016, 0.028, 0.125);
+  vec3 azul    = vec3(0.055, 0.160, 0.760);
+  vec3 violeta = vec3(0.330, 0.290, 0.880);
+
+  /* Dois terços da tela ficam pretos, e é por isso que a luz lê como luz.
+     A rampa só começa em 0.38: antes disso é breu. Baixar esse número acende
+     a tela inteira e a peça vira um degradê de banco. */
+  vec3 cor = mix(preto, marinho, smoothstep(0.32, 0.62, m));
+  cor = mix(cor, azul,    smoothstep(0.54, 0.92, m) * 0.94);
+  cor = mix(cor, violeta, smoothstep(0.84, 1.00, m) * 0.40);
+
+  /* O FIO DE LUZ. Um seno de frequência BAIXA sobre o campo, elevado a uma
+     potência alta: sobra só a crista, e ela desenha meia dúzia de curvas
+     longas acompanhando a fita. Frequência alta aqui vira teia de aranha —
+     foi assim que a primeira versão errou. */
+  float rim = pow(abs(sin(v * 9.0 + t * 0.10)), 40.0);
+  cor += vec3(0.68, 0.80, 1.00) * rim * 0.66;
+
+  /* O quente da marca, preso a uma máscara lenta e grande: aparece numa
+     região só e passeia devagar. É o que impede a peça de virar mais um
+     degradê azul de software. */
+  float onde = smoothstep(0.15, 0.85, fbm(p * 0.55 + vec2(t * 0.021, -t * 0.014)) * 2.0 + 0.5);
+  float quente = smoothstep(0.50, 0.70, m) * (1.0 - smoothstep(0.76, 0.94, m)) * onde;
+  cor = mix(cor, vec3(0.985, 0.395, 0.205), quente * 0.22);
+
+  /* vinheta: fecha as quinas em vez de deixar a luz vazar pela borda */
+  float vig = smoothstep(1.30, 0.26, length((uv - 0.5) * vec2(1.18, 1.0)));
+  cor *= 0.62 + 0.38 * vig;
+
+  /* granulado: mata o banding do degradê em tela de 8 bits */
+  cor += (fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) * 0.020;
+
+  gl_FragColor = vec4(clamp(cor, 0.0, 1.0), 1.0);
+}`;
+
+function fitasDeLuz(){
+  const tela = document.getElementById('heroFundo');
+  const hero = document.querySelector('.hero');
+  if(!tela || !hero) return;
+
+  const gl = tela.getContext('webgl', {alpha:true, antialias:false, depth:false,
+                                       powerPreference:'low-power'})
+          || tela.getContext('experimental-webgl');
+  /* Sem WebGL o canvas segue transparente e o gradiente em CSS aparece. */
+  if(!gl){ console.info('[carrossel-studio] sem WebGL, o hero fica no fundo em CSS'); return; }
+
+  const compilar = (tipo, fonte)=>{
+    const sh = gl.createShader(tipo);
+    gl.shaderSource(sh, fonte); gl.compileShader(sh);
+    if(!gl.getShaderParameter(sh, gl.COMPILE_STATUS)){
+      console.warn('[carrossel-studio] shader do hero não compilou: ' + gl.getShaderInfoLog(sh));
+      return null;
+    }
+    return sh;
+  };
+  const vs = compilar(gl.VERTEX_SHADER, VERT), fs = compilar(gl.FRAGMENT_SHADER, FRAG);
+  if(!vs || !fs) return;
+
+  const prog = gl.createProgram();
+  gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
+  if(!gl.getProgramParameter(prog, gl.LINK_STATUS)){
+    console.warn('[carrossel-studio] shader do hero não linkou: ' + gl.getProgramInfoLog(prog));
+    return;
+  }
+  gl.useProgram(prog);
+
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
+  const at = gl.getAttribLocation(prog, 'p');
+  gl.enableVertexAttribArray(at);
+  gl.vertexAttribPointer(at, 2, gl.FLOAT, false, 0, 0);
+
+  const uRes = gl.getUniformLocation(prog, 'u_res');
+  const uT   = gl.getUniformLocation(prog, 'u_t');
+
+  /* Metade da resolução no celular. O desenho é borrado, ninguém percebe, e
+     é a diferença entre rodar liso e esquentar o aparelho. */
+  const ESCALA = SEM_MOUSE ? 0.42 : 0.58;
+  let larg = 0, alt = 0;
+  function medir(){
+    const c = hero.getBoundingClientRect();
+    const w = Math.max(1, Math.round(c.width  * ESCALA));
+    const h = Math.max(1, Math.round(c.height * ESCALA));
+    if(w === larg && h === alt) return;
+    larg = w; alt = h;
+    tela.width = w; tela.height = h;
+    gl.viewport(0, 0, w, h);
+    gl.uniform2f(uRes, w, h);
+  }
+
+  const desenhar = t => { gl.uniform1f(uT, t); gl.drawArrays(gl.TRIANGLES, 0, 3); };
+
+  medir();
+  const PARADO = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(PARADO){ desenhar(11.0); window.addEventListener('resize', ()=>{ medir(); desenhar(11.0); }); return; }
+
+  /* 30 quadros por segundo bastam: o movimento é lento por desenho. O dobro
+     disso seria o dobro de bateria para ninguém enxergar diferença. */
+  const PASSO = 1000 / 30;
+  let visivel = true, laco = 0, ultimo = 0, relogio = 11.0;
+  function quadro(agora){
+    laco = requestAnimationFrame(quadro);
+    if(!visivel) { ultimo = agora; return; }
+    if(agora - ultimo < PASSO) return;
+    relogio += Math.min((agora - ultimo) / 1000, 0.1);
+    ultimo = agora;
+    desenhar(relogio);
+  }
+  laco = requestAnimationFrame(quadro);
+
+  new IntersectionObserver(es => { visivel = es[0].isIntersecting; }, {threshold:0})
+    .observe(hero);
+  document.addEventListener('visibilitychange', ()=>{ if(document.hidden) visivel = false; });
+
+  /* ResizeObserver e não só o resize da janela: o hero CRESCE depois do
+     primeiro paint — a esteira de moldes e o ticker entram por JS — e medir só
+     uma vez no init deixava um buffer pequeno esticado para o dobro do
+     tamanho, borrado e com a proporção errada. */
+  if(window.ResizeObserver){
+    let espera;
+    new ResizeObserver(()=>{ clearTimeout(espera); espera = setTimeout(medir, 80); }).observe(hero);
+  } else {
+    let espera;
+    window.addEventListener('resize', ()=>{ clearTimeout(espera); espera = setTimeout(medir, 120); });
+  }
+}
+
+/* A barra do topo se inverte enquanto está por cima da faixa escura. */
+function barraSobreOHero(){
+  const cab = document.querySelector('header');
+  const hero = document.querySelector('.hero');
+  if(!cab || !hero) return;
+  const NAV = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav')) || 66;
+  let agendado = false;
+  const ver = ()=>{
+    agendado = false;
+    cab.classList.toggle('emCima', hero.getBoundingClientRect().bottom > NAV);
+  };
+  ver();
+  addEventListener('scroll', ()=>{ if(!agendado){ agendado = true; requestAnimationFrame(ver); } },
+                   {passive:true});
+  addEventListener('resize', ver, {passive:true});
+}
+
 /* ---------- boot --------------------------------------------------------- */
 function bind(id, campo, extra){
   const el = document.getElementById(id);
@@ -1627,6 +1918,7 @@ function bind(id, campo, extra){
   document.getElementById('estiloSlide').textContent = CS.ESTILO_SLIDE;
   if(SEM_MOUSE) document.getElementById('dicaMolde').textContent =
     'Toque em um molde para abrir. A história roda sozinha aqui embaixo.';
+  fitasDeLuz(); barraSobreOHero();
   montarEsteira(); montarDemo(); montarGaleria(); montarChips(); montarFaq();
   montarDadosEstruturados();
 
