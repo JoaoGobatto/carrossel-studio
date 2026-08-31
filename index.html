@@ -236,13 +236,19 @@ header.emCima .nav{background:rgba(10,10,18,.30); border-color:rgba(255,255,255,
 .hero h1 em{font-style:normal; color:#fff; -webkit-text-fill-color:#fff}
 .hero .lead{font-family:var(--fh); color:var(--tx2); font-size:clamp(16.5px,1.35vw,18.5px);
   line-height:1.62; letter-spacing:-.005em; max-width:46ch; margin-top:22px}
-.heroCta{display:flex; gap:12px; flex-wrap:wrap; margin-top:30px; align-items:center}
-.heroCta .nota{font-size:14px; color:var(--tx3)}
-/* flex-start, nao center: quando o texto quebra em duas linhas o visto tem
-   de ficar na primeira, nao no meio das duas */
-.heroPe{display:flex; align-items:flex-start; gap:9px; margin-top:20px; color:var(--tx3);
-  font-size:13.5px; line-height:1.5}
-.heroPe s{text-decoration:none; color:var(--acc-tx); font-weight:700; line-height:inherit}
+.heroCta{display:flex; gap:12px; flex-wrap:wrap; margin-top:34px; align-items:center}
+/* A segunda saída, no tom da referência: um elo discreto embaixo do botão, e
+   não um segundo botão do mesmo tamanho. Dois botões lado a lado dividem a
+   atenção no lugar exato em que ela precisa ir para um só. */
+.heroElo{appearance:none; background:0; border:0; cursor:pointer; padding:0;
+  margin-top:22px; font-family:var(--fh); font-size:14px; font-weight:500;
+  color:var(--tx3); letter-spacing:-.005em; transition:color .2s}
+.heroElo::after{content:''; display:block; height:1px; margin-top:5px;
+  background:currentColor; opacity:.32; transform:scaleX(0); transform-origin:left;
+  transition:transform .25s}
+.heroElo:hover{color:var(--tx2)}
+.heroElo:hover::after{transform:scaleX(1)}
+.heroElo:focus-visible{outline:2px solid var(--acc); outline-offset:4px; border-radius:3px}
 
 /* ---------- demonstração do hero ----------
    O espaço do celular é reservado desde o primeiro paint, mesmo ele só entrando
@@ -725,9 +731,7 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
   .logo{font-size:18px; white-space:nowrap}
   .links{display:none}
   .btn.sm{padding:8px 14px; font-size:12.5px; white-space:nowrap}
-  .heroCta{gap:10px}
-  .heroCta .btn{flex:1 1 auto; text-align:center}
-  .heroCta .nota{flex:1 0 100%; margin-top:4px}
+  .heroCta .btn{width:100%; text-align:center}
   .mono.eyebrow{font-size:9.5px; letter-spacing:.16em}
   .entrega > div{padding:26px 22px}
 }
@@ -760,14 +764,17 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
   <canvas class="heroFundo" id="heroFundo" aria-hidden="true"></canvas>
   <div class="wrap heroGrid">
     <div>
-      <div class="mono eyebrow"><i></i>10 narrativas prontas, uma por nicho</div>
+      <!-- O hero não precisa vender a página inteira: ele precisa fazer a
+           pessoa descer. Um olho, o gancho, UMA linha e UM botão. O que saiu
+           daqui não se perdeu — a promessa longa é a seção "o problema", os
+           itens da entrega estão no ticker logo abaixo e na seção "o que vem". -->
+      <div class="mono eyebrow"><i></i>10 moldes, um por nicho</div>
       <h1>Chega de postar <em>para ninguém</em>.</h1>
-      <p class="lead">Post bonito segura o dedo por meio segundo. História prende até o último slide, e é o último slide que vira mensagem no seu direct. Escolha o molde do seu nicho, preencha quatro campos e receba em 24 horas.</p>
+      <p class="lead">Sete imagens com história e legenda escrita, no seu nicho, em 24 horas.</p>
       <div class="heroCta">
         <button class="btn" onclick="irMoldes()">Escolher meu molde</button>
-        <button class="btn ghost" onclick="document.getElementById('entrega').scrollIntoView()">O que vem no pack</button>
       </div>
-      <div class="heroPe"><s>&#10003;</s> Sem reunião, sem briefing de 40 minutos &middot; pagamento único &middot; entrega em 24h</div>
+      <button class="heroElo" onclick="document.getElementById('entrega').scrollIntoView()">O que vem no pack</button>
     </div>
 
     <!-- Demonstração: pedido -> estúdio -> o carrossel real no feed.
