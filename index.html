@@ -441,11 +441,8 @@ header.emCima .nav{background:rgba(10,10,18,.30); border-color:rgba(255,255,255,
    Endireitar uns graus resolve sem tirar a personalidade. */
 @media(max-width:1040px){ .dTombo{transform:rotateY(-6deg) rotateX(2.5deg) rotateZ(-.8deg)} }
 
-/* Movimento reduzido: a peça assenta no estado final e para. Cobre também o
-   .tira .row, que usa a keyframe corre e tinha ficado de fora da media query
-   original lá de cima. */
+/* Movimento reduzido: a peça assenta no estado final e para. */
 @media (prefers-reduced-motion:reduce){
-  .tira .row{animation:none}
   .dCaret{animation:none}
   #demo.dOn .dFicha{display:none}
   #demo.dOn .dPalco{opacity:1; translate:0 0; scale:1}
@@ -465,7 +462,7 @@ header.emCima .nav{background:rgba(10,10,18,.30); border-color:rgba(255,255,255,
 .esteira::before,.esteira::after{content:''; position:absolute; top:0; bottom:0; width:16%; z-index:4; pointer-events:none}
 .esteira::before{left:0; background:linear-gradient(90deg,var(--bg),transparent)}
 .esteira::after{right:0; background:linear-gradient(270deg,var(--bg),transparent)}
-.trilho{display:flex; gap:14px; width:max-content; animation:corre 64s linear infinite}
+.trilho{display:flex; gap:6px; width:max-content; animation:corre 64s linear infinite}
 .trilho.volta{animation-duration:78s; animation-direction:reverse; margin-top:14px}
 .esteira:hover .trilho{animation-play-state:paused}
 @keyframes corre{from{transform:translateX(0)}to{transform:translateX(-50%)}}
@@ -478,16 +475,6 @@ header.emCima .nav{background:rgba(10,10,18,.30); border-color:rgba(255,255,255,
    Nada aqui mexe em layout: escala e opacidade não empurram vizinho, então a
    grade, o gap de 14px e a largura de 212px continuam exatamente os mesmos. */
 .esteira .trilho > .palco{transform-origin:50% 50%; backface-visibility:hidden}
-
-/* ticker de garantias */
-/* A cama escura não é enfeite: dentro do hero o ticker corre por cima da
-   animação, e sem ela a fita de luz passa atrás do texto e o apaga. Fora do
-   hero o --bg é o mesmo quase preto, então a regra serve nos dois lugares. */
-.tira{border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin-top:64px;
-  overflow:hidden; position:relative; z-index:2; background:var(--bg)}
-.tira .row{display:flex; gap:56px; width:max-content; padding:15px 0; animation:corre 40s linear infinite}
-.tira span{display:flex; align-items:center; gap:12px; color:var(--tx2); font-size:14.5px; white-space:nowrap}
-.tira b{color:var(--acc-tx); font-family:var(--fu); font-size:12px; letter-spacing:.16em}
 
 /* ---------- seções ---------- */
 section{padding:96px 0; scroll-margin-top:var(--nav)}
@@ -866,9 +853,6 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
     <div class="trilho volta" id="trilho2"></div>
   </div>
 
-  <div class="tira">
-    <div class="row" id="tira"></div>
-  </div>
 </section>
 
 <!-- ======================= PROBLEMA ======================= -->
@@ -1173,11 +1157,6 @@ function montarEsteira(){
   document.getElementById('trilho1').innerHTML = html(a) + html(a);   // duplicado para o laço
   document.getElementById('trilho2').innerHTML = html(b) + html(b);
   ajustarPalcos(document.getElementById('esteira'));
-
-  const itens = ['7 imagens por carrossel','1080 x 1350','Legenda escrita','Entrega em 24 horas',
-                 '1 ajuste incluso','Sem reunião','Pagamento único','10 nichos prontos'];
-  const linha = itens.map(t=>'<span><b>&#9679;</b>'+t+'</span>').join('');
-  document.getElementById('tira').innerHTML = linha + linha;
 }
 
 /* ---------- a esteira em perspectiva ------------------------------------
@@ -1208,6 +1187,7 @@ const ESTEIRA_MAX = 1.00;    // o card no meio da tela
 const ESTEIRA_AFUNDA = 13;   // quanto a ponta desce, em px
 const ESTEIRA_APAGA = 0.38;  // quanta opacidade a ponta perde
 
+
 /* A curva entre a ponta e o meio. Uma potência de (1-d) serviria, mas
    qualquer potência deixa um BICO no pico: a derivada não zera em d=0, e o
    card cresce até o máximo e vira de repente, o que se enxerga justamente no
@@ -1217,12 +1197,34 @@ const ESTEIRA_APAGA = 0.38;  // quanta opacidade a ponta perde
    escala pedida: 0,86 a um card do meio e 0,70 a dois. */
 const perto = d => 1 - (3*d*d - 2*d*d*d);
 
+/* O PUXÃO PARA O CENTRO, que é o que fecha os vãos.
+   Escala não mexe em layout: o card encolhe e o espaço dele continua
+   reservado, então a 0,65 sobram uns 80px de vazio ao lado. A primeira
+   tentativa aqui foi puxar proporcional a (1-k), e ela sobrepunha os cards do
+   meio: perto do centro eles quase não encolheram, mas o puxão já era grande.
+
+   O deslocamento certo não é arbitrado, é contado. Encadeando os cards um ao
+   lado do outro a partir do centro, o que sobra para o card n é a soma de
+   (1 - escala) de todos os que vieram antes, vezes a largura. Como a escala é
+   MIN + (MAX-MIN)·k, essa soma vira a integral de (1-k) ao longo da fileira,
+   que para este smoothstep fecha em d³ - d⁴/2. Sem tabela, sem laço.
+
+   Nada de somar também "metade da largura que ele mesmo perdeu": a integral
+   já cobre o trecho até o centro dele. Foi essa contagem dobrada que estava
+   sobrepondo os cards em 10px.
+
+   E ela PARA na borda da tela, porque d está preso em 1. É o que salva o laço
+   infinito: a compactação exata seria acumulativa e sem fim, e os cards de
+   longe viriam empilhar na borda. Fora da tela ninguém vê o espaçamento
+   original voltar. */
+const acumulado = d => d*d*d - d*d*d*d/2;
+
 function esteiraEmPerspectiva(){
   const esteira = document.getElementById('esteira');
   if(!esteira) return;
   const fileiras = [...esteira.querySelectorAll('.trilho')].map(t => ({
-    el: t,
-    cards: [...t.children].map(c => ({el:c, rel:0, meia:0, s:-1, y:-1, o:-1}))
+    el: t, passo: 0, perda: 0,
+    cards: [...t.children].map(c => ({el:c, rel:0, meia:0, k:-1}))
   }));
   if(!fileiras.length) return;
 
@@ -1234,8 +1236,13 @@ function esteiraEmPerspectiva(){
       f.cards.forEach(c=>{
         c.rel  = c.el.offsetLeft - base;
         c.meia = c.el.offsetWidth / 2;
-        c.s = -1;                       // força reescrever depois de remedir
+        c.k = -1;                       // força reescrever depois de remedir
       });
+      /* passo = largura do card + gap. Sai da própria fileira em vez de vir
+         escrito aqui, senão mexer no gap do CSS descalibraria o puxão em
+         silêncio. */
+      f.passo = f.cards.length > 1 ? (f.cards[1].rel - f.cards[0].rel) : 1;
+      f.perda = f.cards[0].meia * 2 * (ESTEIRA_MAX - ESTEIRA_MIN);
     });
   }
 
@@ -1244,18 +1251,25 @@ function esteiraEmPerspectiva(){
     if(meioTela <= 0) return;
     fileiras.forEach(f=>{
       const esq = f.el.getBoundingClientRect().left;   // a única leitura de layout
+      const soma = (f.perda / f.passo) * meioTela;     // o peso da parcela acumulada
       f.cards.forEach(c=>{
         const centro = esq + c.rel + c.meia;
         let d = Math.abs(centro - meioTela) / meioTela;  // 0 no meio, 1 na borda
         if(d > 1) d = 1;                                 // além da borda, fica no mínimo
         const k = perto(d);
+        /* O olho não vê um milésimo e meio da curva; o navegador vê o repaint.
+           A comparação é no k e não em cada valor derivado: escala, afundada e
+           puxão saem todos dele, então um limiar só governa os três. */
+        if(Math.abs(k - c.k) < 0.0015) return;
+        c.k = k;
         const s = ESTEIRA_MIN + (ESTEIRA_MAX - ESTEIRA_MIN) * k;
         const y = (1 - k) * ESTEIRA_AFUNDA;
         const o = 1 - ESTEIRA_APAGA * (1 - k);
-        /* o olho não vê meio milésimo de escala; o navegador vê o repaint */
-        if(Math.abs(s - c.s) < 0.0015 && Math.abs(y - c.y) < 0.15) return;
-        c.s = s; c.y = y; c.o = o;
-        c.el.style.transform = 'translateY(' + y.toFixed(2) + 'px) scale(' + s.toFixed(4) + ')';
+        /* o puxão aponta para o centro: quem está à esquerda anda para a
+           direita e vice-versa. No centro vale zero dos dois lados, então não
+           há salto na travessia. */
+        const x = (centro < meioTela ? 1 : -1) * soma * acumulado(d);
+        c.el.style.transform = 'translate(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px) scale(' + s.toFixed(4) + ')';
         c.el.style.opacity = o.toFixed(3);
       });
     });
