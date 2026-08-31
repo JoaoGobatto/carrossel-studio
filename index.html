@@ -458,7 +458,21 @@ header.emCima .nav{background:rgba(10,10,18,.30); border-color:rgba(255,255,255,
    véu, que é absoluto e vem depois no fluxo, pinta por cima dos moldes e eles
    chegam lavados — foi exatamente o que aconteceu na primeira versão da
    faixa escura. Mesmo motivo no ticker logo abaixo. */
-.esteira{margin-top:64px; position:relative; z-index:2; overflow:hidden; padding:2px 0}
+/* O overflow:hidden precisa continuar: é ele que esconde a fileira, que tem
+   milhares de pixels de largura. Mas ele corta nos QUATRO lados, e o card sob
+   o mouse cresce e sobe uns 22px além da caixa — ficava decapitado.
+
+   A saída é dar folga vertical DENTRO do recorte e devolvê-la por fora, nas
+   margens: o padding empurra o corte para longe do card, e as margens
+   descontam os mesmos pixels para o resto da página não andar um milímetro.
+
+   A CONTA DA FOLGA, para quem mexer no realce depois. O card tem 265px de
+   altura (212 x 5/4). No hover ele ganha 0,10 de escala, o que sobe a borda
+   de cima em 265 x 0,10 / 2 = 13px, e sobe outros 9px pelo ESTEIRA_SOBE:
+   22px no pior caso. 32px de padding deixam 10px de sobra.
+   E as margens fecham na casa do pixel: 34 + 32 = os 66 de cima de antes
+   (64 de margem mais 2 de padding), -30 + 32 = os 2 de baixo. */
+.esteira{margin:34px 0 -30px; position:relative; z-index:2; overflow:hidden; padding:32px 0}
 .esteira::before,.esteira::after{content:''; position:absolute; top:0; bottom:0; width:16%; z-index:4; pointer-events:none}
 .esteira::before{left:0; background:linear-gradient(90deg,var(--bg),transparent)}
 .esteira::after{right:0; background:linear-gradient(270deg,var(--bg),transparent)}
