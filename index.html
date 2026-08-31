@@ -76,7 +76,11 @@
      serifa, de contraste baixo. A Fraunces continua sendo a marca no resto
      do site; aqui ela daria um ar editorial que briga com a animação. */
   --fh:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --nav:66px;
+  /* --nav é o espaço que o topo ocupa (folga + altura da ilha), não a altura
+     da barra. Quem depende dele é o padding do hero, o scroll-margin das
+     seções e o JS que decide quando a barra sai de cima do hero. A altura da
+     ilha em si é --navH. */
+  --navGap:14px; --navH:56px; --nav:84px;
   /* Uma linha que o navegador precisa ouvir: com ela a barra de rolagem, o
      seletor de cor nativo do campo "cor principal" e os menus do sistema saem
      escuros. Sem ela ficam claros dentro de um site escuro. */
@@ -111,14 +115,36 @@ body::after{content:''; position:fixed; inset:0; z-index:3; pointer-events:none;
 .eyebrow i{display:block; width:26px; height:1px; background:currentColor; opacity:.7}
 
 /* ---------- topo ---------- */
-header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
-  backdrop-filter:blur(16px); background:rgba(9,9,15,.76); border-bottom:1px solid var(--line);
-  transition:background .3s, border-color .3s}
-/* Sobre o hero a barra quase some, para a animação passar inteira por baixo
+/* O topo é uma ILHA flutuante, não uma tarja de ponta a ponta.
+   O <header> continua fixo e largo, mas é só o trilho: ele não pinta nada e
+   não recebe clique, senão a faixa invisível dos lados engoliria o clique de
+   quem tenta acertar o que está logo abaixo dela. Quem é a ilha, pinta e
+   recebe clique é o .nav lá dentro. */
+header{position:fixed; top:var(--navGap); left:0; right:0; z-index:60;
+  pointer-events:none; padding:0 clamp(14px,3vw,24px)}
+/* A fresta. Ilha flutuante deixa uma faixa de página aparecendo acima dela, e
+   o texto que passa por ali fica cortado ao meio. Este degradê dissolve o
+   conteúdo antes de ele chegar na borda de cima. Sobre o hero ele é desligado:
+   ali não há texto passando, e a faixa taparia a animação. */
+header::before{content:''; position:fixed; left:0; right:0;
+  top:calc(var(--navGap) * -1); height:calc(var(--nav) + 12px);
+  pointer-events:none; z-index:-1; transition:opacity .3s;
+  background:linear-gradient(180deg, var(--bg) 34%, transparent)}
+header.emCima::before{opacity:0}
+/* A folga lateral da ilha vem do padding do <header>, não do .wrap: o .nav
+   reescreve os dois paddings do .wrap para virar a moldura interna da pílula,
+   e sem isso a ilha encostaria nas bordas da tela no celular. */
+header .nav{pointer-events:auto; height:var(--navH); border-radius:100px;
+  padding-left:30px; padding-right:8px; border:1px solid var(--line);
+  background:rgba(13,13,21,.66); backdrop-filter:blur(20px) saturate(1.25);
+  box-shadow:0 12px 34px rgba(0,0,0,.42);
+  transition:background .3s, border-color .3s, box-shadow .3s}
+/* Sobre o hero a ilha quase some, para a animação passar inteira por baixo
    dela; passado o hero, ela ganha corpo e vira barra de verdade. O JS põe e
-   tira a classe; sem JS fica a barra com corpo, que é o estado seguro. */
-header.emCima{background:rgba(7,7,12,.26); border-bottom-color:rgba(255,255,255,.07)}
-.nav{display:flex; align-items:center; justify-content:space-between; height:var(--nav)}
+   tira a classe; sem JS fica a ilha com corpo, que é o estado seguro. */
+header.emCima .nav{background:rgba(10,10,18,.30); border-color:rgba(255,255,255,.10);
+  box-shadow:0 8px 26px rgba(0,0,0,.26)}
+.nav{display:flex; align-items:center; justify-content:space-between}
 .logo{display:flex; align-items:baseline; gap:9px; font-family:var(--fd); font-weight:500; font-size:24px; letter-spacing:-.015em}
 /* Cruz de registro: a marca que a gráfica usa para alinhar as chapas de cor.
    Traço fino e círculo, senão lê como um sinal de mais. Sem markup extra:
@@ -129,7 +155,7 @@ header.emCima{background:rgba(7,7,12,.26); border-bottom-color:rgba(255,255,255,
              linear-gradient(var(--acc),var(--acc)) center/100% 1.2px no-repeat}
 .logo s::after{content:''; position:absolute; inset:3px; border-radius:50%;
   border:1.2px solid var(--acc)}
-.links{display:flex; align-items:center; gap:26px; margin-left:auto; margin-right:26px}
+.links{display:flex; align-items:center; gap:26px}
 .links a{color:var(--tx2); text-decoration:none; font-size:14.5px; font-weight:500;
   letter-spacing:-.01em; position:relative; transition:color .2s}
 .links a::after{content:''; position:absolute; left:0; right:0; bottom:-5px; height:1px;
@@ -138,8 +164,11 @@ header.emCima{background:rgba(7,7,12,.26); border-bottom-color:rgba(255,255,255,
 .links a:hover::after{transform:scaleX(1)}
 .links a.aqui{color:var(--acc-tx)}
 .links a.aqui::after{transform:scaleX(1)}
-.navr{display:flex; align-items:center; gap:18px}
-.navr .mono{color:var(--tx3)}
+.navr{display:flex; align-items:center; gap:10px}
+/* Pílula fantasma ao lado da cheia: é o par que a referência usa no canto
+   direito, e dentro de uma ilha arredondada um texto solto ficava frouxo. */
+.navr .mono{color:var(--tx2); border:1px solid var(--line2); border-radius:100px;
+  padding:8px 15px; font-size:10px; letter-spacing:.14em; line-height:1}
 .btn{appearance:none; border:0; cursor:pointer; font-family:var(--f); font-weight:600;
   border-radius:100px; padding:14px 26px; font-size:15.5px; letter-spacing:-.01em;
   background:var(--acc); color:var(--acc-ink);
