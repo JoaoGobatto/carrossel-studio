@@ -253,13 +253,12 @@ header.emCima .nav{background:rgba(10,10,18,.30); border-color:rgba(255,255,255,
    O espaço do celular é reservado desde o primeiro paint, mesmo ele só entrando
    aos ~5s: sem isso a página salta quando ele chega, e numa landing que recebe
    anúncio o LCP salta junto. */
-.demo{position:relative; display:grid; grid-template-rows:1fr auto; place-items:center;
-  min-height:560px}
-/* Só a ficha e o celular se empilham; a nota tem linha própria. Empilhar os
-   três punha o celular por cima do botão de pausa e ele deixava de ser
-   clicável — um controle de parada que não recebe clique não é um controle. */
+.demo{position:relative; display:grid; place-items:center; min-height:560px}
+/* A ficha e o celular ocupam a MESMA célula: um substitui o outro no tempo.
+   O botão de pausa é absoluto e fica fora da pilha de propósito — empilhado,
+   o celular caía por cima dele e ele deixava de receber clique. Controle de
+   parada que não recebe clique não é controle. */
 .dFicha,.dPalco{grid-area:1/1; width:100%}
-.dNota{grid-area:2/1; width:100%}
 
 /* ficha do pedido — é o campo que existe de verdade no configurador */
 /* Cantos redondos aqui, e só aqui. O resto do site é de 4px, quase quina
@@ -296,14 +295,30 @@ header.emCima .nav{background:rgba(10,10,18,.30); border-color:rgba(255,255,255,
    final e sai limpa. Não volte a pôr transform aqui nem no #fone. */
 .dPalco{display:grid; place-items:center; align-self:center}
 .dTombo{width:100%; max-width:256px}
-.dNota{align-self:end; display:flex; align-items:center; justify-content:center; gap:9px;
-  font-size:11.5px; color:var(--tx3); padding-top:18px; flex-wrap:wrap}
-.dPausa{appearance:none; background:transparent; border:1px solid var(--line2); cursor:pointer;
-  border-radius:100px; padding:3px 11px; font-family:var(--fu); font-size:10px; font-weight:600;
-  letter-spacing:.1em; text-transform:uppercase; color:var(--tx2);
-  transition:border-color .2s, color .2s}
-.dPausa:hover{border-color:var(--acc); color:var(--acc-tx)}
-.dPausa:focus-visible{outline:2px solid var(--acc); outline-offset:2px}
+/* O controle fica sempre na página, nunca escondido atrás de :hover: em tela
+   de toque não existe hover, e um controle que só aparece com o mouse não
+   existe para metade das pessoas. A discrição vem da opacidade baixa, que
+   sobe quando o ponteiro chega perto ou o foco cai nele. */
+.dPausa{position:absolute; right:0; bottom:6px; z-index:9;
+  appearance:none; width:30px; height:30px; padding:0; cursor:pointer;
+  border:1px solid var(--line2); border-radius:50%; background:rgba(10,10,18,.5);
+  backdrop-filter:blur(8px); color:var(--tx2); opacity:.42;
+  transition:opacity .2s, border-color .2s, color .2s}
+.demo:hover .dPausa{opacity:.9}
+.dPausa:hover{opacity:1; border-color:var(--acc); color:var(--tx)}
+.dPausa:focus-visible{opacity:1; outline:2px solid var(--acc); outline-offset:3px}
+/* O ícone é desenhado em CSS: duas barras para pausar, um triângulo para
+   voltar. Sem glifo, que muda de forma (e às vezes vira emoji colorido) de
+   sistema para sistema. */
+.dPausa::before,.dPausa::after{content:''; position:absolute; top:50%;
+  width:2.5px; height:10px; background:currentColor; border-radius:1px;
+  transform:translateY(-50%)}
+.dPausa::before{left:calc(50% - 4.25px)}
+.dPausa::after{left:calc(50% + 1.75px)}
+.dPausa.parado::before{left:calc(50% - 3px); width:0; height:0; background:0; border-radius:0;
+  border-left:8px solid currentColor;
+  border-top:5.5px solid transparent; border-bottom:5.5px solid transparent}
+.dPausa.parado::after{display:none}
 
 /* ---------- celular do hero ----------
    A LARGURA MANDA NA SILHUETA. O post é 4:5, então a altura sai de
@@ -830,13 +845,12 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
         </div>
       </div>
 
-      <!-- WCAG 2.2.2: movimento automático por mais de 5s precisa de parada.
-           E a nota diz o prazo real: o h1 ao lado promete 24 horas, e uma demo
-           de 19 segundos não pode desmentir ele. -->
-      <div class="dNota">
-        <button class="dPausa" id="dPausa" type="button">Pausar</button>
-        <span>demonstração &middot; o pedido real é entregue em 24h</span>
-      </div>
+      <!-- WCAG 2.2.2: movimento automático por mais de 5s precisa de um jeito
+           de parar, e esta demonstração roda 19. Por isso o botão fica, mesmo
+           depois da legenda ter saído: ele encolheu para um ícone no canto,
+           discreto até a pessoa chegar perto. O rótulo vive no aria-label,
+           porque o desenho da pausa é feito em CSS, não em texto. -->
+      <button class="dPausa" id="dPausa" type="button" aria-label="Pausar a demonstração"></button>
     </div>
   </div>
 
@@ -1353,7 +1367,10 @@ function montarDemo(){
   /* WCAG 2.2.2: movimento automático por mais de 5s precisa de parada */
   botao.addEventListener('click', ()=>{
     pausado = !pausado;
-    botao.textContent = pausado ? 'Continuar' : 'Pausar';
+    /* o desenho é CSS, então o estado vai numa classe; o rótulo vai no
+       aria-label, que é o que o leitor de tela anuncia */
+    botao.classList.toggle('parado', pausado);
+    botao.setAttribute('aria-label', pausado ? 'Continuar a demonstração' : 'Pausar a demonstração');
     if(pausado) parar(); else seguir();
   });
 }
