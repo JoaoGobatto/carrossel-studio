@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Uma pagina so, de proposito: o site inteiro vive no index.html e as
+     secoes sao ancoras, que nao entram em sitemap. O dominio aparece aqui e
+     no <head> do index.html; mudou de dominio, troque nos dois. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://carrossel-studio.vercel.app/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

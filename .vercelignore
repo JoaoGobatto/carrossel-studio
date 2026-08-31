@@ -1,2 +1,7 @@
 # Notas internas. Sem isto a Vercel serve em /LEIA-ME.txt.
 LEIA-ME.txt
+
+# A oficina. Gerador do cartao de previa, o cartao em HTML e as fontes
+# baixadas: nada disso e pagina, e o og-card.html seria servido em
+# /producao/og-card.html se ficasse.
+producao/

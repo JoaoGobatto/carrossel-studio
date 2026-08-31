@@ -1,0 +1,15 @@
+# Carrossel Studio
+# Site de uma pagina so; nao ha nada aqui que precise ficar fora da busca.
+#
+# O que NAO esta escrito aqui, de proposito:
+#   assets/og.jpg   e o cartao de previa. Bloquear seria tiro no pe: o
+#                   proprio JSON-LD aponta para ele, e imagem bloqueada no
+#                   robots o Google nao consegue mostrar no resultado.
+#   ?m=pago         e a mesma pagina em modo checkout. Quem resolve isso e a
+#                   <link rel="canonical"> do <head>, que manda as duas para
+#                   a mesma URL. Disallow aqui seria pior: o Google pararia
+#                   de ler a pagina e, com isso, de ver a propria canonical.
+User-agent: *
+Allow: /
+
+Sitemap: https://carrossel-studio.vercel.app/sitemap.xml

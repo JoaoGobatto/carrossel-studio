@@ -26,6 +26,9 @@ moldes.js    FONTE UNICA dos 10 moldes. Contem a paleta, o CSS do
              este mesmo arquivo, entao molde novo aparece nos dois
              lugares sem duplicar nada. Mexa aqui, nao no index.
 
+robots.txt   Libera o site inteiro e aponta o sitemap.
+sitemap.xml  Uma URL so, porque o site e uma pagina so.
+
 assets/      Banco de imagens. Nomenclatura:
                <molde>.jpg      foto base do molde
                <molde>-N.jpg    foto do slide N (1 a 7)
@@ -33,6 +36,50 @@ assets/      Banco de imagens. Nomenclatura:
              entra desfocado sob o gradiente da marca e a imagem
              quase nao aparece, entao reaproveita a base.
              Todas em 1080x1350, JPEG qualidade 80.
+
+
+COMPARTILHAMENTO: A PREVIA DO LINK
+----------------------------------------------------------------
+Este link nasce colado: no WhatsApp do cliente, no story, no
+anuncio. Quem monta a previa (WhatsApp, Instagram, Telegram,
+LinkedIn) le o HTML CRU e nao executa JavaScript. Por isso as
+meta tags og: estao escritas a mao no <head>, e so elas.
+
+O cartao da previa e o assets/og.jpg, 1200 x 630. Nao e arte
+solta: os tres slides do leque saem do mesmo CS.renderSlide do
+moldes.js que a producao exporta, entao o cartao nunca promete
+um visual que o site nao entrega. Para regerar:
+
+  node producao/og.mjs && python3 producao/og.py
+
+  og-card.html  o cartao. Manchete, marca e o leque de slides.
+                As cenas ficam no array CENAS.
+  og.mjs        abre o cartao no Chromium headless e salva
+                producao/og.png. Baixa as fontes para
+                producao/fontes/ na primeira vez, porque
+                headless atras de proxy nao busca o Google
+                Fonts de forma confiavel e falha em silencio.
+                Trocou uma cena? Acerte a lista FAMILIAS junto.
+  og.py         PNG de 560 kB vira JPEG de 100 kB. Servico de
+                previa tem teto de download e desiste calado.
+
+O DOMINIO aparece em dois lugares so: nas cinco primeiras linhas
+do bloco de compartilhamento do <head> e no sitemap.xml. Mudou
+de dominio, troque nos dois e acabou.
+
+
+DADOS ESTRUTURADOS (schema.org)
+----------------------------------------------------------------
+O JSON-LD e montado em JavaScript, no montarDadosEstruturados()
+do index.html, e nao escrito a mao no <head>. O motivo: preco
+mora no PACOTES e pergunta mora no FAQ. JSON-LD copiado no
+<head> seria um segundo lugar para lembrar de mexer, e o dia em
+que o preco subir e a copia ficar para tras o Google mostra na
+busca um valor que o site nao cobra mais. O Google renderiza
+JavaScript antes de indexar, entao chega igual.
+
+A previa do link e o caso oposto e por isso e estatica: ali
+ninguem executa JavaScript nenhum.
 
 
 ONDE MEXER PARA CONFIGURAR
@@ -101,7 +148,10 @@ entregas/     as 10 entregas de exemplo, uma por molde. Cada uma
               tem carousel.html, legenda.txt, pedido.json e a
               pasta slides/ com os 7 PNG em 1080x1350.
 pedidos/      vazia, para guardar pedidos em JSON.
-producao/     scripts de producao.
+producao/     scripts de producao e o gerador do cartao de
+              previa. Fora do .vercelignore, entao nao vai ao ar.
+              As fontes baixadas e o og.png intermediario ficam
+              fora do git: sao regerados por um comando.
 
 
 O QUE JA FOI RESOLVIDO E NAO DEVE VOLTAR
@@ -123,7 +173,18 @@ O QUE JA FOI RESOLVIDO E NAO DEVE VOLTAR
    dois tokens e nao um: --acc e a cor viva, para fundo, borda e ponto;
    --acc-tx e a mesma cor rebaixada ate passar, para texto. Quem calcula
    e CS.corTexto(), no moldes.js. Nao volte a usar --acc em color:.
-7. O <link> do Google Fonts carrega so as fontes dos 10 moldes que
+7. O cartao de previa e servido do proprio servidor local do
+   og.mjs, nunca por file:// e nunca pelo proxy. Duas armadilhas
+   ja custaram tempo aqui: por file:// o Chrome bloqueia o
+   moldes.js e o cartao sai so com o texto do lado esquerdo; e a
+   flag --proxy-bypass-list=<-loopback> joga o proprio 127.0.0.1
+   dentro do proxy, e ai a pagina nao carrega nunca. O cartao nao
+   precisa de rede: as fontes ja sao arquivo local nessa hora.
+8. O screenshot so dispara quando window.CARTAO_PRONTO vira true.
+   O --headless --screenshot direto fotografa no fim do load, que
+   acontece antes das fontes chegarem, e o cartao sai em fonte de
+   sistema sem avisar.
+9. O <link> do Google Fonts carrega so as fontes dos 10 moldes que
    existem. A skill instagram-carousel oferece sete pares de estilo, e o
    par "Warm / approachable" (Lora + Nunito Sans) saiu de la por nao ter
    molde usando. Molde novo com par novo precisa da familia no <link>,

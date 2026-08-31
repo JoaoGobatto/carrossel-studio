@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Carrossel Studio &middot; cartao de previa</title>
+<!--
+  CARTAO DE PREVIA (Open Graph, 1200 x 630)
+  ---------------------------------------------------------------------------
+  Nao e arte solta: os tres slides do lado direito saem do CS.renderSlide do
+  moldes.js, os mesmos que a producao exporta. Molde novo ou paleta nova
+  aparecem aqui sozinhos, e o cartao nunca promete um visual que o site nao
+  entrega. Quem gera a imagem e o producao/og.mjs.
+-->
+<link href="fontes/fontes.css" rel="stylesheet">
+<style>
+  :root{ --bg:#f7f6f3; --tx:#121214; --tx2:#57544e; --tx3:#8b877f; --acc:#c0281e; --acc-tx:#b02419;
+         --line:rgba(18,18,20,.12); --fd:'Fraunces',Georgia,serif; --f:'Karla',system-ui,sans-serif }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{width:1200px; height:630px; overflow:hidden; background:var(--bg); font-family:var(--f); color:var(--tx)}
+
+  /* O papel do site: a mesma trama de fundo, senao o cartao chega mais
+     limpo do que a pagina que ele anuncia. */
+  .cartao{position:relative; width:1200px; height:630px; display:grid;
+    grid-template-columns:1fr 560px; align-items:center; overflow:hidden;
+    background:
+      radial-gradient(900px 620px at 88% 42%, rgba(192,40,30,.07), transparent 62%),
+      linear-gradient(180deg,#faf9f7,#f2f0eb)}
+  .cartao::after{content:''; position:absolute; inset:0; pointer-events:none; opacity:.5;
+    background:repeating-linear-gradient(0deg, rgba(18,18,20,.028) 0 1px, transparent 1px 3px)}
+
+  .txt{padding:0 0 0 76px; position:relative; z-index:2}
+  .logo{display:flex; align-items:baseline; gap:11px; font-family:var(--fd);
+    font-weight:500; font-size:31px; letter-spacing:-.015em}
+  .logo s{text-decoration:none; width:17px; height:17px; display:inline-block;
+    position:relative; transform:translateY(-6px);
+    background:linear-gradient(var(--acc),var(--acc)) center/1.5px 100% no-repeat,
+               linear-gradient(var(--acc),var(--acc)) center/100% 1.5px no-repeat}
+  .logo s::after{content:''; position:absolute; inset:4px; border-radius:50%; border:1.5px solid var(--acc)}
+
+  .olho{display:flex; align-items:center; gap:9px; margin:30px 0 16px;
+    font-size:12px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--acc-tx)}
+  .olho i{width:7px; height:7px; border-radius:50%; background:var(--acc); flex:0 0 auto}
+
+  h1{font-family:var(--fd); font-weight:500; font-size:63px; line-height:1.02;
+     letter-spacing:-.028em; max-width:11ch}
+  h1 em{font-style:italic; color:var(--acc-tx)}
+  p{margin-top:20px; font-size:20px; line-height:1.5; color:var(--tx2); max-width:30ch}
+
+  .pe{display:flex; align-items:center; gap:14px; margin-top:34px; flex-wrap:wrap}
+  .pe b{font-family:var(--fd); font-weight:600; font-size:23px; letter-spacing:-.01em;
+    background:var(--acc); color:#f7f6f3; padding:9px 18px; border-radius:999px}
+  .pe span{font-size:16px; color:var(--tx3); font-weight:500}
+
+  /* Leque de slides. Cada .palco escala o slide de 420x525 por transform,
+     igual ao site: e por isso que da para inclinar sem o layout refluir. */
+  .leque{position:relative; height:630px}
+  .palco{position:absolute; width:420px; height:525px; overflow:hidden; border-radius:16px;
+    box-shadow:0 26px 60px rgba(18,18,20,.26), 0 2px 0 rgba(255,255,255,.5) inset}
+  .palco{transform-origin:50% 50%}
+  /* Posicao pela caixa de 420x525 e transform em torno do centro. O leque
+     inteiro cabe dentro dos 1200x630 de proposito: o WhatsApp e o Telegram
+     cortam a previa para 1,91:1 pelas bordas, e slide cortado no meio da
+     frase parece defeito, nao recorte. */
+  .p1{left:-70px;  top:150px; transform:scale(.52) rotate(-8deg);   opacity:.94}
+  .p2{left:30px;   top:105px; transform:scale(.63) rotate(-3deg);   z-index:2}
+  .p3{left:160px;  top:58px;  transform:scale(.76) rotate(3.5deg);  z-index:3}
+</style>
+<style id="estiloSlide"></style>
+</head>
+<body>
+<div class="cartao">
+  <div class="txt">
+    <div class="logo">Carrossel Studio<s></s></div>
+    <div class="olho"><i></i>10 narrativas prontas, uma por nicho</div>
+    <h1>Chega de postar <em>para ninguém</em>.</h1>
+    <p>Escolha o molde do seu nicho, preencha quatro campos e receba sete imagens prontas para postar.</p>
+    <div class="pe"><b>em 24 horas</b><span>1080 &times; 1350 &middot; legenda escrita</span></div>
+  </div>
+  <div class="leque" id="leque"></div>
+</div>
+
+<script src="../moldes.js"></script>
+<script>
+document.getElementById('estiloSlide').textContent = CS.ESTILO_SLIDE;
+
+/* Os tres slides do leque, escolhidos a dedo por dois motivos. Cor e
+   tratamento: laranja num numerao, roxo em duotone e azul em foto cheia,
+   entao o cartao ja conta que a paleta inteira sai da cor do cliente.
+   E tipografia: os tres moldes usam os tres pares de fonte diferentes
+   (Fraunces/Outfit, Libre Baskerville/Work Sans, Playfair/DM Sans), o que
+   deixa claro que molde nao e a mesma arte pintada de outra cor.
+   Trocou de cena aqui? Acerte a lista FAMILIAS do og.mjs junto, senao a
+   fonte nova nao e baixada e o slide cai em fonte de sistema. */
+const CENAS = [['food',4], ['juri',6], ['odonto',0]];
+
+function dadosDo(m){
+  const fotos = m.seq.map((s,i)=> s.t === 'virada'
+    ? '../assets/' + m.id + '.jpg'
+    : '../assets/' + m.id + '-' + (i+1) + '.jpg');
+  return {foto:'../assets/' + m.id + '.jpg', fotos:fotos};
+}
+
+document.getElementById('leque').innerHTML = CENAS.map(([id,i],n)=>{
+  const m = CS.MOLDES.find(x => x.id === id);
+  if(!m) throw new Error('molde inexistente no cartao: ' + id);
+  return '<div class="palco p' + (n+1) + '">' + CS.renderSlide(m, dadosDo(m), i, m.seq.length) + '</div>';
+}).join('');
+
+/* O screenshot so dispara quando isto vira true: fontes carregadas e todas
+   as fotos decodificadas. Sem isso o cartao sai em fonte de sistema e com
+   buraco no lugar da foto, porque o headless nao espera por conta propria. */
+window.CARTAO_PRONTO = false;
+Promise.all([
+  document.fonts.ready,
+  ...[...document.images].map(im => im.complete ? Promise.resolve()
+      : new Promise(r => { im.onload = im.onerror = r; }))
+]).then(()=> requestAnimationFrame(()=> requestAnimationFrame(()=>{ window.CARTAO_PRONTO = true; })));
+</script>
+</body>
+</html>

@@ -5,6 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Carrossel Studio | Chega de postar para ninguém</title>
 <meta name="description" content="Carrossel de Instagram a partir de R$ 59,90, com foto de verdade e uma historia que prende ate o ultimo slide. Escolha o molde do seu nicho e receba em 24 horas.">
+
+<!-- ===========================================================================
+     COMPARTILHAMENTO
+     O link deste site nasce colado: no WhatsApp do cliente, no story, no
+     anuncio. Quem monta a previa (WhatsApp, Instagram, Telegram, LinkedIn)
+     le o HTML cru e NAO executa JavaScript, entao tudo daqui precisa ser
+     estatico e com URL absoluta. Previa sem imagem passa por link suspeito
+     e o cliente nao clica.
+
+     O DOMINIO APARECE SO AQUI, nestas cinco linhas, e no sitemap.xml. Mudou
+     de dominio? Troque nos dois lugares e acabou.
+     O cartao assets/og.jpg e gerado pelo producao/og.mjs a partir dos slides
+     de verdade; nao edite a imagem na mao, ela e regerada.
+     =========================================================================== -->
+<link rel="canonical" href="https://carrossel-studio.vercel.app/">
+<meta property="og:url" content="https://carrossel-studio.vercel.app/">
+<meta property="og:image" content="https://carrossel-studio.vercel.app/assets/og.jpg">
+<meta name="twitter:image" content="https://carrossel-studio.vercel.app/assets/og.jpg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Carrossel Studio">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:title" content="Carrossel Studio | Chega de postar para ninguém">
+<meta property="og:description" content="Escolha o molde do seu nicho, preencha quatro campos e receba sete imagens prontas para postar, com legenda escrita. Entrega em 24 horas, a partir de R$ 59,90.">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:alt" content="Carrossel Studio: três slides de carrossel ao lado da frase Chega de postar para ninguém.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#f7f6f3">
+<meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23f7f6f3'/%3E%3Cg stroke='%23c0281e' stroke-width='2.2' fill='none' stroke-linecap='round'%3E%3Ccircle cx='16' cy='16' r='5.6'/%3E%3Cpath d='M16 5.5v21M5.5 16h21'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1464,6 +1494,87 @@ function montarFaq(){
   f.querySelectorAll('.q').forEach(q=>q.onclick=()=>q.classList.toggle('open'));
 }
 
+/* ---------- dados estruturados (schema.org) ------------------------------
+   O Google entende o site melhor quando ele se descreve em JSON-LD: a faixa
+   de preco vira o "a partir de R$ 59,90" no resultado da busca, e o FAQPage
+   pode virar as perguntas expansiveis embaixo do link.
+
+   Por que montado em JavaScript e nao escrito a mao no <head>: preco mora no
+   PACOTES e pergunta mora no FAQ, os dois logo aqui em cima. JSON-LD copiado
+   no <head> viraria um segundo lugar para lembrar de mexer, e o dia em que o
+   preco subir e o JSON-LD ficar para tras o Google mostra na busca um valor
+   que o site nao cobra mais. O Google renderiza JavaScript antes de indexar,
+   entao a informacao chega igual.
+
+   O que NAO pode virar JavaScript e a previa do link: WhatsApp e Instagram
+   leem o HTML cru, sem executar nada. Por isso as meta tags og: estao
+   escritas a mao no <head>, e so elas.
+   ----------------------------------------------------------------------- */
+function montarDadosEstruturados(){
+  /* O dominio sai da <link rel="canonical"> do <head>, nao do location: em
+     deploy de preview da Vercel o endereco muda a cada commit, e o JSON-LD
+     acabaria descrevendo o negocio com uma URL que nao e a do site. Assim o
+     dominio continua morando num lugar so. */
+  const base = document.querySelector('link[rel="canonical"]').href;
+  const precos = PACOTES.map(p => p.preco);
+
+  const dados = {
+    '@context':'https://schema.org',
+    '@graph':[
+      {
+        '@type':'ProfessionalService',
+        '@id': base + '#negocio',
+        name:'Carrossel Studio',
+        description:'Carrosseis de Instagram sob medida: sete imagens com narrativa fechada, ' +
+                    'legenda escrita e entrega em 24 horas.',
+        url: base,
+        image: base + 'assets/og.jpg',
+        areaServed:{'@type':'Country', name:'Brasil'},
+        availableLanguage:'pt-BR',
+        priceRange:'R$',
+        telephone:'+' + CFG.whatsapp,
+        sameAs:['https://wa.me/' + CFG.whatsapp]
+      },
+      {
+        '@type':'Service',
+        '@id': base + '#servico',
+        name:'Carrossel de Instagram sob medida',
+        serviceType:'Design de carrossel para Instagram',
+        provider:{'@id': base + '#negocio'},
+        offers:{
+          '@type':'AggregateOffer',
+          priceCurrency:'BRL',
+          lowPrice: Math.min(...precos).toFixed(2),
+          highPrice: Math.max(...precos).toFixed(2),
+          offerCount: PACOTES.length,
+          availability:'https://schema.org/InStock',
+          offers: PACOTES.map(p => ({
+            '@type':'Offer',
+            name: p.q + (p.q > 1 ? ' carrosseis' : ' carrossel') + ' de 7 imagens',
+            price: p.preco.toFixed(2),
+            priceCurrency:'BRL',
+            availability:'https://schema.org/InStock'
+          }))
+        }
+      },
+      {
+        '@type':'FAQPage',
+        '@id': base + '#duvidas',
+        mainEntity: FAQ.map(([q,a]) => ({
+          '@type':'Question',
+          name: q,
+          acceptedAnswer:{'@type':'Answer', text: a}
+        }))
+      }
+    ]
+  };
+
+  const tag = document.createElement('script');
+  tag.type = 'application/ld+json';
+  tag.textContent = JSON.stringify(dados);
+  document.head.appendChild(tag);
+}
+
 /* ---------- boot --------------------------------------------------------- */
 function bind(id, campo, extra){
   const el = document.getElementById(id);
@@ -1474,6 +1585,7 @@ function bind(id, campo, extra){
   if(SEM_MOUSE) document.getElementById('dicaMolde').textContent =
     'Toque em um molde para abrir. A história roda sozinha aqui embaixo.';
   montarEsteira(); montarDemo(); montarGaleria(); montarChips(); montarFaq();
+  montarDadosEstruturados();
 
   bind('fNome','nome'); bind('fArroba','arroba');
   montarAssuntos();
