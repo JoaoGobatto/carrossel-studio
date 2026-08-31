@@ -60,7 +60,13 @@
 
      --acc-ink é a tinta POR CIMA do preenchimento. Num acento claro como
      este azul, ela é escura: #06060b sobre #5b7cff dá 5,5:1. */
-  --bg:#07070c; --bg2:#0b0b13; --card:#101019; --card2:#16161f;
+  --bg:#050509; --bg2:#0a0a12; --card:#101019; --card2:#16161f;
+  /* A CARTA. Um degradê quase invisível de cima para baixo, como se a luz
+     viesse de cima, mais a hairline. É o que separa a peça do preto sem
+     desenhar uma caixa: no fundo escuro, borda sozinha vira contorno de
+     formulário; borda mais essa lâmina de luz vira objeto. */
+  --carta:linear-gradient(180deg, rgba(255,255,255,.048), rgba(255,255,255,.012));
+  --carta-borda:rgba(255,255,255,.09);
   --line:rgba(255,255,255,.11); --line2:rgba(255,255,255,.24);
   --tx:#f2f2f6; --tx2:#a6a4b6; --tx3:#77758a;
   --acc:#5b7cff; --acc-ink:#06060b; --acc-tx:#8fa4ff;
@@ -500,7 +506,47 @@ header.emCima .nav{background:rgba(10,10,18,.30); border-color:rgba(255,255,255,
   box-shadow:0 18px 44px rgba(0,0,0,.55)}
 
 /* ---------- seções ---------- */
-section{padding:96px 0; scroll-margin-top:var(--nav)}
+/* ---------- o brilho por trás das seções ----------
+   O que dá o ar da referência não são as caixas, é a luz colorida que passa
+   atrás delas. Aqui ela é gradiente radial no ::before da seção, na mesma
+   família do shader do hero — azul, violeta e um toque de laranja.
+
+   Gradiente e não filter:blur() por dois motivos: blur de tela cheia é caro,
+   e um elemento borrado precisa transbordar a caixa para não mostrar a
+   própria borda. Como isto é BACKGROUND, ele nunca sai da caixa: dá para
+   deixar a seção sem overflow:hidden, o que importa porque o configurador
+   tem um painel position:sticky lá dentro, e qualquer overflow num ancestral
+   mataria o sticky. */
+section{padding:104px 0; scroll-margin-top:var(--nav); position:relative}
+main > section:not(.hero)::before{content:''; position:absolute; inset:0; z-index:0;
+  pointer-events:none}
+/* Cada seção pega o brilho de um lado, para a página não repetir a mesma
+   mancha oito vezes descendo. */
+main > section:not(.hero):nth-of-type(odd)::before{
+  background:radial-gradient(70% 58% at 88% 8%, rgba(58,88,232,.30), transparent 62%),
+             radial-gradient(52% 46% at 6% 78%, rgba(118,86,224,.24), transparent 66%)}
+main > section:not(.hero):nth-of-type(even)::before{
+  background:radial-gradient(66% 54% at 10% 12%, rgba(118,86,224,.29), transparent 62%),
+             radial-gradient(50% 44% at 92% 74%, rgba(58,88,232,.26), transparent 66%),
+             radial-gradient(26% 22% at 74% 30%, rgba(226,104,66,.16), transparent 70%)}
+/* Dentro dos moldes e do configurador o brilho sai da COR DO MOLDE, que o JS
+   já reescreve em --acc. A luz do fundo passa a acompanhar a escolha do
+   cliente em vez de contrariar. */
+#moldes::before,#config::before{
+  background:radial-gradient(64% 52% at 86% 6%, color-mix(in srgb, var(--acc) 30%, transparent), transparent 62%),
+             radial-gradient(48% 42% at 8% 82%, color-mix(in srgb, var(--acc) 20%, transparent), transparent 66%)}
+/* O fecho é a última tela antes do rodapé: ganha um bloom centrado e mais
+   forte, no lugar da mancha de canto. É o equivalente ao borrão grande que a
+   referência põe atrás da chamada.
+
+   O seletor precisa carregar o :not(.hero) e o main > para EMPATAR com a
+   regra de nth-of-type lá de cima e ganhar por vir depois. Escrito só como
+   .fecho::before ele perde por especificidade e não pinta nada — foi o que
+   aconteceu na primeira tentativa. */
+main > section:not(.hero).fecho::before{background:
+  radial-gradient(46% 62% at 50% 46%, rgba(72,96,240,.34), transparent 66%),
+  radial-gradient(30% 40% at 34% 30%, rgba(126,90,228,.26), transparent 70%),
+  radial-gradient(18% 24% at 68% 62%, rgba(226,104,66,.16), transparent 72%)}
 .shead{max-width:60ch; margin-bottom:44px}
 .shead h2{font-family:var(--fd); font-weight:500; font-size:clamp(31px,4.4vw,52px);
   line-height:1.06; letter-spacing:-.025em; margin:16px 0 14px}
@@ -508,9 +554,12 @@ section{padding:96px 0; scroll-margin-top:var(--nav)}
 .shead p{color:var(--tx2); font-size:17.5px; max-width:54ch; line-height:1.62}
 
 /* problema */
-.tres{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:0; border-top:1px solid var(--line)}
-.tres > div{padding:30px 26px 30px 0; border-right:1px solid var(--line)}
-.tres > div:last-child{border-right:0}
+.tres{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px}
+.tres > div{padding:30px 26px 32px; border-radius:20px;
+  background:var(--carta); border:1px solid var(--carta-borda);
+  transition:border-color .25s, transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s}
+.tres > div:hover{transform:translateY(-4px); border-color:rgba(255,255,255,.17);
+  box-shadow:0 22px 50px rgba(0,0,0,.5)}
 .tres .n{font-family:var(--fd); font-size:46px; color:var(--acc-tx); line-height:1; opacity:.85}
 .tres .w{font-family:var(--fd); font-weight:500; font-size:40px; color:var(--acc-tx);
   line-height:1; letter-spacing:-.025em}
@@ -646,18 +695,23 @@ textarea.inp{resize:vertical; min-height:82px; line-height:1.55; font-size:16.5p
 @media(min-width:1001px){ .barra{display:none !important} }
 
 /* ---------- entrega ---------- */
-.entrega{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1px;
-  background:var(--line); border:1px solid var(--line)}
-.entrega > div{background:var(--bg); padding:30px 26px}
+.entrega{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px}
+.entrega > div{padding:30px 26px 32px; border-radius:20px;
+  background:var(--carta); border:1px solid var(--carta-borda);
+  transition:border-color .25s, transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s}
+.entrega > div:hover{transform:translateY(-4px); border-color:rgba(255,255,255,.17);
+  box-shadow:0 22px 50px rgba(0,0,0,.5)}
 .entrega .ic{font-family:var(--fd); font-size:16.5px; color:var(--acc-tx); border:1px solid var(--line2);
   width:38px; height:38px; border-radius:50%; display:grid; place-items:center}
 .entrega h4{font-size:17.5px; font-weight:600; margin:19px 0 9px; letter-spacing:-.015em}
 .entrega p{color:var(--tx2); font-size:15px; line-height:1.65}
 
 /* ---------- comparação ---------- */
-.tblwrap{overflow-x:auto; border:1px solid var(--line); border-radius:14px}
+.tblwrap{overflow-x:auto; border-radius:20px;
+  background:var(--carta); border:1px solid var(--carta-borda)}
 table{width:100%; border-collapse:collapse; min-width:660px}
-th,td{padding:18px 20px; text-align:left; font-size:15px; border-bottom:1px solid var(--line)}
+th,td{padding:18px 20px; text-align:left; font-size:15px;
+  border-bottom:1px solid rgba(255,255,255,.07)}
 thead th{color:var(--tx3); font-family:var(--fu); font-size:11px; letter-spacing:.18em; text-transform:uppercase; font-weight:600}
 thead th.nos{color:var(--acc-tx)}
 tbody td:first-child{color:var(--tx2)}
@@ -702,8 +756,12 @@ tbody tr:last-child td{border-bottom:0}
 .preco .dir p{color:var(--tx2); font-size:14px; line-height:1.6; margin-bottom:24px}
 
 /* ---------- faq ---------- */
-.faq{border-top:1px solid var(--line)}
-.q{border-bottom:1px solid var(--line); padding:22px 0; cursor:pointer}
+.faq{display:grid; gap:10px}
+.q{padding:20px 24px; cursor:pointer; border-radius:18px;
+  background:var(--carta); border:1px solid var(--carta-borda);
+  transition:border-color .25s, background .25s}
+.q:hover{border-color:rgba(255,255,255,.17)}
+.q.open{border-color:color-mix(in srgb, var(--acc) 40%, transparent)}
 .q h5{font-size:18.5px; font-weight:500; display:flex; justify-content:space-between; gap:20px;
   letter-spacing:-.01em; transition:color .2s}
 .q:hover h5{color:var(--acc)}
@@ -712,6 +770,10 @@ tbody tr:last-child td{border-bottom:0}
 .q .a{max-height:0; overflow:hidden; transition:max-height .32s ease, margin .32s}
 .q.open .a{max-height:400px; margin-top:14px}
 .q .a p{color:var(--tx2); font-size:16px; line-height:1.72; max-width:66ch}
+/* O respiro de baixo entra junto com a resposta: numa carta, texto colado na
+   borda inferior fica apertado, e sem isto o padding teria de existir mesmo
+   com a pergunta fechada, inchando a lista inteira. */
+.q.open .a{margin-bottom:4px}
 
 /* ---------- fecho ---------- */
 .fecho{text-align:center; padding:110px 0}
