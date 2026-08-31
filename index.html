@@ -33,46 +33,64 @@
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:alt" content="Carrossel Studio: três slides de carrossel ao lado da frase Chega de postar para ninguém.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#f7f6f3">
+<meta name="theme-color" content="#07070c">
 <meta name="robots" content="index,follow,max-image-preview:large">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23f7f6f3'/%3E%3Cg stroke='%23c0281e' stroke-width='2.2' fill='none' stroke-linecap='round'%3E%3Ccircle cx='16' cy='16' r='5.6'/%3E%3Cpath d='M16 5.5v21M5.5 16h21'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2307070c'/%3E%3Cg stroke='%235b7cff' stroke-width='2.2' fill='none' stroke-linecap='round'%3E%3Ccircle cx='16' cy='16' r='5.6'/%3E%3Cpath d='M16 5.5v21M5.5 16h21'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;600&family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..700,0..100,0..1&family=Karla:wght@300;400;500;600;700&family=Libre+Baskerville:wght@400;700&family=Outfit:wght@300;400;600;700&family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;600&family=Inter:wght@300;400;500;600&family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..700,0..100,0..1&family=Karla:wght@300;400;500;600;700&family=Libre+Baskerville:wght@400;700&family=Outfit:wght@300;400;600;700&family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  /* A OFICINA: papel frio, tinta e vermelho de gráfica.
-     O dourado antigo (#e0b562) ficava a menos de 4 graus de matiz dos moldes
-     de barbearia e de energia solar, então a cor do cliente e a cor do site
-     viravam a mesma coisa justamente na tela que existe para mostrar a cor
-     do cliente. #c0281e fica em 3,7 graus, dentro do maior vão livre da roda. */
-  --bg:#f7f6f3; --bg2:#efede8; --card:#ffffff; --card2:#f2f0eb;
-  --line:rgba(18,18,20,.12); --line2:rgba(18,18,20,.26);
-  --tx:#121214; --tx2:#57544e; --tx3:#8b877f;
-  --acc:#c0281e; --acc-ink:#f7f6f3;
-  /* --acc  = preenchimento (fundo, borda, ponto): sempre a cor viva do cliente.
-     --acc-tx = a MESMA cor rebaixada ate passar 4,5:1 sobre o papel, para uso
-     como texto. Sem essa separação o papel quebra: das 10 cores dos moldes,
-     zero passam como texto sobre #f7f6f3 (a barbearia dá 2,35:1). No fundo
-     preto antigo isso não aparecia, porque lá elas eram as cores claras. */
-  --acc-tx:#b02419;
+  /* A OFICINA, NO ESCURO.
+     O site nasceu em papel. Virou noite quando o hero ganhou as fitas de luz:
+     uma faixa preta no topo e papel no resto lia como duas peças diferentes
+     coladas, e o vermelho de gráfica, que existia para funcionar sobre papel,
+     ficava terroso sobre o quase preto.
+
+     A cor da marca agora é o azul elétrico que já corria no fundo do hero, e
+     é a mesma família do shader. Isso resolve dois problemas de uma vez: a
+     marca deixa de brigar com o fundo e passa a sair dele.
+
+     DOIS TOKENS PARA UM ACENTO, e o motivo é o mesmo de sempre, virado do
+     avesso. --acc é a cor viva, para PREENCHIMENTO (fundo, borda, ponto).
+     --acc-tx é a mesma cor CLAREADA até passar 4,5:1 sobre o fundo, para
+     TEXTO. No papel a conta descia; aqui ela sobe. Quem faz isso na cor do
+     cliente é CS.corTexto(), que já lê a luminância do fundo e escolhe o
+     sentido sozinho — não precisou mudar uma linha dela.
+
+     --acc-ink é a tinta POR CIMA do preenchimento. Num acento claro como
+     este azul, ela é escura: #06060b sobre #5b7cff dá 5,5:1. */
+  --bg:#07070c; --bg2:#0b0b13; --card:#101019; --card2:#16161f;
+  --line:rgba(255,255,255,.11); --line2:rgba(255,255,255,.24);
+  --tx:#f2f2f6; --tx2:#a6a4b6; --tx3:#77758a;
+  --acc:#5b7cff; --acc-ink:#06060b; --acc-tx:#8fa4ff;
   /* O PALCO: --acc é reescrito em tempo real dentro de #moldes e #config
      pela cor do molde ativo. Tudo que deriva do acento usa color-mix sobre
      var(--acc), então acompanha a troca sozinho, sem token paralelo. */
-  --sombra:rgba(18,18,20,.16); --sombra-forte:rgba(18,18,20,.26);
+  --sombra:rgba(0,0,0,.55); --sombra-forte:rgba(0,0,0,.72);
   --palco-bg:#0d0c0b;
   --f:'Karla',system-ui,-apple-system,Segoe UI,sans-serif;
   --fu:'Karla',system-ui,sans-serif;
   --fd:'Fraunces',Georgia,'Times New Roman',serif;
+  /* A fonte do título do hero, tirada da referência: grotesca moderna, sem
+     serifa, de contraste baixo. A Fraunces continua sendo a marca no resto
+     do site; aqui ela daria um ar editorial que briga com a animação. */
+  --fh:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
   --nav:66px;
+  /* Uma linha que o navegador precisa ouvir: com ela a barra de rolagem, o
+     seletor de cor nativo do campo "cor principal" e os menus do sistema saem
+     escuros. Sem ela ficam claros dentro de um site escuro. */
+  color-scheme:dark;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg); color:var(--tx); font-family:var(--f); line-height:1.58;
   -webkit-font-smoothing:antialiased; overflow-x:hidden}
 /* textura de filme, a mesma linguagem dos slides */
-body::after{content:''; position:fixed; inset:0; z-index:3; pointer-events:none; opacity:.09;
-  mix-blend-mode:multiply; background-size:260px 260px;
+/* No papel o grão era multiply. Sobre quase preto, multiply não faz nada:
+   escuro vezes escuro continua escuro. No escuro quem soma textura é soft-light. */
+body::after{content:''; position:fixed; inset:0; z-index:3; pointer-events:none; opacity:.13;
+  mix-blend-mode:soft-light; background-size:260px 260px;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E")}
 .wrap{position:relative; z-index:2; max-width:1200px; margin:0 auto; padding:0 24px}
 ::selection{background:var(--acc); color:var(--acc-ink)}
@@ -85,29 +103,21 @@ body::after{content:''; position:fixed; inset:0; z-index:3; pointer-events:none;
    arredonda os cantos: é o que separa isso de mais uma serifada bonita.
    Fica só nos seletores de display; em body vazaria para dentro dos slides,
    porque font-variation-settings é herdado. */
-.disp,.logo,.hero h1,.shead h2,.cfgTop h2,.fecho h2,.mmeta h3,.tres .n,
+.disp,.logo,.shead h2,.cfgTop h2,.fecho h2,.mmeta h3,.tres .n,
 .entrega .ic,.preco .val b,.preco .dir h4,.total .p{font-optical-sizing:auto;
   font-variation-settings:'SOFT' 30,'WONK' 1}
 .eyebrow{display:inline-flex; align-items:center; gap:10px; color:var(--acc-tx)}
+.hero .eyebrow{font-family:var(--fh); font-weight:600; letter-spacing:.17em}
 .eyebrow i{display:block; width:26px; height:1px; background:currentColor; opacity:.7}
 
 /* ---------- topo ---------- */
 header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
-  backdrop-filter:blur(16px); background:rgba(247,246,243,.78); border-bottom:1px solid var(--line);
-  transition:background .3s, border-color .3s, color .3s}
-/* Enquanto a barra está POR CIMA da faixa escura ela se inverte junto, senão
-   fica uma tarja de papel boiando no meio da animação. O JS põe e tira a
-   classe; sem JS a barra continua clara e legível, que é o padrão seguro. */
-header.emCima{background:rgba(7,7,12,.34); border-bottom-color:rgba(255,255,255,.10);
-  --tx:#f4f3f0; --tx2:#c6c4d2; --tx3:#94919f; --line2:rgba(255,255,255,.30);
-  /* o color é obrigatório: a marca não pinta a si mesma, ela herda. Só
-     redefinir o token deixaria "Carrossel Studio" preto sobre preto. */
-  color:var(--tx)}
-/* Só a mira da marca clareia. O botão continua no vermelho de sempre porque
-   #c0281e com a tinta clara dá 5,5:1 sobre o quase preto, e mexer no --acc do
-   header inteiro levaria o botão junto. */
-header.emCima .logo s{--acc:#ff7f68}
-header.emCima .btn.ghost{color:var(--tx)}
+  backdrop-filter:blur(16px); background:rgba(9,9,15,.76); border-bottom:1px solid var(--line);
+  transition:background .3s, border-color .3s}
+/* Sobre o hero a barra quase some, para a animação passar inteira por baixo
+   dela; passado o hero, ela ganha corpo e vira barra de verdade. O JS põe e
+   tira a classe; sem JS fica a barra com corpo, que é o estado seguro. */
+header.emCima{background:rgba(7,7,12,.26); border-bottom-color:rgba(255,255,255,.07)}
 .nav{display:flex; align-items:center; justify-content:space-between; height:var(--nav)}
 .logo{display:flex; align-items:baseline; gap:9px; font-family:var(--fd); font-weight:500; font-size:24px; letter-spacing:-.015em}
 /* Cruz de registro: a marca que a gráfica usa para alinhar as chapas de cor.
@@ -137,38 +147,18 @@ header.emCima .btn.ghost{color:var(--tx)}
 .btn:hover{transform:translateY(-2px);
   box-shadow:0 10px 26px color-mix(in srgb, var(--acc) 26%, transparent)}
 .btn:active{transform:translateY(0)}
-.btn:disabled{background:#e4e1da; color:#a8a49c; cursor:not-allowed; transform:none; box-shadow:none}
+.btn:disabled{background:#1b1b25; color:#5d5b6c; cursor:not-allowed; transform:none; box-shadow:none}
 .btn.ghost{background:transparent; color:var(--tx); border:1px solid var(--line2)}
 .btn.ghost:hover{border-color:var(--acc-tx); color:var(--acc-tx); box-shadow:none}
 .btn.sm{padding:10px 18px; font-size:14px}
 
-/* ---------- hero: a faixa escura ----------
-   O site é de papel. O hero, e SÓ o hero, é a faixa invertida: fundo quase
-   preto com as fitas de luz correndo atrás.
-
-   Os tokens são reescritos aqui dentro em vez de existir um segundo jogo de
-   nomes. Assim tudo que já lia var(--tx), var(--line) e var(--acc-tx) vira
-   claro sozinho — botão fantasma, ticker, nota da demonstração — e nada disso
-   precisou de regra nova. O preço disso é uma armadilha, e ela tem nome:
-   qualquer coisa CLARA que more dentro do hero herda os tokens escuros e
-   some. Hoje é a ficha do pedido, e é por isso que ela devolve os tokens de
-   papel logo abaixo. Peça clara nova aqui dentro precisa fazer o mesmo.
-
-   --acc continua o vermelho da marca: #c0281e com a tinta clara dá 5,5:1,
-   passa. Já --acc-tx, que no papel é o vermelho REBAIXADO, aqui precisa ser o
-   contrário — clareado até passar sobre o quase preto. Mesma lógica do item 6
-   do LEIA-ME, invertida. */
-.hero{
-  --bg:#07070c; --bg2:#0b0b13;
-  --tx:#f4f3f0; --tx2:#a8a6b6; --tx3:#7b788a;
-  --line:rgba(255,255,255,.13); --line2:rgba(255,255,255,.28);
-  --acc-tx:#ff7f68;
-  position:relative; overflow:hidden; isolation:isolate;
-  padding:calc(var(--nav) + 78px) 0 0; background:var(--bg); color:var(--tx)}
-
-/* A ficha do pedido é branca e mora dentro da faixa escura: devolve o papel. */
-.dFicha{--tx:#121214; --tx2:#57544e; --tx3:#8b877f;
-  --line:rgba(18,18,20,.12); --line2:rgba(18,18,20,.26); --acc-tx:#b02419; color:var(--tx)}
+/* ---------- hero ----------
+   O site inteiro é escuro, então o hero não reescreve mais token nenhum: ele
+   só é o lugar onde as fitas de luz correm. O jogo de tokens invertido que
+   morava aqui virou o :root, e junto com ele foi embora a armadilha de peça
+   clara sumindo dentro da faixa. */
+.hero{position:relative; overflow:hidden; isolation:isolate;
+  padding:calc(var(--nav) + 78px) 0 0; background:var(--bg)}
 
 /* O ::before deixou de ser o brilho vermelho e virou o VÉU DE LEGIBILIDADE.
    Não é decoração: o texto agora é branco sobre uma animação que muda sozinha,
@@ -177,8 +167,8 @@ header.emCima .btn.ghost{color:var(--tx)}
    mora, e some à direita, onde o celular fica — então o fundo continua vivo
    exatamente onde não há texto por cima. */
 .hero::before{content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
-  background:linear-gradient(101deg, rgba(7,7,12,.96) 0%, rgba(7,7,12,.90) 26%,
-             rgba(7,7,12,.58) 44%, rgba(7,7,12,.16) 60%, rgba(7,7,12,0) 72%)}
+  background:linear-gradient(101deg, rgba(7,7,12,.97) 0%, rgba(7,7,12,.93) 28%,
+             rgba(7,7,12,.68) 46%, rgba(7,7,12,.20) 62%, rgba(7,7,12,0) 74%)}
 
 /* Tela das fitas de luz. Fica atrás de tudo e não recebe clique. O fundo em
    CSS por baixo dela não é enfeite: é o que a pessoa vê no primeiro paint,
@@ -199,10 +189,24 @@ header.emCima .btn.ghost{color:var(--tx)}
 .heroGrid{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,380px);
   gap:clamp(30px,4.5vw,66px); align-items:center}
 .heroGrid > *{min-width:0}
-.hero h1{font-family:var(--fd); font-weight:500; font-size:clamp(40px,5.4vw,74px);
-  line-height:.99; letter-spacing:-.03em; max-width:13ch}
-.hero h1 em{font-style:italic; color:var(--acc-tx)}
-.hero .lead{color:var(--tx2); font-size:clamp(16.5px,1.4vw,19px); max-width:46ch; margin-top:22px}
+/* O TÍTULO, no estilo da referência: grotesca moderna, peso médio, entrelinha
+   folgada e tracking negativo. E monocromático — lá o destaque não é feito com
+   cor, é feito com BRILHO: o corpo da frase fica num branco morno e a parte
+   que carrega o peso vai a branco puro.
+
+   O degradê é pintado no texto (background-clip), e é por isso que a cor de
+   destaque do <em> usa -webkit-text-fill-color e não color: com o clip
+   ligado, color sozinho não venceria o preenchimento herdado do pai. O color
+   fica logo acima como reserva, para o navegador que ignorar o clip. */
+.hero h1{font-family:var(--fh); font-weight:500; font-size:clamp(38px,4.9vw,68px);
+  line-height:1.06; letter-spacing:-.032em; max-width:15ch;
+  color:#d6d5e2;
+  background-image:linear-gradient(176deg,#fbfbff 4%,#a5a3bb 96%);
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent}
+.hero h1 em{font-style:normal; color:#fff; -webkit-text-fill-color:#fff}
+.hero .lead{font-family:var(--fh); color:var(--tx2); font-size:clamp(16.5px,1.35vw,18.5px);
+  line-height:1.62; letter-spacing:-.005em; max-width:46ch; margin-top:22px}
 .heroCta{display:flex; gap:12px; flex-wrap:wrap; margin-top:30px; align-items:center}
 .heroCta .nota{font-size:14px; color:var(--tx3)}
 /* flex-start, nao center: quando o texto quebra em duas linhas o visto tem
@@ -227,10 +231,10 @@ header.emCima .btn.ghost{color:var(--tx)}
 /* Cantos redondos aqui, e só aqui. O resto do site é de 4px, quase quina
    viva, porque a marca é de gráfica. Esta ficha é a exceção de propósito: ela
    não é um cartão do site, é o campo do configurador aparecendo antes da hora,
-   e o arredondado a afasta do papel e a aproxima da tela do aparelho que vem
+   e o arredondado a afasta do fundo e a aproxima da tela do aparelho que vem
    logo em seguida no mesmo lugar. */
 .dFicha{max-width:352px; margin:0 auto; background:var(--card); border:1px solid var(--line);
-  border-radius:16px; padding:22px; box-shadow:0 12px 34px rgba(18,18,20,.07); align-self:center}
+  border-radius:16px; padding:22px; box-shadow:0 18px 44px rgba(0,0,0,.45); align-self:center}
 .dRot{font-family:var(--fu); font-size:10px; letter-spacing:.15em; text-transform:uppercase;
   color:var(--tx3); font-weight:600}
 .dCampo{position:relative; margin-top:11px; font-size:15px; line-height:1.45; color:var(--tx)}
@@ -279,9 +283,10 @@ header.emCima .btn.ghost{color:var(--tx)}
    o post. Mexeu na largura? Refaça a conta antes. */
 .fone{width:100%; max-width:256px; position:relative; overflow:hidden;
   background:#fff; border-radius:38px; border:7px solid #16151a;
-  /* Duas sombras longas para a peça pousar no papel e uma linha clara de 1px
-     por fora: é o brilho do canto do alumínio. Sem ela a moldura preta encosta
-     no papel claro e a borda serrilha. */
+  /* Duas sombras longas para a peça pousar no fundo e uma linha clara de 1px
+     por fora: é o brilho do canto do alumínio. Ela nasceu para separar a
+     moldura preta do papel; no escuro ela continua ganhando o pão, agora
+     desenhando a silhueta do aparelho contra um fundo quase da mesma cor. */
   box-shadow:0 30px 60px rgba(18,18,20,.20), 0 8px 18px rgba(18,18,20,.10),
              0 0 0 1px rgba(255,255,255,.55)}
 .foneTopo{position:relative; display:flex; align-items:center; justify-content:space-between;
@@ -421,7 +426,7 @@ header.emCima .btn.ghost{color:var(--tx)}
 /* ticker de garantias */
 /* A cama escura não é enfeite: dentro do hero o ticker corre por cima da
    animação, e sem ela a fita de luz passa atrás do texto e o apaga. Fora do
-   hero o --bg é o papel, então a mesma regra serve nos dois lugares. */
+   hero o --bg é o mesmo quase preto, então a regra serve nos dois lugares. */
 .tira{border-top:1px solid var(--line); border-bottom:1px solid var(--line); margin-top:64px;
   overflow:hidden; position:relative; z-index:2; background:var(--bg)}
 .tira .row{display:flex; gap:56px; width:max-content; padding:15px 0; animation:corre 40s linear infinite}
@@ -491,6 +496,13 @@ section{padding:96px 0; scroll-margin-top:var(--nav)}
   padding:11px 0; font-family:var(--f); font-size:18.5px; transition:border-color .2s}
 .inp:focus{outline:0; border-color:var(--acc)}
 .inp::placeholder{color:var(--tx3)}
+/* O preenchimento automático do Chrome pinta o campo de branco-amarelado e
+   ignora background. A saída é a sombra interna gigante, que é o que o resto
+   do mundo usa: ela cobre a pintura dele e devolve o campo ao escuro. */
+.inp:-webkit-autofill,.inp:-webkit-autofill:hover,.inp:-webkit-autofill:focus{
+  -webkit-text-fill-color:var(--tx);
+  -webkit-box-shadow:0 0 0 40px var(--bg) inset;
+  caret-color:var(--tx)}
 textarea.inp{resize:vertical; min-height:82px; line-height:1.55; font-size:16.5px}
 .ig{position:relative}
 .ig span{position:absolute; left:0; top:11px; color:var(--tx3); font-size:18.5px}
@@ -503,9 +515,9 @@ textarea.inp{resize:vertical; min-height:82px; line-height:1.55; font-size:16.5p
 .swatches{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
 .sw{width:30px; height:30px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:.18s}
 .sw:hover{transform:scale(1.14)}
-.sw.on{border-color:var(--tx); box-shadow:0 0 0 3px rgba(18,18,20,.14)}
+.sw.on{border-color:var(--tx); box-shadow:0 0 0 3px rgba(255,255,255,.16)}
 .swc{position:relative; width:30px; height:30px; border-radius:50%; overflow:hidden; cursor:pointer;
-  background:conic-gradient(#e0b562,#d9538a,#8e7cd8,#2e9bd6,#22b27a,#e07a28,#e0b562); border:2px solid var(--line2)}
+  background:conic-gradient(#5b7cff,#d9538a,#8e7cd8,#2e9bd6,#22b27a,#e07a28,#5b7cff); border:2px solid var(--line2)}
 .swc input{position:absolute; inset:-30%; opacity:0; cursor:pointer}
 .cnt{font-family:var(--fu); font-size:11.5px; color:var(--tx3); text-align:right; margin-top:7px}
 .assuntos{display:grid; gap:16px}
@@ -559,7 +571,7 @@ textarea.inp{resize:vertical; min-height:82px; line-height:1.55; font-size:16.5p
 /* barra fixa do celular: o botão de comprar sempre ao alcance do polegar */
 .barra{position:fixed; left:0; right:0; bottom:0; z-index:70; display:none;
   align-items:center; gap:14px; padding:11px 16px calc(11px + env(safe-area-inset-bottom));
-  background:rgba(247,246,243,.94); backdrop-filter:blur(18px); border-top:1px solid var(--line2)}
+  background:rgba(9,9,15,.94); backdrop-filter:blur(18px); border-top:1px solid var(--line2)}
 .barra.on{display:flex}
 .barra .v span{display:block; font-family:var(--fu); font-size:9px; letter-spacing:.2em;
   text-transform:uppercase; color:var(--tx3); margin-bottom:3px}
@@ -591,7 +603,7 @@ tbody tr:last-child td{border-bottom:0}
 .packs{display:grid; grid-template-columns:1fr 1fr; gap:12px}
 .packs > div{position:relative; border:1px solid var(--line); border-radius:16px;
   padding:20px 20px 18px; cursor:pointer; transition:.2s; overflow:hidden}
-.packs > div:hover{border-color:var(--line2); background:rgba(18,18,20,.03)}
+.packs > div:hover{border-color:var(--line2); background:rgba(255,255,255,.04)}
 .packs > div.on{border-color:var(--acc); background:color-mix(in srgb, var(--acc) 8%, transparent);
   box-shadow:0 0 0 1px var(--acc)}
 .packs b{display:block; font-size:19px; font-weight:600; letter-spacing:-.015em; padding-right:34px}
@@ -1052,8 +1064,11 @@ const PACOTES = [
 /* link: cole aqui a URL do checkout da Cakto de cada pacote. Enquanto estiver
    vazio, o modo ?m=pago avisa em vez de abrir uma página quebrada. */
 const brl = v => 'R$ ' + v.toFixed(2).replace('.', ',');
-/* O papel sai do token, não de um literal, para não descolar se --bg mudar. */
-const PAPEL = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#f7f6f3';
+/* O fundo sai do token, não de um literal, para não descolar se --bg mudar.
+   Chamava-se PAPEL enquanto o site era de papel; hoje é o quase preto, e é
+   ele que CS.corTexto() lê para decidir se clareia ou escurece a cor do
+   cliente. Trocar o --bg do :root basta para a conta inteira virar junto. */
+const FUNDO = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#07070c';
 const MODO = (new URLSearchParams(location.search).get('m') === 'pago') ? 'pago' : 'zap';
 
 const TONS = ['Direto','Acolhedor','Sofisticado','Divertido','Autoridade'];
@@ -1314,7 +1329,7 @@ const SEM_MOUSE = window.matchMedia('(hover: none)').matches;
 function montarGaleria(){
   const g = document.getElementById('galeria');
   g.innerHTML = CS.MOLDES.map(m=>`
-    <article class="mcard" data-id="${m.id}" style="--acc:${m.cor};--acc-ink:${CS.tinta(m.cor)};--acc-tx:${CS.corTexto(m.cor, PAPEL)}">
+    <article class="mcard" data-id="${m.id}" style="--acc:${m.cor};--acc-ink:${CS.tinta(m.cor)};--acc-tx:${CS.corTexto(m.cor, FUNDO)}">
       <div class="palco">${CS.renderSlide(m, dadosDo(m), 0, m.seq.length)}</div>
       <div class="pontos">${m.seq.map((_,i)=>`<i class="${i===0?'on':''}"></i>`).join('')}</div>
       <div class="mmeta">
@@ -1484,7 +1499,7 @@ function atualizar(){
   [document.getElementById('moldes'), document.getElementById('config')].forEach(sec=>{
     sec.style.setProperty('--acc', S.cor);                          // preenchimento: cor viva
     sec.style.setProperty('--acc-ink', CS.tinta(S.cor));            // tinta por cima do preenchimento
-    sec.style.setProperty('--acc-tx', CS.corTexto(S.cor, PAPEL));   // texto: rebaixada até 4,5:1
+    sec.style.setProperty('--acc-tx', CS.corTexto(S.cor, FUNDO));   // texto: ajustada até 4,5:1
   });
 
   const f = document.getElementById('frame');

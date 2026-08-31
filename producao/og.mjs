@@ -45,9 +45,10 @@ const TIPOS = {'.html':'text/html; charset=utf-8', '.js':'text/javascript; chars
                '.css':'text/css; charset=utf-8', '.woff2':'font/woff2',
                '.jpg':'image/jpeg', '.png':'image/png', '.svg':'image/svg+xml'};
 
-/* As familias que o cartao usa: as duas da marca mais as dos tres moldes do
-   leque. Se voce trocar as cenas no og-card.html, acerte esta lista junto. */
+/* As familias que o cartao usa: a do titulo, as da marca e as dos tres moldes
+   do leque. Se voce trocar as cenas no og-card.html, acerte esta lista junto. */
 const FAMILIAS = [
+  'Inter:wght@300;400;500;600',
   'Fraunces:opsz,wght,SOFT,WONK@9..144,300..700,0..100,0..1',
   'Karla:wght@300;400;500;600;700',
   'Playfair+Display:wght@400;600;700',

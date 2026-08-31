@@ -13,20 +13,31 @@
 -->
 <link href="fontes/fontes.css" rel="stylesheet">
 <style>
-  :root{ --bg:#f7f6f3; --tx:#121214; --tx2:#57544e; --tx3:#8b877f; --acc:#c0281e; --acc-tx:#b02419;
-         --line:rgba(18,18,20,.12); --fd:'Fraunces',Georgia,serif; --f:'Karla',system-ui,sans-serif }
+  /* Mesma paleta do site. O cartão é a primeira coisa que a pessoa vê do
+     Carrossel Studio, então ele não pode anunciar um site que não existe. */
+  :root{ --bg:#07070c; --tx:#f2f2f6; --tx2:#a6a4b6; --tx3:#77758a; --acc:#5b7cff; --acc-tx:#8fa4ff;
+         --line:rgba(255,255,255,.11); --fd:'Fraunces',Georgia,serif;
+         --f:'Karla',system-ui,sans-serif; --fh:'Inter',system-ui,sans-serif }
   *{box-sizing:border-box;margin:0;padding:0}
   body{width:1200px; height:630px; overflow:hidden; background:var(--bg); font-family:var(--f); color:var(--tx)}
 
   /* O papel do site: a mesma trama de fundo, senao o cartao chega mais
      limpo do que a pagina que ele anuncia. */
+  /* As fitas de luz do hero, em versão parada: o cartão é uma imagem, não
+     roda shader. Quatro halos e um degradê chegam perto o bastante. */
   .cartao{position:relative; width:1200px; height:630px; display:grid;
     grid-template-columns:1fr 560px; align-items:center; overflow:hidden;
     background:
-      radial-gradient(900px 620px at 88% 42%, rgba(192,40,30,.07), transparent 62%),
-      linear-gradient(180deg,#faf9f7,#f2f0eb)}
-  .cartao::after{content:''; position:absolute; inset:0; pointer-events:none; opacity:.5;
-    background:repeating-linear-gradient(0deg, rgba(18,18,20,.028) 0 1px, transparent 1px 3px)}
+      radial-gradient(120% 92% at 74% 22%, rgba(64,92,232,.46), transparent 58%),
+      radial-gradient(86% 68% at 96% 64%, rgba(118,86,224,.36), transparent 62%),
+      radial-gradient(64% 56% at 58% 98%, rgba(30,66,200,.32), transparent 66%),
+      radial-gradient(34% 30% at 86% 42%, rgba(226,104,66,.20), transparent 70%),
+      linear-gradient(160deg,#0a0a14,#06060b 62%)}
+  /* Véu direcional, mesmo papel que no site: segura o contraste do texto à
+     esquerda e deixa a luz viva à direita, onde ficam os slides. */
+  .cartao::after{content:''; position:absolute; inset:0; pointer-events:none;
+    background:linear-gradient(101deg, rgba(7,7,12,.95) 0%, rgba(7,7,12,.86) 28%,
+               rgba(7,7,12,.52) 46%, rgba(7,7,12,.10) 64%, rgba(7,7,12,0) 78%)}
 
   .txt{padding:0 0 0 76px; position:relative; z-index:2}
   .logo{display:flex; align-items:baseline; gap:11px; font-family:var(--fd);
@@ -37,25 +48,29 @@
                linear-gradient(var(--acc),var(--acc)) center/100% 1.5px no-repeat}
   .logo s::after{content:''; position:absolute; inset:4px; border-radius:50%; border:1.5px solid var(--acc)}
 
-  .olho{display:flex; align-items:center; gap:9px; margin:30px 0 16px;
-    font-size:12px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--acc-tx)}
+  .olho{display:flex; align-items:center; gap:9px; margin:30px 0 16px; font-family:var(--fh);
+    font-size:12px; font-weight:600; letter-spacing:.17em; text-transform:uppercase; color:var(--acc-tx)}
   .olho i{width:7px; height:7px; border-radius:50%; background:var(--acc); flex:0 0 auto}
 
-  h1{font-family:var(--fd); font-weight:500; font-size:63px; line-height:1.02;
-     letter-spacing:-.028em; max-width:11ch}
-  h1 em{font-style:italic; color:var(--acc-tx)}
-  p{margin-top:20px; font-size:20px; line-height:1.5; color:var(--tx2); max-width:30ch}
+  h1{font-family:var(--fh); font-weight:500; font-size:58px; line-height:1.07;
+     letter-spacing:-.032em; max-width:13ch; color:#d6d5e2;
+     background-image:linear-gradient(176deg,#fbfbff 4%,#a5a3bb 96%);
+     -webkit-background-clip:text; background-clip:text;
+     -webkit-text-fill-color:transparent}
+  h1 em{font-style:normal; color:#fff; -webkit-text-fill-color:#fff}
+  p{margin-top:20px; font-family:var(--fh); font-size:19px; line-height:1.55;
+    color:var(--tx2); max-width:32ch}
 
   .pe{display:flex; align-items:center; gap:14px; margin-top:34px; flex-wrap:wrap}
-  .pe b{font-family:var(--fd); font-weight:600; font-size:23px; letter-spacing:-.01em;
-    background:var(--acc); color:#f7f6f3; padding:9px 18px; border-radius:999px}
+  .pe b{font-family:var(--fh); font-weight:600; font-size:21px; letter-spacing:-.01em;
+    background:var(--acc); color:#06060b; padding:9px 18px; border-radius:999px}
   .pe span{font-size:16px; color:var(--tx3); font-weight:500}
 
   /* Leque de slides. Cada .palco escala o slide de 420x525 por transform,
      igual ao site: e por isso que da para inclinar sem o layout refluir. */
   .leque{position:relative; height:630px}
   .palco{position:absolute; width:420px; height:525px; overflow:hidden; border-radius:16px;
-    box-shadow:0 26px 60px rgba(18,18,20,.26), 0 2px 0 rgba(255,255,255,.5) inset}
+    box-shadow:0 26px 60px rgba(0,0,0,.62), 0 0 0 1px rgba(255,255,255,.10)}
   .palco{transform-origin:50% 50%}
   /* Posicao pela caixa de 420x525 e transform em torno do centro. O leque
      inteiro cabe dentro dos 1200x630 de proposito: o WhatsApp e o Telegram

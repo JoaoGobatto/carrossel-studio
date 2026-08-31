@@ -93,10 +93,24 @@ do index.html:
 
 A marca fica no bloco :root do <style>, no topo do index.html:
 
-  --bg / --tx      papel e tinta
-  --acc            vermelho da marca, usado como PREENCHIMENTO
+  --bg / --tx      o quase preto e a tinta clara
+  --acc            azul eletrico da marca, usado como PREENCHIMENTO
   --acc-tx         o mesmo acento, mas para TEXTO (leia o item 6 abaixo)
+  --acc-ink        a tinta POR CIMA do preenchimento; num acento claro
+                   como este azul ela e escura
+  --fh             Inter, so no titulo do hero
   --fd / --f       Fraunces no display, Karla no corpo
+  color-scheme     dark. Sem esta linha o navegador desenha a barra de
+                   rolagem, o seletor de cor nativo e os menus em claro
+                   dentro de um site escuro.
+
+O SITE E ESCURO. Nasceu em papel e virou noite quando o hero ganhou as
+fitas de luz: uma faixa preta no topo e papel no resto lia como duas
+pecas coladas, e o vermelho de grafica, que existia para funcionar sobre
+papel, ficava terroso sobre o quase preto. O azul de hoje e o mesmo que
+corre no fundo do hero, entao a marca sai do fundo em vez de brigar com
+ele. Para voltar ao papel bastaria reescrever o :root e o veu do hero: o
+resto do site le token, nao cor literal.
 
 Dentro de #moldes e #config esses tres acentos sao reescritos em tempo
 real pela cor do molde ativo. Fora dali o site fica no vermelho da marca.
@@ -158,8 +172,14 @@ O QUE JA FOI RESOLVIDO E NAO DEVE VOLTAR
 ----------------------------------------------------------------
 1. Itens de grid precisam de min-width:0 (.cols > *), senao a
    fita de miniaturas estica a coluna inteira.
-2. O brilho decorativo do hero e absoluto e maior que a tela, por
-   isso .hero tem overflow:hidden. Sem isso estoura no celular.
+2. O ::before do hero nao e mais brilho decorativo: e o VEU DE
+   LEGIBILIDADE. O texto e claro sobre uma animacao que muda sozinha, e
+   sem o veu a linha de contraste dependeria do que a fita de luz
+   resolvesse fazer naquele segundo. Ele e direcional no desktop (pesado
+   a esquerda, onde mora a copy; aberto a direita, onde fica o celular)
+   e vira vertical no celular, onde tudo empilha numa coluna so. O hero
+   continua com overflow:hidden.
+
 3. Nao use scrollIntoView na miniatura ativa: ele sobe por todos
    os ancestrais rolaveis e arrasta a pagina na horizontal. Use
    scrollTo na propria fita.
@@ -167,12 +187,16 @@ O QUE JA FOI RESOLVIDO E NAO DEVE VOLTAR
    mata a cor da marca. O resultado e gradiente vezes foto.
 5. Campo de cor com texto branco: cada ponto do gradiente e
    ajustado ate bater um brilho alvo, na funcao paleta().
-6. Sobre papel, NENHUMA das 10 cores dos moldes passa como texto: a da
-   barbearia da 2,35:1 contra os 4,5:1 exigidos. No fundo preto antigo
-   isso nao aparecia, porque la elas eram as cores claras. Por isso sao
-   dois tokens e nao um: --acc e a cor viva, para fundo, borda e ponto;
-   --acc-tx e a mesma cor rebaixada ate passar, para texto. Quem calcula
-   e CS.corTexto(), no moldes.js. Nao volte a usar --acc em color:.
+6. Dois tokens para um acento, e continua valendo com o site escuro, so
+   que ao contrario. --acc e a cor viva, para fundo, borda e ponto;
+   --acc-tx e a mesma cor AJUSTADA ate passar 4,5:1 sobre o fundo, para
+   texto. Sobre papel a conta descia (nenhuma das 10 cores dos moldes
+   passava crua: a da barbearia dava 2,35:1); sobre o quase preto ela
+   sobe. Quem calcula e CS.corTexto(), no moldes.js, e ela ja le a
+   luminancia do fundo e escolhe o sentido sozinha — nao precisou mudar
+   uma linha quando o site virou escuro. O fundo chega ate la pela
+   constante FUNDO, que sai do --bg do :root, entao trocar o token vira
+   a conta inteira junto. Nao volte a usar --acc em color:.
 7. O cartao de previa e servido do proprio servidor local do
    og.mjs, nunca por file:// e nunca pelo proxy. Duas armadilhas
    ja custaram tempo aqui: por file:// o Chrome bloqueia o
@@ -180,12 +204,19 @@ O QUE JA FOI RESOLVIDO E NAO DEVE VOLTAR
    flag --proxy-bypass-list=<-loopback> joga o proprio 127.0.0.1
    dentro do proxy, e ai a pagina nao carrega nunca. O cartao nao
    precisa de rede: as fontes ja sao arquivo local nessa hora.
-8. O screenshot so dispara quando window.CARTAO_PRONTO vira true.
+8. Peca CLARA sobre o fundo escuro precisa de sombra que a separe? Nao:
+   precisa do contrario. A linha clara de 1px por fora do celular do
+   hero nasceu para separar a moldura preta do papel; no escuro ela
+   continua ganhando o pao, agora desenhando a silhueta do aparelho
+   contra um fundo quase da mesma cor. E o grao de filme do body::after
+   trocou de multiply para soft-light: escuro vezes escuro continua
+   escuro, e o grao sumia.
+9. O screenshot so dispara quando window.CARTAO_PRONTO vira true.
    O --headless --screenshot direto fotografa no fim do load, que
    acontece antes das fontes chegarem, e o cartao sai em fonte de
    sistema sem avisar.
-9. O <link> do Google Fonts carrega so as fontes dos 10 moldes que
-   existem. A skill instagram-carousel oferece sete pares de estilo, e o
+10. O <link> do Google Fonts carrega a Inter (titulo do hero), a Fraunces
+   e a Karla (marca) e so as fontes dos 10 moldes que existem. A skill instagram-carousel oferece sete pares de estilo, e o
    par "Warm / approachable" (Lora + Nunito Sans) saiu de la por nao ter
    molde usando. Molde novo com par novo precisa da familia no <link>,
    senao o slide cai em fonte de sistema. O console avisa quando isso
