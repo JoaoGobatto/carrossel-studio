@@ -168,8 +168,13 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
 .dNota{grid-area:2/1; width:100%}
 
 /* ficha do pedido — é o campo que existe de verdade no configurador */
+/* Cantos redondos aqui, e só aqui. O resto do site é de 4px, quase quina
+   viva, porque a marca é de gráfica. Esta ficha é a exceção de propósito: ela
+   não é um cartão do site, é o campo do configurador aparecendo antes da hora,
+   e o arredondado a afasta do papel e a aproxima da tela do aparelho que vem
+   logo em seguida no mesmo lugar. */
 .dFicha{max-width:352px; margin:0 auto; background:var(--card); border:1px solid var(--line);
-  border-radius:4px; padding:20px; box-shadow:0 12px 34px rgba(18,18,20,.07); align-self:center}
+  border-radius:16px; padding:22px; box-shadow:0 12px 34px rgba(18,18,20,.07); align-self:center}
 .dRot{font-family:var(--fu); font-size:10px; letter-spacing:.15em; text-transform:uppercase;
   color:var(--tx3); font-weight:600}
 .dCampo{position:relative; margin-top:11px; font-size:15px; line-height:1.45; color:var(--tx)}
@@ -236,13 +241,7 @@ header{position:fixed; top:0; left:0; right:0; z-index:60; height:var(--nav);
 .igNome{font-size:11px; font-weight:600; color:#16151a; line-height:1.25}
 .igNome small{display:block; font-size:9px; color:#8b8b90; font-weight:400}
 .igMais{margin-left:auto; color:#16151a; font-weight:700; letter-spacing:1.5px; font-size:12px}
-/* O post com as bordas redondas, recuado das laterais. O recorte vive aqui,
-   no #igPost, e não no .palco: o .dRail desliza os 7 slides por dentro, então
-   arredondar cada slide deixaria passar a quina do vizinho durante o arrasto.
-   A borda de 1px por dentro separa a foto escura do branco do app; sem ela o
-   canto arredondado some quando o slide é escuro. */
-.igPost{position:relative; margin:0 7px; border-radius:14px; overflow:hidden;
-  background:var(--palco-bg); box-shadow:0 0 0 1px rgba(18,18,20,.07) inset}
+.igPost{position:relative; background:var(--palco-bg); overflow:hidden}
 .igPost .palco{border-radius:0}
 /* Fita rígida com os 7 slides reais, renderizados UMA vez. Cada quadro carrega
    a classe .palco de propósito: ajustarPalcos() já os enxerga e o seletor de
