@@ -464,7 +464,6 @@ header.emCima .nav{background:rgba(10,10,18,.30); border-color:rgba(255,255,255,
 .esteira::after{right:0; background:linear-gradient(270deg,var(--bg),transparent)}
 .trilho{display:flex; gap:6px; width:max-content; animation:corre 64s linear infinite}
 .trilho.volta{animation-duration:78s; animation-direction:reverse; margin-top:14px}
-.esteira:hover .trilho{animation-play-state:paused}
 @keyframes corre{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){ .trilho{animation:none} }
 .esteira .palco{width:212px; flex:0 0 212px; border-radius:12px; border:1px solid var(--line)}
@@ -474,7 +473,17 @@ header.emCima .nav{background:rgba(10,10,18,.30); border-color:rgba(255,255,255,
    própria, para o navegador não repintar a fileira inteira a cada passo.
    Nada aqui mexe em layout: escala e opacidade não empurram vizinho, então a
    grade, o gap de 14px e a largura de 212px continuam exatamente os mesmos. */
-.esteira .trilho > .palco{transform-origin:50% 50%; backface-visibility:hidden}
+.esteira .trilho > .palco{transform-origin:50% 50%; backface-visibility:hidden;
+  transition:border-color .18s, box-shadow .25s}
+/* Escala e opacidade do card com o mouse em cima NÃO vivem aqui: o laço
+   escreve transform e opacity inline a cada quadro, e estilo inline ganha da
+   folha. Quem cuida dos dois é o esteiraEmPerspectiva(). Aqui fica só o que
+   ele não toca — a borda, a sombra e o z-index, que sobe o card acima dos
+   vizinhos mas continua abaixo das bordas esfumadas da esteira (z-index 4),
+   senão um card na ponta saltaria por cima do próprio esfumado. */
+.esteira .trilho > .palco:hover{z-index:3;
+  border-color:color-mix(in srgb, var(--acc) 60%, transparent);
+  box-shadow:0 18px 44px rgba(0,0,0,.55)}
 
 /* ---------- seções ---------- */
 section{padding:96px 0; scroll-margin-top:var(--nav)}
@@ -1197,6 +1206,14 @@ const ESTEIRA_APAGA = 0.38;  // quanta opacidade a ponta perde
    escala pedida: 0,86 a um card do meio e 0,70 a dois. */
 const perto = d => 1 - (3*d*d - 2*d*d*d);
 
+/* Quanto o card sob o mouse cresce, sobe e clareia, e a velocidade com que
+   ele vai e volta. O realce é do CARD, não da fileira: parar as duas linhas
+   inteiras por causa de um card era o comportamento antigo, e ele congelava
+   a peça toda para responder a um dedo só. */
+const ESTEIRA_REALCE = 0.10;   // escala somada
+const ESTEIRA_SOBE = 9;        // px que ele sobe
+const ESTEIRA_ACHEGA = 0.22;   // quanto do caminho ele anda por quadro
+
 /* O PUXÃO PARA O CENTRO, que é o que fecha os vãos.
    Escala não mexe em layout: o card encolhe e o espaço dele continua
    reservado, então a 0,65 sobram uns 80px de vazio ao lado. A primeira
@@ -1224,7 +1241,7 @@ function esteiraEmPerspectiva(){
   if(!esteira) return;
   const fileiras = [...esteira.querySelectorAll('.trilho')].map(t => ({
     el: t, passo: 0, perda: 0,
-    cards: [...t.children].map(c => ({el:c, rel:0, meia:0, k:-1}))
+    cards: [...t.children].map(c => ({el:c, rel:0, meia:0, k:-1, h:0, hw:-1}))
   }));
   if(!fileiras.length) return;
 
@@ -1260,11 +1277,14 @@ function esteiraEmPerspectiva(){
         /* O olho não vê um milésimo e meio da curva; o navegador vê o repaint.
            A comparação é no k e não em cada valor derivado: escala, afundada e
            puxão saem todos dele, então um limiar só governa os três. */
-        if(Math.abs(k - c.k) < 0.0015) return;
-        c.k = k;
-        const s = ESTEIRA_MIN + (ESTEIRA_MAX - ESTEIRA_MIN) * k;
-        const y = (1 - k) * ESTEIRA_AFUNDA;
-        const o = 1 - ESTEIRA_APAGA * (1 - k);
+        if(Math.abs(k - c.k) < 0.0015 && Math.abs(c.h - c.hw) < 0.002) return;
+        c.k = k; c.hw = c.h;
+        /* o realce entra POR CIMA do que a posição mandou: o card sob o mouse
+           cresce a partir do tamanho que ele já tinha ali, em vez de saltar
+           para um tamanho fixo e desmentir a perspectiva */
+        const s = ESTEIRA_MIN + (ESTEIRA_MAX - ESTEIRA_MIN) * k + ESTEIRA_REALCE * c.h;
+        const y = (1 - k) * ESTEIRA_AFUNDA - ESTEIRA_SOBE * c.h;
+        const o = 1 - ESTEIRA_APAGA * (1 - k) * (1 - c.h);
         /* o puxão aponta para o centro: quem está à esquerda anda para a
            direita e vice-versa. No centro vale zero dos dois lados, então não
            há salto na travessia. */
@@ -1275,6 +1295,37 @@ function esteiraEmPerspectiva(){
     });
   }
 
+  /* Quem está sob o mouse, por delegação: dois listeners na esteira em vez de
+     144 nos cards. A fileira não para, então o card escorrega de baixo do
+     cursor sozinho e o mouseout chega de graça. */
+  const porElemento = new Map();
+  fileiras.forEach(f => f.cards.forEach(c => porElemento.set(c.el, c)));
+  let sobMouse = null;
+  const achar = alvo => {
+    while(alvo && alvo !== esteira){
+      const c = porElemento.get(alvo);
+      if(c) return c;
+      alvo = alvo.parentElement;
+    }
+    return null;
+  };
+  esteira.addEventListener('mouseover', e => { sobMouse = achar(e.target); });
+  esteira.addEventListener('mouseleave', () => { sobMouse = null; });
+
+  /* Aproxima o realce do alvo um pedaço por quadro. Sem isso o card salta de
+     tamanho no instante em que o cursor encosta. */
+  function achegar(){
+    let andou = false;
+    fileiras.forEach(f => f.cards.forEach(c => {
+      const alvo = c === sobMouse ? 1 : 0;
+      if(c.h === alvo) return;
+      c.h += (alvo - c.h) * ESTEIRA_ACHEGA;
+      if(Math.abs(alvo - c.h) < 0.004) c.h = alvo;
+      andou = true;
+    }));
+    return andou;
+  }
+
   medir(); pintar();
 
   /* Com movimento reduzido a fileira está parada: pinta uma vez e não abre
@@ -1282,13 +1333,28 @@ function esteiraEmPerspectiva(){
      jogada fora. */
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     window.addEventListener('resize', ()=>{ medir(); pintar(); });
+    /* A fileira está parada, então não há laço eterno. O realce ainda anda:
+       abre-se um laço curto só enquanto ele estiver indo ou voltando, e ele
+       se fecha sozinho quando chega. */
+    let curto = 0;
+    const acordar = ()=>{
+      if(curto) return;
+      (function passo(){
+        curto = achegar() ? requestAnimationFrame(passo) : 0;
+        pintar();
+      })();
+    };
+    esteira.addEventListener('mouseover', acordar);
+    esteira.addEventListener('mouseleave', acordar);
     return;
   }
 
   let visivel = true, laco = 0;
   (function quadro(){
     laco = requestAnimationFrame(quadro);
-    if(visivel) pintar();
+    if(!visivel) return;
+    achegar();
+    pintar();
   })();
   new IntersectionObserver(es => { visivel = es[0].isIntersecting; }, {threshold:0})
     .observe(esteira);
