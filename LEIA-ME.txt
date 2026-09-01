@@ -228,12 +228,29 @@ PRECO: DE ONDE SAIRAM OS VALORES
 ----------------------------------------------------------------
 Referencia de mercado: freelancer cobra de R$ 40 a 150 por arte.
 
-Preco de lancamento e preco cheio:
+Oferta de estreia, preco de lancamento e preco cheio:
 
+  estreia        17,90   avulso  37,90   -53%   17,90 cada
   1 carrossel    37,90   depois  59,90   -37%   37,90 cada
   2 carrosseis   57,90   depois  99,90   -42%   28,95 cada
   4 carrosseis  100,00   depois 179,90   -44%   25,00 cada
   8 carrosseis  180,00   depois 297,00   -39%   22,50 cada
+
+A ESTREIA e uma porta de entrada, nao um degrau da escada de volume:
+17,90 o primeiro, um por cliente. Ela entra na lista PACOTES como
+qualquer outro pacote, e nao como banner a parte, para ser escolhivel
+e cair no resumo, no WhatsApp e no checkout pelos mesmos caminhos.
+Marcada com estreia:true, ocupa a linha inteira do seletor.
+
+Por isso existe a constante UNIDADE (37,90): a conta de "quanto voce
+economiza" tem de comparar com o preco avulso normal. Se ela usasse o
+PACOTES[0], passaria a comparar tudo com os 17,90 da estreia e todo
+pacote viraria prejuizo.
+
+E por isso existe o campo `ref`: nos pacotes o valor de comparacao quer
+dizer "depois do lancamento"; na estreia quer dizer "avulso". Mesma
+posicao na tela, sentidos diferentes, entao o rotulo vem escrito no
+proprio pacote.
 
 O preco por carrossel cai sempre, que e o que faz o pacote maior
 valer a pena. Ja o percentual NAO cai sempre: o de 8 desconta
