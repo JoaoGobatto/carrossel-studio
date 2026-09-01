@@ -833,11 +833,20 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
 .fnav{display:flex; justify-content:space-between; gap:18px; flex-wrap:wrap; align-items:center}
 
 /* ---------- toast ---------- */
+/* O translate de 150% escondia o aviso "por fora da tela" — mas 150% é da
+   ALTURA DELE, não da tela, e para uma pastilha de ~46px isso deixava a tampa
+   aparecendo no rodapé de todas as páginas. Era a bolinha misteriosa. Agora
+   quem esconde é visibility; o translate só faz a entrada deslizar.
+   A transição de visibility tem atraso igual ao do translate na saída e zero
+   na entrada, senão ele some antes de terminar de descer. */
 #toast{position:fixed; left:50%; bottom:30px; transform:translate(-50%,150%); z-index:99;
   background:var(--card2); border:1px solid var(--line2); color:var(--tx);
   padding:15px 22px; border-radius:100px; font-size:15px; font-weight:500;
-  box-shadow:0 16px 40px var(--sombra-forte); transition:transform .34s cubic-bezier(.2,.9,.3,1); max-width:90vw}
-#toast.on{transform:translate(-50%,0)}
+  box-shadow:0 16px 40px var(--sombra-forte); max-width:90vw;
+  opacity:0; visibility:hidden; pointer-events:none;
+  transition:transform .34s cubic-bezier(.2,.9,.3,1), opacity .26s ease, visibility 0s linear .34s}
+#toast.on{transform:translate(-50%,0); opacity:1; visibility:visible;
+  transition:transform .34s cubic-bezier(.2,.9,.3,1), opacity .2s ease, visibility 0s}
 
 .rev{opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1)}
 .rev.in{opacity:1; transform:none}
@@ -1405,6 +1414,13 @@ function esteiraEmPerspectiva(){
          silêncio. */
       f.passo = f.cards.length > 1 ? (f.cards[1].rel - f.cards[0].rel) : 1;
       f.perda = f.cards[0].meia * 2 * (ESTEIRA_MAX - ESTEIRA_MIN);
+      /* Fileira sem largura é fileira que ainda não tem layout, ou que está
+         display:none — a segunda some no celular. Sem esta guarda o passo dá
+         zero, a divisão dá Infinity, o deslocamento dá NaN e o navegador
+         DESCARTA o transform inteiro: some junto a escala, e a fileira fica
+         parada e chapada. Era isso que quebrava no celular, onde a medição
+         acontece antes das fontes chegarem. */
+      f.pronta = f.passo > 0 && f.perda > 0;
     });
   }
 
@@ -1412,6 +1428,7 @@ function esteiraEmPerspectiva(){
     const meioTela = window.innerWidth / 2;
     if(meioTela <= 0) return;
     fileiras.forEach(f=>{
+      if(!f.pronta) return;
       const esq = f.el.getBoundingClientRect().left;   // a única leitura de layout
       const soma = (f.perda / f.passo) * meioTela;     // o peso da parcela acumulada
       f.cards.forEach(c=>{
@@ -1494,19 +1511,34 @@ function esteiraEmPerspectiva(){
     return;
   }
 
-  let visivel = true, laco = 0;
+  /* DUAS condições, guardadas em duas variáveis. A versão anterior tinha uma
+     só, e o visibilitychange escrevia false nela e nunca mais true: bastava a
+     pessoa trocar de aba, ou o celular apagar a tela, para o efeito morrer de
+     vez até a esteira cruzar a borda da tela outra vez. No computador quase
+     não se notava; no celular, que vai para o fundo o tempo todo, era o
+     caminho normal. */
+  let naTela = true, aberta = !document.hidden, laco = 0;
   (function quadro(){
     laco = requestAnimationFrame(quadro);
-    if(!visivel) return;
+    if(!naTela || !aberta) return;
     achegar();
     pintar();
   })();
-  new IntersectionObserver(es => { visivel = es[0].isIntersecting; }, {threshold:0})
+  new IntersectionObserver(es => { naTela = es[0].isIntersecting; }, {threshold:0})
     .observe(esteira);
-  document.addEventListener('visibilitychange', ()=>{ if(document.hidden) visivel = false; });
+  document.addEventListener('visibilitychange', ()=>{ aberta = !document.hidden; });
 
+  /* Remedir quando o tamanho mudar de verdade, e não só quando a janela
+     mudar: a esteira só ganha largura depois que as fontes chegam e os cards
+     são montados, e no celular isso acontece bem depois do init. Sem isto uma
+     medição cedo demais ficava valendo para sempre. */
+  const remedir = ()=>{ medir(); pintar(); };
+  if(window.ResizeObserver){
+    let espera;
+    new ResizeObserver(()=>{ clearTimeout(espera); espera = setTimeout(remedir, 80); }).observe(esteira);
+  }
   let espera;
-  window.addEventListener('resize', ()=>{ clearTimeout(espera); espera = setTimeout(()=>{ medir(); pintar(); }, 120); });
+  window.addEventListener('resize', ()=>{ clearTimeout(espera); espera = setTimeout(remedir, 120); });
 }
 
 /* ---------- demonstração do hero ---------------------------------------- */
@@ -2268,10 +2300,13 @@ function fitasDeLuz(){
   /* 30 quadros por segundo bastam: o movimento é lento por desenho. O dobro
      disso seria o dobro de bateria para ninguém enxergar diferença. */
   const PASSO = 1000 / 30;
-  let visivel = true, laco = 0, ultimo = 0, relogio = 11.0;
+  /* Mesmo par de condições da esteira, pelo mesmo motivo: uma variável só,
+     escrita para false pelo visibilitychange e nunca de volta, congelava o
+     fundo do hero assim que a aba ia para o fundo. */
+  let naTela = true, aberta = !document.hidden, laco = 0, ultimo = 0, relogio = 11.0;
   function quadro(agora){
     laco = requestAnimationFrame(quadro);
-    if(!visivel) { ultimo = agora; return; }
+    if(!naTela || !aberta) { ultimo = agora; return; }
     if(agora - ultimo < PASSO) return;
     relogio += Math.min((agora - ultimo) / 1000, 0.1);
     ultimo = agora;
@@ -2279,9 +2314,9 @@ function fitasDeLuz(){
   }
   laco = requestAnimationFrame(quadro);
 
-  new IntersectionObserver(es => { visivel = es[0].isIntersecting; }, {threshold:0})
+  new IntersectionObserver(es => { naTela = es[0].isIntersecting; }, {threshold:0})
     .observe(hero);
-  document.addEventListener('visibilitychange', ()=>{ if(document.hidden) visivel = false; });
+  document.addEventListener('visibilitychange', ()=>{ aberta = !document.hidden; });
 
   /* ResizeObserver e não só o resize da janela: o hero CRESCE depois do
      primeiro paint — a esteira de moldes e o ticker entram por JS — e medir só
