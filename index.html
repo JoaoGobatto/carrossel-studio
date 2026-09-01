@@ -518,8 +518,23 @@ header.emCima .nav{background:rgba(10,10,18,.30); border-color:rgba(255,255,255,
    tem um painel position:sticky lá dentro, e qualquer overflow num ancestral
    mataria o sticky. */
 section{padding:104px 0; scroll-margin-top:var(--nav); position:relative}
-main > section:not(.hero)::before{content:''; position:absolute; inset:0; z-index:0;
-  pointer-events:none}
+/* DUAS COISAS IMPEDEM O CORTE SECO NA JUNTA DAS SEÇÕES.
+
+   A primeira é a máscara. Com inset:0 o gradiente terminava exatamente na
+   borda da seção, e onde uma acabava e a outra começava aparecia uma linha
+   reta atravessando a página — pior ainda entre os moldes, cujo brilho sai da
+   cor do molde, e a seção vizinha, que é azul. A máscara faz o brilho nascer
+   do nada no primeiro terço e morrer no último, então ele nunca chega inteiro
+   na borda para ser cortado.
+
+   A segunda é o transbordo. -22% acima e abaixo faz o brilho de cada seção
+   entrar na vizinha, e como as seções não abrem contexto de empilhamento, os
+   dois se somam na junta em vez de se encostarem. É a soma que emenda.
+   Só na vertical: transbordo lateral criaria rolagem horizontal. */
+main > section:not(.hero)::before{content:''; position:absolute; inset:-22% 0; z-index:0;
+  pointer-events:none;
+  -webkit-mask-image:linear-gradient(180deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
+  mask-image:linear-gradient(180deg, transparent 0%, #000 30%, #000 70%, transparent 100%)}
 /* Cada seção pega o brilho de um lado, para a página não repetir a mesma
    mancha oito vezes descendo. */
 main > section:not(.hero):nth-of-type(odd)::before{
