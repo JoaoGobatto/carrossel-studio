@@ -244,18 +244,6 @@ header.emCima .nav{background:rgba(10,10,18,.30); border-color:rgba(255,255,255,
 .hero .lead{font-family:var(--fh); color:var(--tx2); font-size:clamp(16.5px,1.35vw,18.5px);
   line-height:1.62; letter-spacing:-.005em; max-width:46ch; margin-top:22px}
 .heroCta{display:flex; gap:12px; flex-wrap:wrap; margin-top:34px; align-items:center}
-/* A segunda saída, no tom da referência: um elo discreto embaixo do botão, e
-   não um segundo botão do mesmo tamanho. Dois botões lado a lado dividem a
-   atenção no lugar exato em que ela precisa ir para um só. */
-.heroElo{appearance:none; background:0; border:0; cursor:pointer; padding:0;
-  margin-top:22px; font-family:var(--fh); font-size:14px; font-weight:500;
-  color:var(--tx3); letter-spacing:-.005em; transition:color .2s}
-.heroElo::after{content:''; display:block; height:1px; margin-top:5px;
-  background:currentColor; opacity:.32; transform:scaleX(0); transform-origin:left;
-  transition:transform .25s}
-.heroElo:hover{color:var(--tx2)}
-.heroElo:hover::after{transform:scaleX(1)}
-.heroElo:focus-visible{outline:2px solid var(--acc); outline-offset:4px; border-radius:3px}
 
 /* ---------- demonstração do hero ----------
    O espaço do celular é reservado desde o primeiro paint, mesmo ele só entrando
@@ -872,10 +860,31 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
   .tiras::-webkit-scrollbar{height:3px}
   .tiras::-webkit-scrollbar-thumb{background:var(--line2); border-radius:3px}
   #config.on{padding-bottom:86px}
-  .tres > div{border-right:0; border-bottom:1px solid var(--line); padding-right:0}
 }
+/* ---------- o celular ----------
+   Aqui o trabalho da página é um só: levar ao botão. Duas medidas do que a
+   pesquisa de conversão diz, e as duas custam informação de propósito.
+
+   MENOS ELEMENTOS. Página com menos de dez elementos converte cerca do dobro
+   de página cheia, e 64% de quem chega pelo celular não passa da primeira
+   tela. Então o que é peso de vitrine encolhe: a esteira perde uma das duas
+   fileiras, o botão ocupa a largura toda e o espaço entre seções cai.
+
+   A TABELA DE COMPARAÇÃO SAI. É o bloco mais denso do site — cinco linhas por
+   cinco colunas — e no celular ela só cabe rolando de lado, que é dos piores
+   padrões que existem para conversão. Ela é material de quem está comparando
+   com calma, e isso acontece no computador. Uma linha para trazer de volta.
+
+   O botão de compra fixo no rodapé compensa as duas: quem quiser ler, lê; o
+   caminho para comprar está sempre a um polegar de distância. */
 @media(max-width:640px){
-  section{padding:70px 0}
+  section{padding:62px 0}
+  .shead{margin-bottom:30px}
+  .tblwrap,#comparacao{display:none}
+  /* uma fileira de moldes basta para dar a ideia; duas são duas vezes o peso
+     e a mesma informação */
+  .trilho.volta{display:none}
+  .esteira{margin:26px 0 -30px}
   .packs{grid-template-columns:1fr}
   .wrap{padding:0 18px}
   .hero{padding-top:calc(var(--nav) + 44px)}
@@ -884,7 +893,9 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
   .logo{font-size:18px; white-space:nowrap}
   .links{display:none}
   .btn.sm{padding:8px 14px; font-size:12.5px; white-space:nowrap}
-  .heroCta .btn{width:100%; text-align:center}
+  /* 48px é o mínimo confortável para o polegar; este fica em 54 */
+  .heroCta{margin-top:26px}
+  .heroCta .btn{width:100%; text-align:center; padding:17px 26px; font-size:16.5px}
   .mono.eyebrow{font-size:9.5px; letter-spacing:.16em}
   .entrega > div{padding:26px 22px}
 }
@@ -927,7 +938,6 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
       <div class="heroCta">
         <button class="btn" onclick="irMoldes()">Escolher meu molde</button>
       </div>
-      <button class="heroElo" onclick="document.getElementById('entrega').scrollIntoView()">O que vem no pack</button>
     </div>
 
     <!-- Demonstração: pedido -> estúdio -> o carrossel real no feed.
@@ -1167,7 +1177,7 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
 </section>
 
 <!-- ======================= COMPARAÇÃO ======================= -->
-<section>
+<section id="comparacao">
   <div class="wrap">
     <div class="shead">
       <div class="mono eyebrow"><i></i>comparação</div>
@@ -1221,8 +1231,8 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
 </footer>
 
 <div class="barra" id="barra">
-  <div class="v"><span>total</span><b id="bPreco">R$ 99,90</b></div>
-  <button class="btn" id="bBtn">Enviar pedido</button>
+  <div class="v"><span id="bRot">a partir de</span><b id="bPreco">R$ 59,90</b></div>
+  <button class="btn" id="bBtn">Escolher meu molde</button>
 </div>
 
 <div id="toast"></div>
@@ -1914,6 +1924,7 @@ function atualizar(){
   // barra fixa do celular acompanha o mesmo estado
   const barra = document.getElementById('barra'), bb = document.getElementById('bBtn');
   barra.classList.add('on');
+  document.getElementById('bRot').textContent = 'total';
   document.getElementById('bPreco').textContent = brl(P.preco);
   bb.disabled = !ok;
   bb.textContent = ok ? (MODO==='pago' ? 'Pagar e enviar' : 'Enviar pedido') : 'Faltam campos';
@@ -2285,6 +2296,42 @@ function fitasDeLuz(){
   }
 }
 
+/* ---------- a barra do polegar ---------------------------------------------
+   No celular o rodapé é o único lugar que o polegar alcança sem trocar a mão
+   de posição, e é por isso que botão de compra fixo ali converte mais do que
+   botão no meio da página. A barra já existia, mas só nascia depois de a
+   pessoa escolher um molde — ou seja, só para quem já tinha decidido.
+
+   Agora ela tem dois estados. Antes da escolha, convida: "a partir de
+   R$ 59,90 / Escolher meu molde". Depois, é a barra de pedido de sempre, e
+   quem manda nela passa a ser o atualizar().
+
+   Ela só aparece depois que o hero sai da tela. Em cima do hero seria
+   redundante: o botão principal já está ali, do mesmo tamanho. */
+function barraDoPolegar(){
+  const barra = document.getElementById('barra');
+  const hero  = document.querySelector('.hero');
+  if(!barra || !hero) return;
+  const rot = document.getElementById('bRot');
+  const val = document.getElementById('bPreco');
+  const bt  = document.getElementById('bBtn');
+  let agendado = false;
+  const ver = ()=>{
+    agendado = false;
+    if(S.molde) return;                 // dali para frente quem escreve é o atualizar()
+    const passou = hero.getBoundingClientRect().bottom < 0;
+    barra.classList.toggle('on', passou);
+    if(!passou) return;
+    rot.textContent = 'a partir de';
+    val.textContent = brl(PACOTES[0].preco);
+    bt.textContent  = 'Escolher meu molde';
+    bt.disabled = false;
+  };
+  ver();
+  addEventListener('scroll', ()=>{ if(!agendado){ agendado = true; requestAnimationFrame(ver); } },
+                   {passive:true});
+}
+
 /* A barra do topo se inverte enquanto está por cima da faixa escura. */
 function barraSobreOHero(){
   const cab = document.querySelector('header');
@@ -2323,7 +2370,10 @@ function bind(id, campo, extra){
     e.target.value = e.target.value.replace(/[^a-zA-Z0-9._]/g,'');
   });
   document.getElementById('btnFinal').onclick = finalizar;
-  document.getElementById('bBtn').onclick = finalizar;
+  /* A barra tem dois donos: antes de escolher molde ela convida, depois ela
+     fecha o pedido. Um handler só, que pergunta em que estado está. */
+  document.getElementById('bBtn').onclick = ()=> S.molde ? finalizar() : irMoldes();
+  barraDoPolegar();
   ligarNavegacao();
   if(SEM_MOUSE) document.getElementById('pvDica').textContent = 'arraste para o lado';
 
