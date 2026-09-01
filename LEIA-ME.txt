@@ -227,8 +227,35 @@ O QUE JA FOI RESOLVIDO E NAO DEVE VOLTAR
 PRECO: DE ONDE SAIRAM OS VALORES
 ----------------------------------------------------------------
 Referencia de mercado: freelancer cobra de R$ 40 a 150 por arte.
-R$ 59,90 na unidade fica dentro da faixa, e os pacotes puxam o
-ticket medio para cima sem que a unidade pareca cara.
+
+Preco de lancamento e preco cheio:
+
+  1 carrossel    37,90   depois  59,90   -37%   37,90 cada
+  2 carrosseis   57,90   depois  99,90   -42%   28,95 cada
+  4 carrosseis  100,00   depois 179,90   -44%   25,00 cada
+  8 carrosseis  180,00   depois 297,00   -39%   22,50 cada
+
+O preco por carrossel cai sempre, que e o que faz o pacote maior
+valer a pena. Ja o percentual NAO cai sempre: o de 8 desconta
+menos que o de 4, porque os precos cheios sao os antigos e nao
+foram desenhados para essa escada. Se incomodar, o conserto e
+mexer no `cheio` do pacote de 8: 340,00 daria -47% e a escada de
+percentual fecha.
+
+POR QUE O SITE DIZ "DEPOIS" E NAO "DE"
+----------------------------------------------------------------
+Preco riscado tem que ser preco que a casa realmente cobrou.
+Riscar um valor que nunca saiu para ninguem e preco de referencia
+ficticio, e o CDC trata isso como publicidade enganosa (art. 37).
+Como o site ainda nao foi ao ar, os precos cheios nunca foram
+cobrados.
+
+Por isso a copia diz "no lancamento" e "depois R$ X", que e uma
+promessa sobre o futuro e verdadeira desde que voce realmente
+suba o preco depois. Quando o preco cheio passar a valer, ai sim
+da para trocar para "de/por" com o riscado: mexe no PROMO.rotulo
+e no PROMO.nota, no topo do <script>. PROMO.ligada:false desliga a
+oferta inteira e o site volta a mostrar so o preco.
 
 Isto morava num comentario dentro do index.html e ia junto para o
 ver-codigo-fonte de qualquer visitante. Raciocinio comercial fica

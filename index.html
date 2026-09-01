@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Carrossel Studio | Chega de postar para ninguém</title>
-<meta name="description" content="Carrossel de Instagram a partir de R$ 59,90, com foto de verdade e uma historia que prende ate o ultimo slide. Escolha o molde do seu nicho e receba em 24 horas.">
+<meta name="description" content="Carrossel de Instagram a partir de R$ 37,90 no lancamento, com foto de verdade e uma historia que prende ate o ultimo slide. Escolha o molde do seu nicho e receba em 24 horas.">
 
 <!-- ===========================================================================
      COMPARTILHAMENTO
@@ -27,7 +27,7 @@
 <meta property="og:site_name" content="Carrossel Studio">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:title" content="Carrossel Studio | Chega de postar para ninguém">
-<meta property="og:description" content="Escolha o molde do seu nicho, preencha quatro campos e receba sete imagens prontas para postar, com legenda escrita. Entrega em 24 horas, a partir de R$ 59,90.">
+<meta property="og:description" content="Escolha o molde do seu nicho, preencha quatro campos e receba sete imagens prontas para postar, com legenda escrita. Entrega em 24 horas, a partir de R$ 37,90 no lancamento.">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/jpeg">
@@ -780,6 +780,20 @@ tbody tr:last-child td.nos{padding-bottom:20px; border-radius:0 0 18px 18px;
 .packs u{display:block; text-decoration:none; font-size:13.5px; color:var(--tx2)}
 .packs .eco{display:block; font-size:12.5px; color:var(--acc-tx); margin-top:9px}
 .packs .eco.nada{color:var(--tx3)}
+/* O selo de desconto encosta no preço, e não no canto do cartão: é ele que
+   dá sentido ao número, e os dois precisam ser lidos de uma vez. */
+.packs .off{display:inline-block; margin-top:12px; font-family:var(--fu); font-size:10.5px;
+  font-weight:700; letter-spacing:.1em; color:var(--acc-ink); background:var(--acc);
+  padding:3px 8px; border-radius:6px; vertical-align:3px}
+.packs .off + .pr{margin-top:6px}
+.packs .antes{display:block; font-size:12.5px; color:var(--tx3); margin:-3px 0 7px}
+.notaPromo{display:none; align-items:flex-start; gap:9px; margin-top:14px;
+  font-size:13px; line-height:1.5; color:var(--tx2)}
+.notaPromo.on{display:flex}
+.notaPromo s{text-decoration:none; flex:0 0 auto; width:7px; height:7px; border-radius:50%;
+  background:var(--acc); margin-top:6px}
+.antesTotal{font-size:13px; color:var(--tx3); margin-top:7px}
+.antesTotal b{color:var(--acc-tx); font-weight:600}
 .packs .mk{position:absolute; top:18px; right:18px; width:24px; height:24px; border-radius:50%;
   border:1px solid var(--line2); display:grid; place-items:center; transition:.2s}
 .packs > div.on .mk{background:var(--acc); border-color:var(--acc); color:var(--acc-ink)}
@@ -1129,6 +1143,7 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
           <label>Quantos carrosseis</label>
           <div class="hint">Cada um tem sete imagens e narrativa completa. Quanto mais no mesmo pedido, menor o preço de cada.</div>
           <div class="packs" id="chPacks"></div>
+          <div class="notaPromo" id="notaPromo"></div>
         </div>
         <div class="campo">
           <label>Cor principal</label>
@@ -1171,7 +1186,7 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
           <div class="rl"><span>Formato</span><b>1080 &times; 1350</b></div>
           <div class="rl"><span>Prazo</span><b>24 horas</b></div>
           <div class="total">
-            <div><div class="mono" style="color:var(--tx3);margin-bottom:8px">total</div><div class="p disp" id="rPreco">R$ 99,90</div></div>
+            <div><div class="mono" style="color:var(--tx3);margin-bottom:8px">total</div><div class="p disp" id="rPreco">R$ 57,90</div><div class="antesTotal" id="rAntes"></div></div>
             <div class="mono" id="rCod">CS-0000</div>
           </div>
         </div>
@@ -1240,7 +1255,7 @@ footer{border-top:1px solid var(--line); padding:34px 0 52px; color:var(--tx3); 
 </footer>
 
 <div class="barra" id="barra">
-  <div class="v"><span id="bRot">a partir de</span><b id="bPreco">R$ 59,90</b></div>
+  <div class="v"><span id="bRot">a partir de</span><b id="bPreco">R$ 37,90</b></div>
   <button class="btn" id="bBtn">Escolher meu molde</button>
 </div>
 
@@ -1259,13 +1274,34 @@ const CFG = {
    O raciocínio comercial por trás dos valores fica no LEIA-ME, que não é
    servido — comentário em HTML vai inteiro no ver-código-fonte do visitante. */
 const PACOTES = [
-  {q:1, preco:59.90,  selo:'',                link:''},
-  {q:2, preco:99.90,  selo:'mais escolhido',  link:''},
-  {q:4, preco:179.90, selo:'',                link:''},
-  {q:8, preco:297.00, selo:'melhor preço',    link:''}
+  {q:1, preco:37.90,  cheio:59.90,  selo:'',                link:''},
+  {q:2, preco:57.90,  cheio:99.90,  selo:'mais escolhido',  link:''},
+  {q:4, preco:100.00, cheio:179.90, selo:'',                link:''},
+  {q:8, preco:180.00, cheio:297.00, selo:'melhor preço',    link:''}
 ];
 /* link: cole aqui a URL do checkout da Cakto de cada pacote. Enquanto estiver
-   vazio, o modo ?m=pago avisa em vez de abrir uma página quebrada. */
+   vazio, o modo ?m=pago avisa em vez de abrir uma página quebrada.
+
+   PRECO CHEIO, E A DIFERENCA QUE IMPORTA. `preco` e o que se cobra hoje;
+   `cheio` e o que se passa a cobrar quando o lancamento acabar. O site diz
+   exatamente isso — "no lancamento", "depois R$ X" — e nao "de R$ X por".
+
+   Nao e implicancia: preco riscado tem que ser preco que a casa REALMENTE
+   cobrou. Riscar um valor que nunca foi cobrado e preco de referencia
+   ficticio, e o CDC trata como publicidade enganosa (art. 37). Como o site
+   ainda nao foi ao ar, os 59,90 nunca sairam para ninguem.
+
+   Quando o lancamento terminar e o preco cheio passar a valer de verdade,
+   ai sim da para trocar a copia para "de/por" com o riscado — e ai basta
+   mexer em PROMO.rotulo e PROMO.nota aqui embaixo. */
+const PROMO = {
+  ligada : true,
+  rotulo : 'preço de lançamento',
+  nota   : 'Preço de lançamento. Depois destes primeiros pedidos, volta para o valor cheio.'
+};
+/* quanto por cento este pacote sai abaixo do preco cheio */
+const descontoDe = p => (p.cheio && p.cheio > p.preco)
+  ? Math.round((1 - p.preco / p.cheio) * 100) : 0;
 const brl = v => 'R$ ' + v.toFixed(2).replace('.', ',');
 /* O fundo sai do token, não de um literal, para não descolar se --bg mudar.
    Chamava-se PAPEL enquanto o site era de papel; hoje é o quase preto, e é
@@ -1863,12 +1899,15 @@ function montarChips(){
   const base = PACOTES[0].preco;
   k.innerHTML = PACOTES.map((p,i)=>{
     const eco = base * p.q - p.preco;
+    const off = PROMO.ligada ? descontoDe(p) : 0;
     return `<div class="${i===S.pack?'on':''}" data-i="${i}">
       ${p.selo ? '<div class="top"></div><div class="fav">'+p.selo+'</div>' : ''}
       <div class="mk"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="3.4"><path d="M20 6L9 17l-5-5"/></svg></div>
       <b>${p.q} carross${p.q>1?'eis':'el'}</b>
+      ${off ? '<span class="off">-'+off+'%</span>' : ''}
       <span class="pr">${brl(p.preco)}</span>
+      ${off ? '<span class="antes">depois ' + brl(p.cheio) + '</span>' : ''}
       <u>${p.q>1 ? brl(p.preco/p.q) + ' por carrossel' : '7 imagens, narrativa completa'}</u>
       <span class="eco ${eco>0?'':'nada'}">${eco>0 ? 'economiza ' + brl(eco) : 'ideal para testar'}</span>
     </div>`;
@@ -1876,6 +1915,13 @@ function montarChips(){
   k.querySelectorAll('[data-i]').forEach(c=>c.onclick=()=>{
     S.pack = +c.dataset.i; montarChips(); montarAssuntos(); atualizar();
   });
+  /* A ressalva do lançamento fica colada nos preços, e não no rodapé: quem
+     está olhando o valor é quem precisa ler que ele sobe depois. */
+  const nota = document.getElementById('notaPromo');
+  if(nota){
+    nota.classList.toggle('on', PROMO.ligada);
+    nota.innerHTML = PROMO.ligada ? '<s></s><span>' + CS.esc(PROMO.nota) + '</span>' : '';
+  }
 }
 
 /* navegação do carrossel: setas, arrasto de dedo e teclado */
@@ -1946,6 +1992,13 @@ function atualizar(){
   document.getElementById('rPacote').textContent = P.q + ' carross' + (P.q>1?'eis':'el');
   document.getElementById('rCada').textContent   = P.q>1 ? brl(P.preco/P.q) + ' cada' : '7 imagens';
   document.getElementById('rPreco').textContent  = brl(P.preco);
+  /* Quanto este pedido sai abaixo do que vai custar depois. É a única linha
+     da página que põe os dois valores lado a lado, e por isso ela diz
+     "depois" e não "de": o preço cheio ainda não foi cobrado de ninguém. */
+  const offP = PROMO.ligada ? descontoDe(P) : 0;
+  document.getElementById('rAntes').innerHTML = offP
+    ? 'depois ' + brl(P.cheio) + ' &middot; <b>você economiza ' + brl(P.cheio - P.preco) + '</b>'
+    : '';
   document.getElementById('rCod').textContent    = S.codigo;
 
   const ok = S.nome.trim().length>1 && S.arroba.trim().length>1
