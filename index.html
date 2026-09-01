@@ -67,6 +67,8 @@
      formulário; borda mais essa lâmina de luz vira objeto. */
   --carta:linear-gradient(180deg, rgba(255,255,255,.048), rgba(255,255,255,.012));
   --carta-borda:rgba(255,255,255,.09);
+  /* o fio do acento, para quem precisa desenhar borda na cor da marca */
+  --acc-fio:color-mix(in srgb, var(--acc) 55%, transparent);
   --line:rgba(255,255,255,.11); --line2:rgba(255,255,255,.24);
   --tx:#f2f2f6; --tx2:#a6a4b6; --tx3:#77758a;
   --acc:#5b7cff; --acc-ink:#06060b; --acc-tx:#8fa4ff;
@@ -722,16 +724,59 @@ textarea.inp{resize:vertical; min-height:82px; line-height:1.55; font-size:16.5p
 .entrega p{color:var(--tx2); font-size:15px; line-height:1.65}
 
 /* ---------- comparação ---------- */
-.tblwrap{overflow-x:auto; border-radius:20px;
+.tblwrap{overflow-x:auto; border-radius:24px; padding:22px;
   background:var(--carta); border:1px solid var(--carta-borda)}
-table{width:100%; border-collapse:collapse; min-width:660px}
-th,td{padding:18px 20px; text-align:left; font-size:15px;
-  border-bottom:1px solid rgba(255,255,255,.07)}
-thead th{color:var(--tx3); font-family:var(--fu); font-size:11px; letter-spacing:.18em; text-transform:uppercase; font-weight:600}
-thead th.nos{color:var(--acc-tx)}
-tbody td:first-child{color:var(--tx2)}
-tbody td.nos{color:var(--tx); font-weight:600; background:color-mix(in srgb, var(--acc) 6%, transparent)}
+/* separate e não collapse: com collapse o navegador funde as bordas das
+   células e border-radius em célula deixa de valer, e é justamente do raio
+   que depende a coluna virar cartão. */
+table{width:100%; border-collapse:separate; border-spacing:0; min-width:660px}
+th,td{padding:16px 14px; text-align:center; font-size:14px;
+  border-bottom:1px solid rgba(255,255,255,.06)}
+th:first-child,td:first-child{text-align:left; width:19%}
+thead th{color:var(--tx3); font-family:var(--fu); font-size:10.5px; letter-spacing:.16em;
+  text-transform:uppercase; font-weight:600; padding-bottom:18px}
+tbody td:first-child{color:var(--tx3); font-size:13.5px}
+tbody td{color:var(--tx2)}
 tbody tr:last-child td{border-bottom:0}
+
+/* ---------- a coluna turbinada ----------
+   A ideia da referência: em vez de a nossa coluna ser mais uma célula com
+   fundo colorido, ela vira um CARTÃO que atravessa a tabela inteira, como se
+   estivesse um degrau à frente das outras.
+
+   O truque é o box-shadow inset. Os fios laterais precisam correr de cima a
+   baixo sem emenda, e uma borda de verdade por célula deixaria costura em
+   cada linha. Sombra interna é desenhada por dentro da célula, então os
+   pedaços encostam exatamente e a coluna lê como uma peça só. Raio só na
+   primeira e na última célula, e é o que fecha o cartão nas pontas.
+
+   O brilho externo mora nessas mesmas duas pontas. Uma sombra por célula
+   apareceria cinco vezes, uma por linha; nas pontas ela vaza para fora do
+   cartão e o meio fica coberto pelo próprio fundo.
+
+   O CORPO É CHAPADO, e isso não é preguiça. A primeira versão usava um
+   degradê de cima para baixo em cada célula, e o degradê REINICIAVA a cada
+   linha: a coluna saiu listrada. Um degradê contínuo só existiria se a
+   coluna fosse um elemento só, e ela é cinco células. Cor chapada, com a luz
+   concentrada na célula de cima, resolve sem truque. */
+th.nos,td.nos{position:relative; border-bottom:0; color:var(--tx);
+  background:color-mix(in srgb, var(--acc) 15%, transparent);
+  box-shadow:inset 1px 0 0 var(--acc-fio), inset -1px 0 0 var(--acc-fio)}
+tbody td.nos{font-weight:600; color:#fff}
+thead th.nos{color:#fff; font-size:11.5px; letter-spacing:.14em; padding-top:20px;
+  border-radius:18px 18px 0 0;
+  /* a única transição de cor da coluna inteira, e ela fica aqui em cima: é a
+     luz batendo no topo do cartão */
+  background:linear-gradient(180deg,
+    color-mix(in srgb, var(--acc) 34%, transparent),
+    color-mix(in srgb, var(--acc) 15%, transparent));
+  box-shadow:inset 1px 0 0 var(--acc-fio), inset -1px 0 0 var(--acc-fio),
+             inset 0 1px 0 var(--acc-fio),
+             0 -10px 40px -6px color-mix(in srgb, var(--acc) 45%, transparent)}
+tbody tr:last-child td.nos{padding-bottom:20px; border-radius:0 0 18px 18px;
+  box-shadow:inset 1px 0 0 var(--acc-fio), inset -1px 0 0 var(--acc-fio),
+             inset 0 -1px 0 var(--acc-fio),
+             0 16px 44px -8px color-mix(in srgb, var(--acc) 45%, transparent)}
 
 /* seletor de pacote dentro do configurador: é a decisão de dinheiro,
    então tem que ter tamanho de decisão, não de caixinha de opção */
